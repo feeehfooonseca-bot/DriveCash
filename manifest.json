@@ -2,7 +2,7 @@
   "name": "DriveCash",
   "short_name": "DriveCash",
   "description": "Gestão financeira para entregadores",
-  "start_url": "/index.html",
+  "start_url": "/DriveCash/index.html",
   "display": "standalone",
   "background_color": "#0c1117",
   "theme_color": "#0c1117",
