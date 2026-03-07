@@ -11,6 +11,25 @@
   --green:#00ff88;--gold:#ffd700;--red:#ff4444;--blue:#58a6ff;
   --text:#e6edf3;--muted:#8b949e;--orange:#ff9800;--purple:#b06ee0;
 }
+body.light-mode{
+  --bg:#f0f2f5;--card:#ffffff;--card2:#e8eaed;--border:#d0d7de;
+  --text:#1a1a2e;--muted:#666e7a;--green:#00a854;--gold:#b8860b;
+  --red:#cc2222;--blue:#1a73e8;--orange:#e65c00;--purple:#7c3aed;
+}
+body.light-mode header{background:#ffffff;border-color:#d0d7de;}
+body.light-mode .dropdown-menu{background:#ffffff;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
+body.light-mode input,body.light-mode select,body.light-mode textarea{background:#f8f9fa;color:#1a1a2e;border-color:#d0d7de;}
+body.light-mode .rota-panel{background:#ffffff;border-color:#d0d7de;}
+body.light-mode .accordion-header{background:#f0f2f5;}
+body.light-mode .card{background:#ffffff;}
+body.light-mode .metric-box,.light-mode .metric-full{background:#ffffff;}
+body.light-mode pre{background:#f0f4ff!important;border-color:#ccd!important;color:#1a1a2e!important;}
+body.light-mode .hist3-dia-header{background:#e8eaed;}
+.btn-theme{background:transparent;border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin-right:6px;}
+.btn-theme:hover{border-color:var(--gold);}
+.nota-seq{font-family:'Rajdhani',sans-serif;font-size:0.75rem;color:var(--gold);background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);border-radius:6px;padding:2px 8px;font-weight:700;}
+.nota-hist-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.nota-hist-item:last-child{border-bottom:none;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
 
@@ -432,7 +451,9 @@ select option{background:var(--card);}
 </div>
 
 <header>
-  <div class="logo">DriveCash</div>
+  <div class="logo"><span style="color:#ffd700">Drive</span><span style="color:#00ff88">Cash</span></div>
+  <div style="display:flex;align-items:center;">
+  <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Alternar tema">☀️</button>
   <div class="menu-wrapper">
     <button class="btn-menu" onclick="toggleMenu()">&#8942;</button>
     <div class="dropdown-menu" id="dropdown-menu">
@@ -445,8 +466,11 @@ select option{background:var(--card);}
       <button class="menu-item" onclick="showPage('despesas')">📊 &nbsp;Despesas &amp; Meta</button>
       <button class="menu-item" onclick="showPage('plano')">⭐ &nbsp;Plano</button>
       <button class="menu-item" onclick="showPage('backup')">☁️ &nbsp;Backup</button>
+      <button class="menu-item" onclick="showPage('nota-servico')">📋 &nbsp;Nota de Serviço</button>
+      <button class="menu-item" onclick="gerarRelatorioSemanal()">📊 &nbsp;Relatório Semanal</button>
       <button class="menu-item" onclick="fazerLogout()" style="color:var(--red);border-top:1px solid var(--border);margin-top:4px;">🚪 &nbsp;Sair da conta</button>
     </div>
+  </div>
   </div>
 </header>
 <div id="menu-overlay" onclick="fecharMenu()"></div>
@@ -1007,9 +1031,60 @@ select option{background:var(--card);}
     <div id="fin-resumo"></div>
   </div>
 
+  <!-- CONTROLE DE SERVIÇO -->
+  <div id="controle-servico-card" style="background:var(--card);border:1px solid var(--red);border-radius:10px;margin-bottom:10px;overflow:hidden;display:none;">
+    <div style="padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="toggleAcc('ctrl-serv')">
+      <div style="font-size:0.8rem;font-weight:700;color:var(--red);">🔴 Controle — Saldo em Aberto</div>
+      <span class="accordion-chevron" id="chev-ctrl-serv">▼</span>
+    </div>
+    <div class="accordion-body" id="body-ctrl-serv"><div id="controle-servico-body"></div></div>
+  </div>
   <!-- LISTA DE EMPRESAS COM SALDO -->
   <div id="fin-empresas-lista"></div>
 
+</div>
+
+<!-- ==================== NOTA DE SERVIÇO ==================== -->
+<div id="page-nota-servico" class="page">
+  <div class="card">
+    <div class="painel-header" style="margin-bottom:14px;">
+      <div class="section-title">📋 Nota de Serviço</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+    <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:10px;">⚙️ Configuração</div>
+      <div class="form-row">
+        <div class="field"><label>Seu nome / Empresa</label>
+          <input type="text" id="nota-prestador" placeholder="Ex: Fonseca Logística" oninput="salvarCfgNota()"></div>
+        <div class="field"><label>Chave PIX</label>
+          <input type="text" id="nota-pix" placeholder="Ex: 47992030653" oninput="salvarCfgNota()"></div>
+      </div>
+      <div class="field"><label>Assinatura / Slogan</label>
+        <input type="text" id="nota-assinatura" placeholder="Ex: Obrigado pela parceria! 🤝" oninput="salvarCfgNota()"></div>
+    </div>
+    <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:10px;">📄 Gerar Nota do Dia</div>
+      <div class="form-row">
+        <div class="field"><label>Empresa</label>
+          <select id="nota-empresa"><option value="">Selecionar...</option></select></div>
+        <div class="field"><label>Data</label>
+          <input type="date" id="nota-data"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="gerarNotaServico()">📋 Gerar Nota</button>
+    </div>
+    <div id="nota-preview-area" style="display:none;">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;">👁️ Preview</div>
+      <pre id="nota-preview-txt" style="background:#1a2730;border:1px solid #2d4a3e;border-radius:8px;padding:14px;font-size:0.75rem;white-space:pre-wrap;color:#e0ffe8;max-height:360px;overflow-y:auto;margin-bottom:10px;font-family:'Courier New',monospace;line-height:1.5;"></pre>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-whatsapp" style="flex:1;" onclick="enviarNotaWpp()">📱 Enviar WhatsApp</button>
+        <button class="btn btn-secondary" onclick="copiarNota()">📋 Copiar</button>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:10px;">🗂️ Notas Emitidas</div>
+      <div id="nota-historico-lista"></div>
+    </div>
+  </div>
 </div>
 
 <!-- ==================== DESPESAS & META ==================== -->
@@ -1298,7 +1373,8 @@ select option{background:var(--card);}
 
     <!-- LOGO -->
     <div style="text-align:center;margin-bottom:28px;">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;">DriveCash</div>
+      <div style="text-align:center;margin-bottom:10px;"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnR3JhZCIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiMwYzExMTciLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMTYxYjIyIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJ3aGVlbEdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmZkNzAwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2U2YjgwMCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYm9keUdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMWMyMzMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6IzBlMTUyMCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxmaWx0ZXIgaWQ9Imdsb3ctZ29sZCI+CiAgICAgIDxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjQiIHJlc3VsdD0iY29sb3JlZEJsdXIiLz4KICAgICAgPGZlTWVyZ2U+PGZlTWVyZ2VOb2RlIGluPSJjb2xvcmVkQmx1ciIvPjxmZU1lcmdlTm9kZSBpbj0iU291cmNlR3JhcGhpYyIvPjwvZmVNZXJnZT4KICAgIDwvZmlsdGVyPgogICAgPGZpbHRlciBpZD0iZ2xvdy1ncmVlbiI+CiAgICAgIDxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjUiIHJlc3VsdD0iY29sb3JlZEJsdXIiLz4KICAgICAgPGZlTWVyZ2U+PGZlTWVyZ2VOb2RlIGluPSJjb2xvcmVkQmx1ciIvPjxmZU1lcmdlTm9kZSBpbj0iU291cmNlR3JhcGhpYyIvPjwvZmVNZXJnZT4KICAgIDwvZmlsdGVyPgogIDwvZGVmcz4KCiAgPCEtLSBCYWNrZ3JvdW5kIHJvdW5kZWQgc3F1YXJlIC0tPgogIDxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iOTYiIGZpbGw9InVybCgjYmdHcmFkKSIvPgogIAogIDwhLS0gU3VidGxlIGdyaWQgbGluZXMgLS0+CiAgPGxpbmUgeDE9IjAiIHkxPSIyNTYiIHgyPSI1MTIiIHkyPSIyNTYiIHN0cm9rZT0iIzFjMjMzMCIgc3Ryb2tlLXdpZHRoPSIxIiBvcGFjaXR5PSIwLjUiLz4KICA8bGluZSB4MT0iMjU2IiB5MT0iMCIgeDI9IjI1NiIgeTI9IjUxMiIgc3Ryb2tlPSIjMWMyMzMwIiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuNSIvPgoKICA8IS0tID09PSBNT1RPIEJPRFkgPT09IC0tPgogIDwhLS0gUmVhciB3aGVlbCAtLT4KICA8Y2lyY2xlIGN4PSIxNTUiIGN5PSIzMzAiIHI9IjY4IiBmaWxsPSJ1cmwoI2JvZHlHcmFkKSIgc3Ryb2tlPSIjZmZkNzAwIiBzdHJva2Utd2lkdGg9IjUiIGZpbHRlcj0idXJsKCNnbG93LWdvbGQpIi8+CiAgPGNpcmNsZSBjeD0iMTU1IiBjeT0iMzMwIiByPSI0NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZkNzAwIiBzdHJva2Utd2lkdGg9IjIuNSIgb3BhY2l0eT0iMC40Ii8+CiAgPGNpcmNsZSBjeD0iMTU1IiBjeT0iMzMwIiByPSIxOCIgZmlsbD0iI2ZmZDcwMCIgb3BhY2l0eT0iMC45Ii8+CiAgPCEtLSBTcG9rZXMgcmVhciAtLT4KICA8bGluZSB4MT0iMTU1IiB5MT0iMjYyIiB4Mj0iMTU1IiB5Mj0iMzk4IiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iMi41IiBvcGFjaXR5PSIwLjUiLz4KICA8bGluZSB4MT0iODciIHkxPSIzMzAiIHgyPSIyMjMiIHkyPSIzMzAiIHN0cm9rZT0iI2ZmZDcwMCIgc3Ryb2tlLXdpZHRoPSIyLjUiIG9wYWNpdHk9IjAuNSIvPgogIDxsaW5lIHgxPSIxMDciIHkxPSIyODIiIHgyPSIyMDMiIHkyPSIzNzgiIHN0cm9rZT0iI2ZmZDcwMCIgc3Ryb2tlLXdpZHRoPSIyLjUiIG9wYWNpdHk9IjAuMzUiLz4KICA8bGluZSB4MT0iMjAzIiB5MT0iMjgyIiB4Mj0iMTA3IiB5Mj0iMzc4IiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iMi41IiBvcGFjaXR5PSIwLjM1Ii8+CgogIDwhLS0gRnJvbnQgd2hlZWwgLS0+CiAgPGNpcmNsZSBjeD0iMzc1IiBjeT0iMzMwIiByPSI1OCIgZmlsbD0idXJsKCNib2R5R3JhZCkiIHN0cm9rZT0iIzAwZmY4OCIgc3Ryb2tlLXdpZHRoPSI1IiBmaWx0ZXI9InVybCgjZ2xvdy1ncmVlbikiLz4KICA8Y2lyY2xlIGN4PSIzNzUiIGN5PSIzMzAiIHI9IjM3IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGZmODgiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC40Ii8+CiAgPGNpcmNsZSBjeD0iMzc1IiBjeT0iMzMwIiByPSIxNCIgZmlsbD0iIzAwZmY4OCIgb3BhY2l0eT0iMC45Ii8+CiAgPCEtLSBTcG9rZXMgZnJvbnQgLS0+CiAgPGxpbmUgeDE9IjM3NSIgeTE9IjI3MiIgeDI9IjM3NSIgeTI9IjM4OCIgc3Ryb2tlPSIjMDBmZjg4IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNSIvPgogIDxsaW5lIHgxPSIzMTciIHkxPSIzMzAiIHgyPSI0MzMiIHkyPSIzMzAiIHN0cm9rZT0iIzAwZmY4OCIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjUiLz4KICA8bGluZSB4MT0iMzM0IiB5MT0iMjg5IiB4Mj0iNDE2IiB5Mj0iMzcxIiBzdHJva2U9IiMwMGZmODgiIHN0cm9rZS13aWR0aD0iMiIgb3BhY2l0eT0iMC4zNSIvPgogIDxsaW5lIHgxPSI0MTYiIHkxPSIyODkiIHgyPSIzMzQiIHkyPSIzNzEiIHN0cm9rZT0iIzAwZmY4OCIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjM1Ii8+CgogIDwhLS0gRnJhbWUgLyBtYWluIGJvZHkgLS0+CiAgPHBhdGggZD0iTSAyMDAgMjkwIEwgMTU1IDMzMCBMIDIwMCAzMzAgTCAyNTAgMjgwIEwgMzEwIDI3MCBMIDM2MCAyODAgTCAzNzUgMzMwIEwgNDIwIDMyMCBMIDM4MCAyNjAgTCAzMTAgMjQwIEwgMjYwIDI0NSBaIiAKICAgICAgICBmaWxsPSIjMWMyMzMwIiBzdHJva2U9IiMzMDM2M2QiIHN0cm9rZS13aWR0aD0iMiIvPgogIAogIDwhLS0gR2FzIHRhbmsgdG9wIC0tPgogIDxwYXRoIGQ9Ik0gMjQwIDIzNSBRIDI3MCAyMTUgMzEwIDIyMCBMIDM2MCAyNDAgTCAzMzAgMjU1IEwgMjYwIDI1OCBaIiAKICAgICAgICBmaWxsPSIjZmZkNzAwIiBvcGFjaXR5PSIwLjE1IiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjYiLz4KCiAgPCEtLSBTZWF0IC0tPgogIDxwYXRoIGQ9Ik0gMjAwIDI2MCBRIDIzMCAyNDggMjcwIDI1MCBMIDMyMCAyNTIgTCAzMTAgMjY4IEwgMjU1IDI3MCBMIDIwNSAyNzggWiIgCiAgICAgICAgZmlsbD0iIzJhMzM0MCIgc3Ryb2tlPSIjMzAzNjNkIiBzdHJva2Utd2lkdGg9IjEuNSIvPgoKICA8IS0tIEhhbmRsZWJhciAtLT4KICA8bGluZSB4MT0iMzYwIiB5MT0iMjQwIiB4Mj0iNDEwIiB5Mj0iMjIwIiBzdHJva2U9IiNlNmVkZjMiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGNpcmNsZSBjeD0iNDEwIiBjeT0iMjE4IiByPSI2IiBmaWxsPSIjZmZkNzAwIi8+CgogIDwhLS0gRXhoYXVzdCAtLT4KICA8cGF0aCBkPSJNIDE3MCAzMzAgUSAxOTAgMzQ1IDIzMCAzNDAgTCAyNDAgMzMyIiBmaWxsPSJub25lIiBzdHJva2U9IiM2NjYiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gUmlkZXIgc2lsaG91ZXR0ZSAtIGhlbG1ldCAtLT4KICA8ZWxsaXBzZSBjeD0iMjk1IiBjeT0iMjEwIiByeD0iMzAiIHJ5PSIyOCIgZmlsbD0iIzFjMjMzMCIgc3Ryb2tlPSIjZmZkNzAwIiBzdHJva2Utd2lkdGg9IjIuNSIvPgogIDxwYXRoIGQ9Ik0gMjcwIDIxNSBRIDI5NSAxOTUgMzIwIDIxNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBmZjg4IiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuOCIvPgogIDwhLS0gVmlzb3IgLS0+CiAgPHBhdGggZD0iTSAyNzUgMjE4IFEgMjk1IDIyNCAzMTUgMjE4IiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGNmZmYiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CgogIDwhLS0gUmlkZXIgYm9keSAtLT4KICA8cGF0aCBkPSJNIDI3OCAyMzggUSAyNjAgMjU4IDI1MiAyNzIgTCAyNzUgMjcwIFEgMjg1IDI1NSAyOTggMjQyIFoiIGZpbGw9IiMxYzIzMzAiIHN0cm9rZT0iIzMwMzYzZCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KCiAgPCEtLSBEZWxpdmVyeSBiYWcgb24gYmFjayAtLT4KICA8cmVjdCB4PSIyMTUiIHk9IjIzOCIgd2lkdGg9IjQyIiBoZWlnaHQ9IjM0IiByeD0iNiIgZmlsbD0iIzBjMTExNyIgc3Ryb2tlPSIjMDBmZjg4IiBzdHJva2Utd2lkdGg9IjIuNSIvPgogIDxsaW5lIHgxPSIyMTUiIHkxPSIyNTAiIHgyPSIyNTciIHkyPSIyNTAiIHN0cm9rZT0iIzAwZmY4OCIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNSIvPgogIDwhLS0gRG9sbGFyIHNpZ24gb24gYmFnIC0tPgogIDx0ZXh0IHg9IjIzNiIgeT0iMjYzIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmQ3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuOSI+JDwvdGV4dD4KCiAgPCEtLSBTcGVlZCBsaW5lcyAtLT4KICA8bGluZSB4MT0iNTUiIHkxPSIyODUiIHgyPSIxMDUiIHkyPSIyODUiIHN0cm9rZT0iI2ZmZDcwMCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC42Ii8+CiAgPGxpbmUgeDE9IjM1IiB5MT0iMzA1IiB4Mj0iMTAwIiB5Mj0iMzA1IiBzdHJva2U9IiNmZmQ3MDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjQiLz4KICA8bGluZSB4MT0iNTUiIHkxPSIzMjUiIHgyPSI5NSIgeTI9IjMyNSIgc3Ryb2tlPSIjZmZkNzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjI1Ii8+CgogIDwhLS0gPT09IFRFWFQgPT09IC0tPgogIDwhLS0gRFJJVkUgaW4gZ29sZCAtLT4KICA8dGV4dCB4PSIxMDUiIHk9IjE2OCIgZm9udC1mYW1pbHk9IidSYWpkaGFuaScsICdBcmlhbCBCbGFjaycsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNzIiIGZvbnQtd2VpZ2h0PSI5MDAiIAogICAgICAgIGZpbGw9IiNmZmQ3MDAiIGxldHRlci1zcGFjaW5nPSI0IiBmaWx0ZXI9InVybCgjZ2xvdy1nb2xkKSI+RFJJVkU8L3RleHQ+CiAgPCEtLSBDQVNIIGluIGdyZWVuIC0tPgogIDx0ZXh0IHg9IjI4NCIgeT0iMTY4IiBmb250LWZhbWlseT0iJ1JhamRoYW5pJywgJ0FyaWFsIEJsYWNrJywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI3MiIgZm9udC13ZWlnaHQ9IjkwMCIgCiAgICAgICAgZmlsbD0iIzAwZmY4OCIgbGV0dGVyLXNwYWNpbmc9IjQiIGZpbHRlcj0idXJsKCNnbG93LWdyZWVuKSI+Q0FTSDwvdGV4dD4KCiAgPCEtLSBUaGluIHVuZGVybGluZSBhY2NlbnQgLS0+CiAgPGxpbmUgeDE9IjEwNSIgeTE9IjE3OCIgeDI9IjQwNyIgeTI9IjE3OCIgc3Ryb2tlPSJ1cmwoI2JnR3JhZCkiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxsaW5lIHgxPSIxMDUiIHkxPSIxNzgiIHgyPSIyODMiIHkyPSIxNzgiIHN0cm9rZT0iI2ZmZDcwMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNCIvPgogIDxsaW5lIHgxPSIyODQiIHkxPSIxNzgiIHgyPSI0MDciIHkyPSIxNzgiIHN0cm9rZT0iIzAwZmY4OCIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuNCIvPgoKICA8IS0tIENvcm5lciBhY2NlbnQgZG90cyAtLT4KICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjQ4IiByPSI1IiBmaWxsPSIjZmZkNzAwIiBvcGFjaXR5PSIwLjMiLz4KICA8Y2lyY2xlIGN4PSI0NjQiIGN5PSI0OCIgcj0iNSIgZmlsbD0iIzAwZmY4OCIgb3BhY2l0eT0iMC4zIi8+CiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0NjQiIHI9IjUiIGZpbGw9IiNmZmQ3MDAiIG9wYWNpdHk9IjAuMiIvPgogIDxjaXJjbGUgY3g9IjQ2NCIgY3k9IjQ2NCIgcj0iNSIgZmlsbD0iIzAwZmY4OCIgb3BhY2l0eT0iMC4yIi8+Cjwvc3ZnPg==" style="width:110px;height:110px;border-radius:20px;" alt="DriveCash"></div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:2px;"><span style="color:#ffd700">Drive</span><span style="color:#00ff88">Cash</span></div>
       <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;" id="login-subtitle">Faça login para continuar</div>
     </div>
 
@@ -1406,7 +1482,7 @@ onAuthStateChanged(auth, user => {
     // Mostra loading enquanto carrega dados
     document.getElementById('login-screen').innerHTML = `
       <div style="text-align:center;">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:#ffd700;letter-spacing:2px;margin-bottom:16px;">DriveCash</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:2px;margin-bottom:16px;"><span style="color:#ffd700">Drive</span><span style="color:#00ff88">Cash</span></div>
         <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#00ff88;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
         <div style="color:#8b949e;font-size:0.9rem;">Carregando seus dados...</div>
       </div>`;
@@ -1444,7 +1520,7 @@ function _garantirTelaLogin(){
     ls.innerHTML = `
       <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 24px;max-width:360px;width:100%;">
         <div style="text-align:center;margin-bottom:28px;">
-          <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;">DriveCash</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;letter-spacing:2px;"><span style="color:#ffd700">Drive</span><span style="color:#00ff88">Cash</span></div>
           <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;" id="login-subtitle">Faça login para continuar</div>
         </div>
         <div id="form-login">
@@ -1482,7 +1558,7 @@ function _garantirTelaLogin(){
 
 // ── Carregar todos os dados do Firestore ─────────────────────
 window._fbCarregarDados = async function(uid){
-  const chaves = ['dc_rotas','dc_empresas','dc_custos','dc_despesas','dc_pagamentos','dc_cfg','dc_backup_info','dc_km_dias'];
+  const chaves = ['dc_rotas','dc_empresas','dc_custos','dc_despesas','dc_pagamentos','dc_cfg','dc_backup_info','dc_km_dias','dc_notas_emitidas','dc_cfg_nota'];
   for(const chave of chaves){
     try{
       const snap = await getDoc(doc(db, 'usuarios', uid, 'dados', chave));
@@ -1865,6 +1941,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderDashboard();
   renderFeed();
   initLogin();
+  initTheme();
+  agendarRelatorioSemanal();
   // Inicializa botões dias semana (precisam do DOM pronto)
   setTimeout(()=>{
     renderDiasSemBtns();
@@ -1922,7 +2000,8 @@ function showPage(p){
   if(p==='retroativo') { populateEmpresaSelects(); initRetroativo(); }
   if(p==='empresas')   renderEmpresas();
   if(p==='custos')     renderCustos();
-  if(p==='financeiro') renderFinanceiro();
+  if(p==='financeiro') { renderFinanceiro(); renderControleServico(); }
+  if(p==='nota-servico') initNotaServico();
   if(p==='orcamento')  renderOrcamento();
   if(p==='despesas')   { renderDespesas(); loadCfgToForm(); setTimeout(renderGraficos,100); }
   if(p==='backup')     renderBackupInfo();
@@ -2300,12 +2379,14 @@ function salvarRota(){
     obs: ''
   });
 
+  rotas[rotas.length-1].horario = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   save('dc_rotas', rotas);
+  if(navigator.vibrate) navigator.vibrate([80,30,80]);
   limparTudo();
   renderDashboard();
   renderFeed();
-  // Recalcula meta diária após salvar rota
   atualizarMetaDiaAuto();
+  showToast('✅ Rota salva!');
 }
 
 function limparTudo(){
@@ -2509,7 +2590,7 @@ function renderFeed(){
       <div class="rota-card-top">
         <div class="rota-card-info">
           <div class="rota-card-empresa">${r.empNome}</div>
-          <div class="rota-card-meta">${bairrosResumido||'—'}</div>
+          <div class="rota-card-meta">${bairrosResumido||'—'}${r.horario?' · 🕐 '+r.horario:''}</div>
         </div>
         <div class="rota-card-valor">${fmt(r.total)}</div>
       </div>
@@ -3288,6 +3369,7 @@ function renderHistorico(){
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
           <div style="text-align:right;">${totalLabel}</div>
+          <button onclick="event.stopPropagation();adicionarAoDia('${data}')" style="background:rgba(66,133,244,0.15);border:1px solid #4285f4;color:#4285f4;border-radius:6px;padding:3px 8px;font-size:0.65rem;cursor:pointer;" title="Adicionar ao Google Agenda">📅</button>
           <span class="hist3-dia-chev" id="chev-${diaId}">▼</span>
         </div>
       </div>
@@ -4640,6 +4722,395 @@ function exportarPlanilhaEmpresa(empId,dataIni,dataFim){
   a.click(); URL.revokeObjectURL(url);
 }
 
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg,type='success'){
+  const e=document.getElementById('dc-toast'); if(e) e.remove();
+  const t=document.createElement('div'); t.id='dc-toast';
+  const bg=type==='error'?'rgba(255,68,68,0.95)':type==='warn'?'rgba(255,152,0,0.95)':'rgba(0,200,100,0.95)';
+  t.style.cssText=`position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:${bg};color:#fff;padding:10px 20px;border-radius:20px;font-size:0.85rem;font-weight:600;z-index:9999;opacity:0;transition:all 0.3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.3);`;
+  t.textContent=msg; document.body.appendChild(t);
+  requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';setTimeout(()=>t.remove(),300);},2500);
+}
+
+// ============================================================
+// LIGHT / DARK MODE
+// ============================================================
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('light-mode');
+  localStorage.setItem('dc_theme',isLight?'light':'dark');
+  const btn=document.getElementById('btn-theme');
+  if(btn) btn.textContent=isLight?'🌙':'☀️';
+}
+function initTheme(){
+  if(localStorage.getItem('dc_theme')==='light'){
+    document.body.classList.add('light-mode');
+    const btn=document.getElementById('btn-theme');
+    if(btn) btn.textContent='🌙';
+  }
+}
+
+// ============================================================
+// GOOGLE AGENDA
+// ============================================================
+function adicionarAoDia(data){
+  const rotasDia=rotas.filter(r=>r.data===data);
+  if(rotasDia.length===0){showToast('Sem rotas nesta data','warn');return;}
+  const total=rotasDia.reduce((s,r)=>s+r.total,0);
+  const qtd=rotasDia.length;
+  const empresasDia=[...new Set(rotasDia.map(r=>r.empNome))].join(', ');
+  const titulo=encodeURIComponent(`🚗 Trabalho — ${qtd} entregas — ${fmt(total)}`);
+  const detalhes=encodeURIComponent(`Empresas: ${empresasDia}
+Total: ${fmt(total)}
+Entregas: ${qtd}
+
+Registrado pelo DriveCash`);
+  const dataGcal=data.replace(/-/g,'');
+  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&dates=${dataGcal}/${dataGcal}&details=${detalhes}`,'_blank');
+}
+
+// ============================================================
+// CONTESTAÇÃO DE PAGAMENTO
+// ============================================================
+function abrirContestacao(empId){
+  empId=Number(empId);
+  const emp=empresas.find(e=>e.id===empId); if(!emp) return;
+  const {totalRotas,totalPago,saldo}=calcSaldoEmpresa(empId);
+  const rotasEmp=[...rotas].filter(r=>Number(r.empId)===empId).sort((a,b)=>a.data.localeCompare(b.data));
+  const pagsEmp=[...pagamentos].filter(p=>Number(p.empId)===empId).sort((a,b)=>a.data.localeCompare(b.data));
+
+  let txt=`⚠️ *CONTESTAÇÃO DE PAGAMENTO*
+`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━
+`;
+  txt+=`🏢 Empresa: ${emp.nome}
+`;
+  txt+=`📅 Gerado em: ${new Date().toLocaleDateString('pt-BR')}
+`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━
+
+`;
+  txt+=`📦 *ENTREGAS REALIZADAS (${rotasEmp.length})*
+
+`;
+  const porData={};
+  rotasEmp.forEach(r=>{if(!porData[r.data])porData[r.data]=[];porData[r.data].push(r);});
+  let idx=1;
+  Object.keys(porData).sort().forEach(data=>{
+    txt+=`📅 ${formatData(data)}
+`;
+    porData[data].forEach(r=>{
+      if(r.multipla&&r.entregas){
+        r.entregas.forEach(e=>{txt+=`  ${idx++}. ${e.bairro||'—'}${r.horario?' ('+r.horario+')':''} — *${fmt(e.valorUnit||0)}*
+`;});
+      } else {
+        const dest=r.entregas&&r.entregas[0]?r.entregas[0].bairro:'—';
+        txt+=`  ${idx++}. ${dest}${r.horario?' ('+r.horario+')':''} — *${fmt(r.total)}*
+`;
+      }
+    });
+    txt+=`
+`;
+  });
+  txt+=`━━━━━━━━━━━━━━━━━━━━
+`;
+  txt+=`💰 Total entregas: *${fmt(totalRotas)}*
+
+`;
+  if(pagsEmp.length>0){
+    txt+=`✅ *PAGAMENTOS RECEBIDOS*
+`;
+    pagsEmp.forEach(p=>{txt+=`  📅 ${formatData(p.data)} — ${fmt(p.valor)}${p.obs?' ('+p.obs+')':''}
+`;});
+    txt+=`
+`;
+  }
+  txt+=`💳 Total pago: *${fmt(totalPago)}*
+`;
+  txt+=`🔴 *SALDO EM ABERTO: ${fmt(saldo)}*
+`;
+  txt+=`
+💳 Chave PIX: ${loadCfgNota().pix||'47992030653'}
+`;
+  txt+=`
+Agradeço a regularização! 🙏`;
+
+  const modal=document.getElementById('modal-contestacao');
+  const pre=document.getElementById('contestacao-txt');
+  if(modal&&pre){
+    document.getElementById('contestacao-emp-nome').textContent=emp.nome;
+    pre.textContent=txt; pre._txt=txt; pre._empId=empId;
+    modal.style.display='flex';
+  }
+}
+function fecharContestacao(){document.getElementById('modal-contestacao').style.display='none';}
+function enviarContestacaoWpp(){
+  const pre=document.getElementById('contestacao-txt'); if(!pre||!pre._txt) return;
+  const emp=empresas.find(e=>e.id===Number(pre._empId));
+  if(emp?.tel) window.open(`https://wa.me/55${emp.tel.replace(/\D/g,'')}?text=${encodeURIComponent(pre._txt)}`,'_blank');
+  else navigator.clipboard.writeText(pre._txt).then(()=>showToast('📋 Contestação copiada!'));
+  fecharContestacao();
+}
+
+// ============================================================
+// RELATÓRIO SEMANAL
+// ============================================================
+function gerarRelatorioSemanal(){
+  const agora=new Date(), diaSem=agora.getDay();
+  const fimSemAnt=new Date(agora); fimSemAnt.setDate(agora.getDate()-diaSem-1);
+  const iniSemAnt=new Date(fimSemAnt); iniSemAnt.setDate(fimSemAnt.getDate()-6);
+  const fmtD=d=>d.toISOString().slice(0,10);
+  const ini=fmtD(iniSemAnt),fim=fmtD(fimSemAnt);
+  const rotasSem=rotas.filter(r=>r.data>=ini&&r.data<=fim);
+  if(rotasSem.length===0){showToast('Sem rotas na semana anterior','warn');return;}
+  const total=rotasSem.reduce((s,r)=>s+r.total,0);
+  const cfg=loadCfg();
+  const kmSem=rotasSem.reduce((s,r)=>s+(r.km||0),0);
+  const custoComb=cfg.kml>0?(kmSem/cfg.kml)*(cfg.gas||0):0;
+  const custoManut=kmSem*(cfg.manut||0);
+  const lucroSem=total-custoComb-custoManut;
+  const diasTrab=new Set(rotasSem.map(r=>r.data)).size;
+  const porEmp={};
+  rotasSem.forEach(r=>{const k=r.empNome||'Sem empresa';if(!porEmp[k])porEmp[k]={qtd:0,total:0};porEmp[k].qtd++;porEmp[k].total+=r.total;});
+  let txt=`📊 *RELATÓRIO SEMANAL*
+`;
+  txt+=`📅 ${iniSemAnt.toLocaleDateString('pt-BR')} → ${fimSemAnt.toLocaleDateString('pt-BR')}
+`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━
+
+`;
+  txt+=`📦 Entregas: *${rotasSem.length}* em *${diasTrab} dias*
+`;
+  txt+=`💰 Ganhos brutos: *${fmt(total)}*
+`;
+  if(kmSem>0){txt+=`📏 KM rodados: *${kmSem}km*
+`;txt+=`⛽ Custo estimado: *${fmt(custoComb+custoManut)}*
+`;txt+=`💎 Lucro líquido: *${fmt(lucroSem)}*
+`;}
+  txt+=`
+🏢 *Por empresa:*
+`;
+  Object.entries(porEmp).sort((a,b)=>b[1].total-a[1].total).forEach(([emp,d])=>{txt+=`  • ${emp}: ${d.qtd} entregas — ${fmt(d.total)}
+`;});
+  txt+=`
+📈 Média/dia: ${fmt(total/diasTrab)}
+`;
+  txt+=`📈 Média/entrega: ${fmt(total/rotasSem.length)}`;
+  if(navigator.share) navigator.share({text:txt}).catch(()=>{});
+  else navigator.clipboard.writeText(txt).then(()=>showToast('📊 Relatório copiado!'));
+}
+
+function agendarRelatorioSemanal(){
+  const agora=new Date();
+  if(agora.getDay()!==1) return;
+  const key='dc_rel_sem_'+agora.toISOString().slice(0,10);
+  if(localStorage.getItem(key)) return;
+  localStorage.setItem(key,'1');
+  const diaSem=agora.getDay();
+  const fimSemAnt=new Date(agora); fimSemAnt.setDate(agora.getDate()-diaSem-1);
+  const iniSemAnt=new Date(fimSemAnt); iniSemAnt.setDate(fimSemAnt.getDate()-6);
+  const ini=iniSemAnt.toISOString().slice(0,10),fim=fimSemAnt.toISOString().slice(0,10);
+  const rotasSem=rotas.filter(r=>r.data>=ini&&r.data<=fim);
+  if(rotasSem.length===0) return;
+  const total=rotasSem.reduce((s,r)=>s+r.total,0);
+  setTimeout(()=>{
+    const banner=document.createElement('div');
+    banner.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--blue);border-radius:12px;padding:12px 16px;z-index:800;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.4);font-size:0.82rem;max-width:340px;width:90%;';
+    banner.innerHTML=`<span>📊 Semana passada: <strong>${fmt(total)}</strong> (${rotasSem.length} entregas)</span>
+      <button onclick="gerarRelatorioSemanal();this.closest('[style]').remove();" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ver</button>
+      <button onclick="this.closest('[style]').remove()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1rem;">✕</button>`;
+    document.body.appendChild(banner);
+    setTimeout(()=>{if(banner.parentNode)banner.remove();},12000);
+  },3000);
+}
+
+// ============================================================
+// CONTROLE DE SERVIÇO
+// ============================================================
+function renderControleServico(){
+  const card=document.getElementById('controle-servico-card');
+  const body=document.getElementById('controle-servico-body');
+  if(!card||!body) return;
+  const emAberto=empresas.map(emp=>{
+    const {totalRotas,totalPago,saldo}=calcSaldoEmpresa(emp.id);
+    return {emp,totalRotas,totalPago,saldo};
+  }).filter(x=>x.saldo>0&&x.totalRotas>0);
+  if(emAberto.length===0){card.style.display='none';return;}
+  card.style.display='block';
+  const totalAberto=emAberto.reduce((s,x)=>s+x.saldo,0);
+  body.innerHTML=`
+    <div style="margin-bottom:10px;padding:10px;background:rgba(255,68,68,0.07);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:0.8rem;color:var(--muted);">${emAberto.length} empresa${emAberto.length!==1?'s':''} em aberto</span>
+      <span style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--red);">${fmt(totalAberto)}</span>
+    </div>
+    ${emAberto.sort((a,b)=>b.saldo-a.saldo).map(({emp,totalRotas,totalPago,saldo})=>{
+      const rotasEmp=rotas.filter(r=>Number(r.empId)===emp.id);
+      const ultima=rotasEmp.sort((a,b)=>b.data.localeCompare(a.data))[0];
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:0.84rem;font-weight:600;">${emp.nome}</div>
+          <div style="font-size:0.7rem;color:var(--muted);">${rotasEmp.length} entregas${ultima?' · última '+formatData(ultima.data):''} · pago ${fmt(totalPago)} de ${fmt(totalRotas)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--red);">${fmt(saldo)}</span>
+          <button onclick="gerarNotaRapida(${emp.id})" style="background:rgba(37,211,102,0.15);border:1px solid #25d366;color:#25d366;border-radius:8px;padding:4px 8px;font-size:0.7rem;cursor:pointer;">📋 Nota</button>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+function gerarNotaRapida(empId){
+  showPage('nota-servico');
+  setTimeout(()=>{
+    const sel=document.getElementById('nota-empresa');
+    if(sel) sel.value=empId;
+    const d=document.getElementById('nota-data');
+    if(d) d.value=hoje();
+    gerarNotaServico();
+  },200);
+}
+
+// ============================================================
+// NOTA DE SERVIÇO
+// ============================================================
+function loadCfgNota(){return JSON.parse(localStorage.getItem('dc_cfg_nota')||'{}');}
+function salvarCfgNota(){
+  const cfg={
+    prestador:document.getElementById('nota-prestador')?.value||'',
+    pix:document.getElementById('nota-pix')?.value||'',
+    assinatura:document.getElementById('nota-assinatura')?.value||''
+  };
+  localStorage.setItem('dc_cfg_nota',JSON.stringify(cfg));
+}
+function loadNotasEmitidas(){return JSON.parse(localStorage.getItem('dc_notas_emitidas')||'[]');}
+function initNotaServico(){
+  const sel=document.getElementById('nota-empresa');
+  if(sel) sel.innerHTML='<option value="">Selecionar...</option>'+empresas.map(e=>`<option value="${e.id}">${e.nome}</option>`).join('');
+  const d=document.getElementById('nota-data'); if(d) d.value=hoje();
+  const cfg=loadCfgNota();
+  const p=document.getElementById('nota-prestador'); if(p) p.value=cfg.prestador||'';
+  const px=document.getElementById('nota-pix'); if(px) px.value=cfg.pix||'47992030653';
+  const a=document.getElementById('nota-assinatura'); if(a) a.value=cfg.assinatura||'Obrigado pela parceria! 🤝';
+  renderNotaHistorico();
+}
+function getProxNumNota(){
+  const notas=loadNotasEmitidas();
+  return notas.length===0?1:Math.max(...notas.map(n=>n.num||0))+1;
+}
+function gerarNotaServico(){
+  const empId=Number(document.getElementById('nota-empresa')?.value);
+  const data=document.getElementById('nota-data')?.value||hoje();
+  const cfg=loadCfgNota();
+  if(!empId){alert('Selecione a empresa!');return;}
+  const emp=empresas.find(e=>e.id===empId); if(!emp){alert('Empresa não encontrada!');return;}
+  const rotasDia=rotas.filter(r=>Number(r.empId)===empId&&r.data===data).sort((a,b)=>a.id-b.id);
+  if(rotasDia.length===0){alert(`Nenhuma entrega em ${formatData(data)} para ${emp.nome}.`);return;}
+  const num=getProxNumNota();
+  const total=rotasDia.reduce((s,r)=>s+r.total,0);
+  const totalEntregas=rotasDia.reduce((s,r)=>s+(r.multipla&&r.entregas?r.entregas.length:1),0);
+  const prestador=cfg.prestador||'Fonseca Logística';
+  const pix=cfg.pix||'47992030653';
+  const assinatura=cfg.assinatura||'Obrigado pela parceria! 🤝';
+  let txt=`📋 *NOTA DE SERVIÇO Nº ${String(num).padStart(4,'0')}*
+`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━
+`;
+  txt+=`🗓️ Data: ${formatData(data)}
+`;
+  txt+=`👤 Prestador: ${prestador}
+`;
+  txt+=`🏢 Contratante: ${emp.nome}
+`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━
+
+`;
+  txt+=`📦 *SERVIÇOS PRESTADOS*
+
+`;
+  let idx=1;
+  rotasDia.forEach(r=>{
+    if(r.multipla&&r.entregas&&r.entregas.length>1){
+      r.entregas.forEach(e=>{txt+=`${idx++}. ${e.bairro||'—'}${r.horario?' ('+r.horario+')':''} — *${fmt(e.valorUnit||0)}*
+`;});
+    } else {
+      const dest=r.entregas&&r.entregas[0]?r.entregas[0].bairro:'—';
+      txt+=`${idx++}. ${dest}${r.horario?' ('+r.horario+')':''} — *${fmt(r.total)}*
+`;
+    }
+    if(r.gorjeta>0) txt+=`    🎁 Gorjeta: ${fmt(r.gorjeta)}
+`;
+  });
+  txt+=`
+━━━━━━━━━━━━━━━━━━━━
+`;
+  txt+=`📦 Total de entregas: *${totalEntregas}*
+`;
+  txt+=`💰 *TOTAL: ${fmt(total)}*
+`;
+  txt+=`━━━━━━━━━━━━━━━━━━━━
+
+`;
+  txt+=`💳 *Pagamento via PIX:*
+   Chave: *${pix}*
+
+`;
+  txt+=`${assinatura}`;
+  const notas=loadNotasEmitidas();
+  notas.unshift({id:Date.now(),num,empId,empNome:emp.nome,data,total,qtd:totalEntregas,txt});
+  localStorage.setItem('dc_notas_emitidas',JSON.stringify(notas.slice(0,100)));
+  const area=document.getElementById('nota-preview-area');
+  const pre=document.getElementById('nota-preview-txt');
+  if(area) area.style.display='block';
+  if(pre){pre.textContent=txt;pre._txt=txt;pre._empId=empId;}
+  renderNotaHistorico();
+  showToast(`📋 Nota Nº ${String(num).padStart(4,'0')} gerada!`);
+}
+function enviarNotaWpp(){
+  const pre=document.getElementById('nota-preview-txt'); if(!pre||!pre._txt) return;
+  const emp=empresas.find(e=>e.id===pre._empId);
+  if(emp?.tel) window.open(`https://wa.me/55${emp.tel.replace(/\D/g,'')}?text=${encodeURIComponent(pre._txt)}`,'_blank');
+  else if(navigator.share) navigator.share({text:pre._txt}).catch(()=>{});
+  else navigator.clipboard.writeText(pre._txt).then(()=>showToast('📋 Nota copiada!'));
+}
+function copiarNota(){
+  const pre=document.getElementById('nota-preview-txt'); if(!pre||!pre._txt) return;
+  navigator.clipboard.writeText(pre._txt).then(()=>showToast('📋 Copiado!'));
+}
+function renderNotaHistorico(){
+  const el=document.getElementById('nota-historico-lista'); if(!el) return;
+  const notas=loadNotasEmitidas();
+  if(notas.length===0){el.innerHTML='<div style="font-size:0.78rem;color:var(--muted);">Nenhuma nota emitida ainda.</div>';return;}
+  el.innerHTML=notas.slice(0,30).map(n=>`
+    <div class="nota-hist-item">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="nota-seq">Nº ${String(n.num).padStart(4,'0')}</span>
+          <span style="font-size:0.83rem;font-weight:600;">${n.empNome}</span>
+        </div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${formatData(n.data)} · ${n.qtd} entrega${n.qtd!==1?'s':''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--green);">${fmt(n.total)}</span>
+        <button onclick="reenviarNota(${n.id})" style="background:rgba(37,211,102,0.12);border:1px solid #25d366;color:#25d366;border-radius:6px;padding:3px 8px;font-size:0.7rem;cursor:pointer;">📱</button>
+        <button onclick="deletarNota(${n.id})" style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:0.85rem;">✕</button>
+      </div>
+    </div>`).join('');
+}
+function reenviarNota(id){
+  const nota=loadNotasEmitidas().find(n=>n.id===Number(id)); if(!nota) return;
+  const area=document.getElementById('nota-preview-area');
+  const pre=document.getElementById('nota-preview-txt');
+  if(area) area.style.display='block';
+  if(pre){pre.textContent=nota.txt;pre._txt=nota.txt;pre._empId=nota.empId;}
+  area?.scrollIntoView({behavior:'smooth'});
+}
+function deletarNota(id){
+  const notas=loadNotasEmitidas().filter(n=>n.id!==Number(id));
+  localStorage.setItem('dc_notas_emitidas',JSON.stringify(notas));
+  renderNotaHistorico();
+}
+
 function exportarPlanilhaGeral(){
   const rows=[['Data','Empresa','Tipo','Destino','KM','Valor','Gorjeta','Total','Retroativo']];
   [...rotas].sort((a,b)=>a.data.localeCompare(b.data)).forEach(r=>{
@@ -4748,6 +5219,7 @@ function renderFinanceiro(){
           <div style="display:flex;gap:8px;margin-top:8px;">
             <button class="btn btn-primary" style="flex:1;" onclick="registrarPagamento(${emp.id})">✅ Confirmar Pagamento</button>
             ${emp.tel?`<button class="btn btn-whatsapp" onclick="cobrarWpp(${emp.id})">📲 Cobrar</button>`:''}
+            <button class="btn btn-secondary" style="font-size:0.78rem;" onclick="abrirContestacao(${emp.id})">⚠️ Contestar</button>
           </div>
         </div>`:''}
       </div>
@@ -5278,6 +5750,19 @@ function fazerLogout(){
       💡 Exemplos:<br>"iFood, Centro, quinze reais"<br>"Rappi, Kobrasol, vinte e dois"
     </div>
     <button class="btn btn-secondary" onclick="pararVoz()">✕ Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL CONTESTAÇÃO -->
+<div id="modal-contestacao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--red);border-radius:14px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--red);margin-bottom:4px;">⚠️ Contestação de Pagamento</div>
+    <div id="contestacao-emp-nome" style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;"></div>
+    <pre id="contestacao-txt" style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:12px;font-size:0.72rem;white-space:pre-wrap;color:var(--text);max-height:320px;overflow-y:auto;margin-bottom:12px;font-family:'Courier New',monospace;line-height:1.5;"></pre>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-whatsapp" style="flex:1;" onclick="enviarContestacaoWpp()">📱 Enviar WhatsApp</button>
+      <button class="btn btn-secondary" onclick="fecharContestacao()">Fechar</button>
+    </div>
   </div>
 </div>
 
