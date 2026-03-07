@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DriveCash 🚗</title>
+<title>DriveCash</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 :root{
@@ -432,7 +432,7 @@ select option{background:var(--card);}
 </div>
 
 <header>
-  <div class="logo">DRIVE<span>CASH</span></div>
+  <div class="logo">DriveCash</div>
   <div class="menu-wrapper">
     <button class="btn-menu" onclick="toggleMenu()">&#8942;</button>
     <div class="dropdown-menu" id="dropdown-menu">
@@ -1298,7 +1298,7 @@ select option{background:var(--card);}
 
     <!-- LOGO -->
     <div style="text-align:center;margin-bottom:28px;">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;">DRIVE<span style="color:var(--green)">CASH</span></div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;">DriveCash</div>
       <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;" id="login-subtitle">Faça login para continuar</div>
     </div>
 
@@ -1406,7 +1406,7 @@ onAuthStateChanged(auth, user => {
     // Mostra loading enquanto carrega dados
     document.getElementById('login-screen').innerHTML = `
       <div style="text-align:center;">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:#ffd700;letter-spacing:2px;margin-bottom:16px;">DRIVE<span style="color:#00ff88">CASH</span></div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:#ffd700;letter-spacing:2px;margin-bottom:16px;">DriveCash</div>
         <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#00ff88;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
         <div style="color:#8b949e;font-size:0.9rem;">Carregando seus dados...</div>
       </div>`;
@@ -1444,7 +1444,7 @@ function _garantirTelaLogin(){
     ls.innerHTML = `
       <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 24px;max-width:360px;width:100%;">
         <div style="text-align:center;margin-bottom:28px;">
-          <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;">DRIVE<span style="color:var(--green)">CASH</span></div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:2px;">DriveCash</div>
           <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;" id="login-subtitle">Faça login para continuar</div>
         </div>
         <div id="form-login">
@@ -3789,7 +3789,7 @@ function gerarWpp(){
   if(rotasEmp.length===0){container.style.display='none';empty.innerHTML='<div class="icon">📭</div>Nenhuma entrega para esta empresa na data';empty.style.display='block';return;}
   const total  =rotasEmp.reduce((s,r)=>s+r.total,0);
   const kmTotal=rotasEmp.reduce((s,r)=>s+(r.km||0),0);
-  let t=`🚗 *FECHAMENTO DRIVECASH*\n📅 Data: ${formatData(data)}\n🏢 Cliente: *${emp.nome}*\n━━━━━━━━━━━━━━━━\n\n`;
+  let t=`🚗 *FECHAMENTO DriveCash*\n📅 Data: ${formatData(data)}\n🏢 Cliente: *${emp.nome}*\n━━━━━━━━━━━━━━━━\n\n`;
   let idx=1;
   rotasEmp.forEach(r=>{
     if(r.multipla && r.entregas){
@@ -4527,7 +4527,7 @@ function gerarWppEmpresa(empId){
     return;
   }
 
-  let txt=`🚗 *FATURAMENTO DRIVECASH*\n🏢 *${emp.nome}*\n`;
+  let txt=`🚗 *FATURAMENTO DriveCash*\n🏢 *${emp.nome}*\n`;
   if(dataIni) txt+=`📅 Período: ${formatData(dataIni)}${dataFim?' → '+formatData(dataFim):''}\n`;
   txt+=`━━━━━━━━━━━━━━━━\n`;
 
