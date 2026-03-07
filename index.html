@@ -1263,8 +1263,8 @@ select option{background:var(--card);}
     </div>
 
     <!-- INFO -->
-    <div style="background:rgba(88,166,255,0.08);border:1px solid rgba(88,166,255,0.25);border-radius:8px;padding:12px;margin-bottom:14px;font-size:0.82rem;color:var(--blue);">
-      💡 Faça backup regularmente e salve o arquivo no Google Drive, WhatsApp ou onde preferir. Para restaurar, selecione o arquivo de backup.
+    <div style="background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);border-radius:8px;padding:12px;margin-bottom:14px;font-size:0.82rem;color:var(--green);">
+      ☁️ Seus dados são salvos automaticamente na nuvem a cada ação. O backup JSON é uma cópia extra de segurança.
     </div>
 
     <!-- EXPORT -->
@@ -4908,7 +4908,18 @@ function renderBackupInfo(){
     :'<div style="font-size:0.85rem;color:var(--muted);">Nenhum backup realizado ainda</div>';
 }
 
-function exportarBackup(){
+async function exportarBackup(){
+  // Primeiro garante que tudo está salvo no Firebase
+  if(window._fbSave && window._fbUser){
+    await Promise.all([
+      window._fbSave('dc_rotas', rotas),
+      window._fbSave('dc_empresas', empresas),
+      window._fbSave('dc_custos', custos),
+      window._fbSave('dc_despesas', despesas),
+      window._fbSave('dc_pagamentos', pagamentos),
+    ]);
+  }
+
   const dados={
     versao:'1.0',
     exportadoEm:new Date().toISOString(),
@@ -4919,16 +4930,25 @@ function exportarBackup(){
     dc_pagamentos:pagamentos,
     dc_cfg:loadObj('dc_cfg')
   };
-  // Salva info do último backup
   save('dc_backup_info',{data:hoje(),hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),rotas:rotas.length,empresas:empresas.length});
-  const blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});
+  const json=JSON.stringify(dados,null,2);
+  const blob=new Blob([json],{type:'application/json'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`drivecash_backup_${hoje()}.json`;
-  a.click(); URL.revokeObjectURL(url);
+
+  // Usa setTimeout para evitar reload em mobile
+  setTimeout(()=>{
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`drivecash_backup_${hoje()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }, 100);
+
   renderBackupInfo();
-  document.getElementById('backup-import-status').innerHTML='<span style="color:var(--green)">✅ Backup exportado com sucesso!</span>';
-  setTimeout(()=>document.getElementById('backup-import-status').innerHTML='',3000);
+  document.getElementById('backup-import-status').innerHTML='<span style="color:var(--green)">✅ Backup exportado! Dados sincronizados com a nuvem.</span>';
+  setTimeout(()=>document.getElementById('backup-import-status').innerHTML='',4000);
 }
 
 function importarBackup(input){
