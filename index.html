@@ -11,33 +11,6 @@
   --green:#00ff88;--gold:#ffd700;--red:#ff4444;--blue:#58a6ff;
   --text:#e6edf3;--muted:#8b949e;--orange:#ff9800;--purple:#b06ee0;
 }
-/* LIGHT MODE */
-body.light-mode{
-  --bg:#f0f2f5;--card:#ffffff;--card2:#e8eaed;--border:#d0d7de;
-  --text:#1a1a2e;--muted:#666e7a;--green:#00a854;--gold:#b8860b;
-  --red:#cc2222;--blue:#1a73e8;--orange:#e65c00;--purple:#7c3aed;
-}
-body.light-mode header{background:#ffffff;border-color:#d0d7de;}
-body.light-mode .logo{color:#1a1a2e;}
-body.light-mode .logo span{color:#00a854;}
-body.light-mode .dropdown-menu{background:#ffffff;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
-body.light-mode input,body.light-mode select,body.light-mode textarea{background:#f8f9fa;color:#1a1a2e;border-color:#d0d7de;}
-body.light-mode .rota-panel{background:#ffffff;border-color:#d0d7de;}
-body.light-mode .preview-box{background:rgba(26,115,232,0.06);border-color:rgba(26,115,232,0.2);color:var(--blue);}
-body.light-mode .entrega-slot{background:#f8f9fa;border-color:#d0d7de;}
-body.light-mode pre{background:#f0f4ff!important;border-color:#ccd!important;color:#1a1a2e!important;}
-body.light-mode .rota-card{background:#ffffff;border-color:#d0d7de;}
-body.light-mode .accordion-header{background:#f0f2f5;}
-body.light-mode .accordion-body{background:#ffffff;}
-body.light-mode .meta-card{background:#ffffff;}
-body.light-mode .card{background:#ffffff;}
-body.light-mode .metric-box,.light-mode .metric-full{background:#ffffff;}
-body.light-mode .feed-section{background:#ffffff;border-color:#d0d7de;}
-body.light-mode .btn-tipo{background:#e8eaed;color:#1a1a2e;border-color:#d0d7de;}
-body.light-mode .btn-tipo.sel-urbano,.light-mode .btn-tipo.sel-viagem{background:#1a73e8;color:#fff;border-color:#1a73e8;}
-/* Theme toggle button */
-.btn-theme{background:transparent;border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin-right:6px;}
-.btn-theme:hover{border-color:var(--gold);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
 
@@ -460,8 +433,6 @@ select option{background:var(--card);}
 
 <header>
   <div class="logo">DRIVE<span>CASH</span></div>
-  <div style="display:flex;align-items:center;gap:0;">
-    <button class="btn-theme" id="btn-theme" onclick="toggleTheme()" title="Alternar tema">☀️</button>
   <div class="menu-wrapper">
     <button class="btn-menu" onclick="toggleMenu()">&#8942;</button>
     <div class="dropdown-menu" id="dropdown-menu">
@@ -474,10 +445,8 @@ select option{background:var(--card);}
       <button class="menu-item" onclick="showPage('despesas')">📊 &nbsp;Despesas &amp; Meta</button>
       <button class="menu-item" onclick="showPage('plano')">⭐ &nbsp;Plano</button>
       <button class="menu-item" onclick="showPage('backup')">☁️ &nbsp;Backup</button>
-      <button class="menu-item" onclick="gerarRelatorioSemanal()">📊 &nbsp;Relatório Semanal</button>
       <button class="menu-item" onclick="fazerLogout()" style="color:var(--red);border-top:1px solid var(--border);margin-top:4px;">🚪 &nbsp;Sair da conta</button>
     </div>
-  </div>
   </div>
 </header>
 <div id="menu-overlay" onclick="fecharMenu()"></div>
@@ -562,9 +531,29 @@ select option{background:var(--card);}
     <div class="meta-batida" id="meta-dia-batida" style="display:none;color:var(--blue);">META DO DIA BATIDA! ☀️🔥</div>
   </div>
 
+  <!-- ===== RESUMO SEMANAL + PREVISÃO ===== -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;">
+    <div class="metric-box" style="border-color:var(--blue);">
+      <div class="metric-label" style="color:var(--blue);">📅 Esta Semana</div>
+      <div class="metric-value" id="m-semana" style="color:var(--blue);font-size:1.1rem;">R$ 0,00</div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:2px;" id="m-semana-vs"></div>
+    </div>
+    <div class="metric-box" style="border-color:var(--gold);">
+      <div class="metric-label" style="color:var(--gold);">🔮 Previsão Mês</div>
+      <div class="metric-value" id="m-previsao" style="color:var(--gold);font-size:1.1rem;">R$ 0,00</div>
+      <div style="font-size:0.68rem;color:var(--muted);margin-top:2px;" id="m-previsao-base"></div>
+    </div>
+  </div>
+
   <!-- ===== PAINEL DE NOVA ROTA — SEMPRE VISÍVEL ===== -->
   <div class="rota-panel">
-    <div class="rota-panel-title">➕ Registrar Rota</div>
+    <div class="rota-panel-title" style="justify-content:space-between;">
+      <span>➕ Registrar Rota</span>
+      <div style="display:flex;gap:6px;">
+        <button onclick="abrirRotaRapida()" style="background:rgba(0,255,136,0.1);border:1px solid var(--green);color:var(--green);border-radius:8px;padding:5px 10px;font-size:0.75rem;cursor:pointer;">⚡ Rápida</button>
+        <button onclick="iniciarVoz()" id="btn-voz" style="background:rgba(255,68,68,0.1);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:5px 10px;font-size:0.75rem;cursor:pointer;">🎙️ Voz</button>
+      </div>
+    </div>
 
     <!-- TIPO -->
     <div class="tipo-rota-row">
@@ -690,13 +679,15 @@ select option{background:var(--card);}
     <!-- TIPO DE GRÁFICO -->
     <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;">📈 Visualização</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;" id="res-grafico-btns">
-      <button class="btn-km-modo active" id="rg-totais"     onclick="setResGrafico('totais')">💰 Totais</button>
-      <button class="btn-km-modo"        id="rg-bairros"    onclick="setResGrafico('bairros')">📍 Bairros</button>
-      <button class="btn-km-modo"        id="rg-empresas"   onclick="setResGrafico('empresas')">🏢 Empresas</button>
-      <button class="btn-km-modo"        id="rg-despesas"   onclick="setResGrafico('despesas')">💸 Despesas</button>
-      <button class="btn-km-modo"        id="rg-semana"     onclick="setResGrafico('semana')">📅 Dias semana</button>
-      <button class="btn-km-modo"        id="rg-evolucao"   onclick="setResGrafico('evolucao')">📈 Evolução</button>
+      <button class="btn-km-modo active" id="rg-totais"      onclick="setResGrafico('totais')">💰 Totais</button>
+      <button class="btn-km-modo"        id="rg-bairros"     onclick="setResGrafico('bairros')">📍 Bairros</button>
+      <button class="btn-km-modo"        id="rg-empresas"    onclick="setResGrafico('empresas')">🏢 Empresas</button>
+      <button class="btn-km-modo"        id="rg-despesas"    onclick="setResGrafico('despesas')">💸 Despesas</button>
+      <button class="btn-km-modo"        id="rg-semana"      onclick="setResGrafico('semana')">📅 Dias semana</button>
+      <button class="btn-km-modo"        id="rg-evolucao"    onclick="setResGrafico('evolucao')">📈 Evolução</button>
       <button class="btn-km-modo"        id="rg-comparativo" onclick="setResGrafico('comparativo')">⚖️ Ganhos vs Despesas</button>
+      <button class="btn-km-modo"        id="rg-meses"       onclick="setResGrafico('meses')">📆 Mês a Mês</button>
+      <button class="btn-km-modo"        id="rg-previsao"    onclick="setResGrafico('previsao')">🔮 Previsão</button>
     </div>
 
     <!-- CANVAS DO GRÁFICO -->
@@ -1656,6 +1647,125 @@ function diasTrabalhoTotalMes(diasSemana,mes,ano){
 }
 
 // ── Calcula e salva a meta diária automática ──────────────────────────────────
+// ============================================================
+// ROTA RÁPIDA
+// ============================================================
+function abrirRotaRapida(){
+  const modal=document.getElementById('modal-rota-rapida');
+  const sel=document.getElementById('rr-empresa');
+  sel.innerHTML='<option value="">Selecionar...</option>'+empresas.map(e=>`<option value="${e.id}">${e.nome}</option>`).join('');
+  document.getElementById('rr-bairro').value='';
+  document.getElementById('rr-valor').value='';
+  document.getElementById('rr-gorjeta').value='';
+  modal.style.display='flex';
+}
+function fecharRotaRapida(){
+  document.getElementById('modal-rota-rapida').style.display='none';
+}
+function salvarRotaRapida(){
+  const empId=document.getElementById('rr-empresa').value;
+  const bairro=document.getElementById('rr-bairro').value.trim()||'Sem bairro';
+  const valor=parseFloat(document.getElementById('rr-valor').value)||0;
+  const gorjeta=parseFloat(document.getElementById('rr-gorjeta').value)||0;
+  if(valor<=0){ alert('Informe o valor!'); return; }
+  const emp=empresas.find(e=>e.id==empId);
+  rotas.push({
+    id:Date.now(), data:hoje(), tipo:'urbano',
+    empId:empId||null, empNome:emp?emp.nome:'Sem empresa',
+    km:0, total:valor+gorjeta, paradas:0, valParada:0,
+    gorjeta, extras:gorjeta, multipla:false,
+    entregas:[{bairro,km:0,taxa:valor,valorUnit:valor,tipo:'urbano'}], obs:''
+  });
+  save('dc_rotas',rotas);
+  fecharRotaRapida();
+  renderDashboard(); renderFeed();
+  atualizarMetaDiaAuto();
+  if(typeof showToast==='function') showToast('✅ Rota salva!');
+}
+
+// ============================================================
+// REGISTRO POR VOZ
+// ============================================================
+let _recognition=null;
+function iniciarVoz(){
+  const SpeechRec=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRec){ alert('Reconhecimento de voz não suportado neste navegador. Use Chrome.'); return; }
+  const modal=document.getElementById('modal-voz');
+  modal.style.display='flex';
+  document.getElementById('voz-status').textContent='Ouvindo...';
+  document.getElementById('voz-texto').textContent='Fale: empresa, bairro e valor';
+  document.getElementById('voz-icone').textContent='🎙️';
+
+  _recognition=new SpeechRec();
+  _recognition.lang='pt-BR';
+  _recognition.continuous=false;
+  _recognition.interimResults=false;
+
+  _recognition.onresult=e=>{
+    const texto=e.results[0][0].transcript;
+    document.getElementById('voz-status').textContent='Processando...';
+    document.getElementById('voz-texto').textContent='"'+texto+'"';
+    processarVoz(texto);
+  };
+  _recognition.onerror=e=>{
+    document.getElementById('voz-status').textContent='Erro: '+e.error;
+    document.getElementById('voz-icone').textContent='❌';
+    setTimeout(()=>pararVoz(),2000);
+  };
+  _recognition.onend=()=>{
+    if(document.getElementById('modal-voz').style.display==='flex'){
+      document.getElementById('voz-icone').textContent='✅';
+    }
+  };
+  _recognition.start();
+}
+
+function pararVoz(){
+  if(_recognition){ try{_recognition.stop();}catch(e){} _recognition=null; }
+  document.getElementById('modal-voz').style.display='none';
+}
+
+function processarVoz(texto){
+  // Extrai valor: "quinze reais", "vinte e dois", "15", "R$ 20"
+  const numPorExtenso={'zero':0,'um':1,'uma':1,'dois':2,'duas':2,'três':3,'quatro':4,'cinco':5,'seis':6,'sete':7,'oito':8,'nove':9,'dez':10,'onze':11,'doze':12,'treze':13,'quatorze':14,'catorze':14,'quinze':15,'dezesseis':16,'dezessete':17,'dezoito':18,'dezenove':19,'vinte':20,'trinta':30,'quarenta':40,'cinquenta':50,'sessenta':60,'setenta':70,'oitenta':80,'noventa':90,'cem':100,'cento':100,'duzentos':200,'trezentos':300,'quatrocentos':400,'quinhentos':500};
+  let valor=0;
+  // Tenta número direto
+  const numMatch=texto.match(/R?\$?\s*(\d+(?:[.,]\d{1,2})?)/);
+  if(numMatch) valor=parseFloat(numMatch[1].replace(',','.'));
+  else {
+    // Tenta por extenso
+    let acc=0, current=0;
+    texto.toLowerCase().split(/\s+/).forEach(w=>{
+      if(numPorExtenso[w]!==undefined){
+        if(numPorExtenso[w]>=100){acc+=current+numPorExtenso[w];current=0;}
+        else if(w==='e'){}
+        else{current+=numPorExtenso[w];}
+      }
+    });
+    valor=acc+current;
+  }
+
+  // Extrai empresa (compara com nomes cadastrados)
+  const textoL=texto.toLowerCase();
+  let empMatch=empresas.find(e=>textoL.includes(e.nome.toLowerCase()));
+
+  // Extrai bairro (palavras que não são empresa nem valor)
+  let bairro='Sem bairro';
+  const partes=texto.split(/[,\.]/);
+  if(partes.length>=2) bairro=partes[1].trim();
+  else bairro=texto.replace(empMatch?.nome||'','').replace(/\d+/g,'').replace(/reais?/gi,'').trim()||'Sem bairro';
+
+  setTimeout(()=>{
+    pararVoz();
+    // Preenche formulário de rota rápida
+    abrirRotaRapida();
+    if(empMatch) document.getElementById('rr-empresa').value=empMatch.id;
+    document.getElementById('rr-bairro').value=bairro;
+    if(valor>0) document.getElementById('rr-valor').value=valor.toFixed(2);
+    if(typeof showToast==='function') showToast('🎙️ Campos preenchidos!');
+  },800);
+}
+
 function calcMetaDiaAuto(){
   const cfg=loadCfg();
   const meta=cfg.meta||0;
@@ -1755,8 +1865,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderDashboard();
   renderFeed();
   initLogin();
-  initTheme();
-  agendarRelatorioSemanal();
   // Inicializa botões dias semana (precisam do DOM pronto)
   setTimeout(()=>{
     renderDiasSemBtns();
@@ -1789,223 +1897,6 @@ function hoje(){
 // ============================================================
 // MENU
 // ============================================================
-// ============================================================
-// TOAST NOTIFICATIONS
-// ============================================================
-function showToast(msg, type='success'){
-  const existing=document.getElementById('dc-toast');
-  if(existing) existing.remove();
-  const t=document.createElement('div');
-  t.id='dc-toast';
-  const bg=type==='error'?'rgba(255,68,68,0.95)':type==='warn'?'rgba(255,152,0,0.95)':'rgba(0,200,100,0.95)';
-  t.style.cssText=`position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:${bg};color:#fff;padding:10px 20px;border-radius:20px;font-size:0.85rem;font-weight:600;z-index:9999;opacity:0;transition:all 0.3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.3);`;
-  t.textContent=msg;
-  document.body.appendChild(t);
-  requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateX(-50%) translateY(0)'; });
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(20px)'; setTimeout(()=>t.remove(),300); },2500);
-}
-
-// ============================================================
-// LIGHT / DARK MODE
-// ============================================================
-function toggleTheme(){
-  const isLight=document.body.classList.toggle('light-mode');
-  localStorage.setItem('dc_theme',isLight?'light':'dark');
-  document.getElementById('btn-theme').textContent=isLight?'🌙':'☀️';
-}
-function initTheme(){
-  const t=localStorage.getItem('dc_theme');
-  if(t==='light'){
-    document.body.classList.add('light-mode');
-    const btn=document.getElementById('btn-theme');
-    if(btn) btn.textContent='🌙';
-  }
-}
-
-// ============================================================
-// CONTESTAÇÃO DE PAGAMENTO
-// ============================================================
-function abrirContestacao(empId){
-  empId=Number(empId);
-  const emp=empresas.find(e=>e.id===empId);
-  if(!emp) return;
-  const {totalRotas,totalPago,saldo}=calcSaldoEmpresa(empId);
-  const rotasEmp=[...rotas].filter(r=>Number(r.empId)===empId).sort((a,b)=>a.data.localeCompare(b.data));
-  const pagsEmp=[...pagamentos].filter(p=>Number(p.empId)===empId).sort((a,b)=>a.data.localeCompare(b.data));
-
-  let txt=`⚠️ *CONTESTAÇÃO DE PAGAMENTO*\n`;
-  txt+=`━━━━━━━━━━━━━━━━━━━━\n`;
-  txt+=`🏢 Empresa: ${emp.nome}\n`;
-  txt+=`📅 Gerado em: ${new Date().toLocaleDateString('pt-BR')}\n`;
-  txt+=`━━━━━━━━━━━━━━━━━━━━\n\n`;
-  txt+=`📦 *ENTREGAS REALIZADAS (${rotasEmp.length})*\n\n`;
-
-  const porData={};
-  rotasEmp.forEach(r=>{ if(!porData[r.data]) porData[r.data]=[]; porData[r.data].push(r); });
-  let idx=1;
-  Object.keys(porData).sort().forEach(data=>{
-    txt+=`📅 ${formatData(data)}\n`;
-    porData[data].forEach(r=>{
-      if(r.multipla&&r.entregas){
-        r.entregas.forEach(e=>{ txt+=`  ${idx++}. ${e.bairro||'—'}${r.horario?` (${r.horario})`:''} — *${fmt(e.valorUnit||0)}*\n`; });
-      } else {
-        const dest=r.entregas&&r.entregas[0]?r.entregas[0].bairro:'—';
-        txt+=`  ${idx++}. ${dest}${r.horario?` (${r.horario})`:''} — *${fmt(r.total)}*\n`;
-      }
-    });
-    txt+=`\n`;
-  });
-
-  txt+=`━━━━━━━━━━━━━━━━━━━━\n`;
-  txt+=`💰 Total entregas: *${fmt(totalRotas)}*\n\n`;
-
-  if(pagsEmp.length>0){
-    txt+=`✅ *PAGAMENTOS RECEBIDOS*\n`;
-    pagsEmp.forEach(p=>{ txt+=`  📅 ${formatData(p.data)} — ${fmt(p.valor)}${p.obs?` (${p.obs})':''}\n`; });
-    txt+=`\n`;
-  }
-  txt+=`💳 Total pago: *${fmt(totalPago)}*\n`;
-  txt+=`🔴 *SALDO EM ABERTO: ${fmt(saldo)}*\n`;
-  txt+=`\n💳 Chave PIX: 47992030653\n`;
-  txt+=`\nAgradeço a regularização! 🙏`;
-
-  // Mostra modal com preview
-  const modal=document.getElementById('modal-contestacao');
-  const pre=document.getElementById('contestacao-txt');
-  const empNome=document.getElementById('contestacao-emp-nome');
-  const empTelData=document.getElementById('contestacao-emp-id');
-  if(modal&&pre){
-    if(empNome) empNome.textContent=emp.nome;
-    if(empTelData) empTelData.value=empId;
-    pre.textContent=txt; pre._txt=txt; pre._empId=empId;
-    modal.style.display='flex';
-  }
-}
-
-function fecharContestacao(){ document.getElementById('modal-contestacao').style.display='none'; }
-
-function enviarContestacaoWpp(){
-  const pre=document.getElementById('contestacao-txt');
-  if(!pre||!pre._txt) return;
-  const empId=Number(pre._empId);
-  const emp=empresas.find(e=>e.id===empId);
-  const txt=pre._txt;
-  if(emp?.tel){
-    window.open(`https://wa.me/55${emp.tel.replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`,'_blank');
-  } else if(navigator.share){
-    navigator.share({text:txt}).catch(()=>{});
-  } else {
-    navigator.clipboard.writeText(txt).then(()=>showToast('📋 Contestação copiada!'));
-  }
-  fecharContestacao();
-}
-
-// ============================================================
-// RELATÓRIO SEMANAL — gera e pode enviar por WhatsApp
-// ============================================================
-function gerarRelatorioSemanal(){
-  const agora=new Date();
-  const diaSem=agora.getDay();
-  // Semana anterior: dom-sab
-  const fimSemAnt=new Date(agora); fimSemAnt.setDate(agora.getDate()-diaSem-1);
-  const iniSemAnt=new Date(fimSemAnt); iniSemAnt.setDate(fimSemAnt.getDate()-6);
-  const fmtD=d=>d.toISOString().slice(0,10);
-  const ini=fmtD(iniSemAnt), fim=fmtD(fimSemAnt);
-
-  const rotasSem=rotas.filter(r=>r.data>=ini&&r.data<=fim);
-  if(rotasSem.length===0){ showToast('Sem rotas na semana anterior','warn'); return; }
-
-  const total=rotasSem.reduce((s,r)=>s+r.total,0);
-  const cfg=loadCfg();
-  const kmSem=rotasSem.reduce((s,r)=>s+(r.km||0),0);
-  const custoComb=cfg.kml>0?(kmSem/cfg.kml)*(cfg.gas||0):0;
-  const custoManut=kmSem*(cfg.manut||0);
-  const lucroSem=total-custoComb-custoManut;
-  const diasTrab=new Set(rotasSem.map(r=>r.data)).size;
-
-  // Por empresa
-  const porEmp={};
-  rotasSem.forEach(r=>{ const k=r.empNome||'Sem empresa'; if(!porEmp[k])porEmp[k]={qtd:0,total:0}; porEmp[k].qtd++; porEmp[k].total+=r.total; });
-
-  const iniStr=iniSemAnt.toLocaleDateString('pt-BR');
-  const fimStr=fimSemAnt.toLocaleDateString('pt-BR');
-
-  let txt=`📊 *RELATÓRIO SEMANAL*\n`;
-  txt+=`📅 ${iniStr} → ${fimStr}\n`;
-  txt+=`🚗 Fonseca Logística\n`;
-  txt+=`━━━━━━━━━━━━━━━━━━━━\n\n`;
-  txt+=`📦 Entregas: *${rotasSem.length}* em *${diasTrab} dias*\n`;
-  txt+=`💰 Ganhos brutos: *${fmt(total)}*\n`;
-  if(kmSem>0){
-    txt+=`📏 KM rodados: *${kmSem}km*\n`;
-    txt+=`⛽ Custo estimado: *${fmt(custoComb+custoManut)}*\n`;
-    txt+=`💎 Lucro líquido: *${fmt(lucroSem)}*\n`;
-  }
-  txt+=`\n🏢 *Por empresa:*\n`;
-  Object.entries(porEmp).sort((a,b)=>b[1].total-a[1].total).forEach(([emp,d])=>{
-    txt+=`  • ${emp}: ${d.qtd} entregas — ${fmt(d.total)}\n`;
-  });
-  txt+=`\n📈 Média/dia: ${fmt(total/diasTrab)}\n`;
-  txt+=`📈 Média/entrega: ${fmt(total/rotasSem.length)}\n`;
-
-  // Mostrar no modal ou compartilhar
-  if(navigator.share){ navigator.share({text:txt}).catch(()=>{}); }
-  else { navigator.clipboard.writeText(txt).then(()=>showToast('📊 Relatório copiado!')); }
-}
-
-// Agenda para toda segunda-feira ao iniciar o app
-function agendarRelatorioSemanal(){
-  const agora=new Date();
-  if(agora.getDay()===1){ // Segunda-feira
-    const jaGerou=localStorage.getItem('dc_rel_sem_'+agora.toISOString().slice(0,10));
-    if(!jaGerou){
-      localStorage.setItem('dc_rel_sem_'+agora.toISOString().slice(0,10),'1');
-      setTimeout(()=>{
-        const rotasSemAnt=getRotasSemanaAnterior();
-        if(rotasSemAnt.length>0) showRelatorioSemanalBanner();
-      },3000);
-    }
-  }
-}
-
-function getRotasSemanaAnterior(){
-  const agora=new Date();
-  const diaSem=agora.getDay();
-  const fimSemAnt=new Date(agora); fimSemAnt.setDate(agora.getDate()-diaSem-1);
-  const iniSemAnt=new Date(fimSemAnt); iniSemAnt.setDate(fimSemAnt.getDate()-6);
-  const ini=iniSemAnt.toISOString().slice(0,10), fim=fimSemAnt.toISOString().slice(0,10);
-  return rotas.filter(r=>r.data>=ini&&r.data<=fim);
-}
-
-function showRelatorioSemanalBanner(){
-  const rotasSem=getRotasSemanaAnterior();
-  const total=rotasSem.reduce((s,r)=>s+r.total,0);
-  const banner=document.createElement('div');
-  banner.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--blue);border-radius:12px;padding:12px 16px;z-index:800;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,0.4);font-size:0.82rem;max-width:340px;width:90%;';
-  banner.innerHTML=`<span>📊 Semana passada: <strong>${fmt(total)}</strong> (${rotasSem.length} entregas)</span>
-    <button onclick="gerarRelatorioSemanal();this.closest('[style]').remove();" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:5px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;white-space:nowrap;">Ver</button>
-    <button onclick="this.closest('[style]').remove()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1rem;">✕</button>`;
-  document.body.appendChild(banner);
-  setTimeout(()=>{ if(banner.parentNode) banner.remove(); },12000);
-}
-
-// ============================================================
-// GOOGLE AGENDA — Adicionar dia de trabalho
-// ============================================================
-function adicionarAoDia(data){
-  const rotasDia=rotas.filter(r=>r.data===data);
-  if(rotasDia.length===0){ showToast('Sem rotas nesta data','warn'); return; }
-  const total=rotasDia.reduce((s,r)=>s+r.total,0);
-  const qtd=rotasDia.length;
-  const empresasDia=[...new Set(rotasDia.map(r=>r.empNome))].join(', ');
-
-  const titulo=encodeURIComponent(`🚗 Trabalho — ${qtd} entregas — ${fmt(total)}`);
-  const detalhes=encodeURIComponent(`Empresas: ${empresasDia}\nTotal: ${fmt(total)}\nEntregas: ${qtd}\n\nRegistrado pelo DriveCash`);
-  const dataGcal=data.replace(/-/g,'');
-  const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&dates=${dataGcal}/${dataGcal}&details=${detalhes}`;
-  window.open(url,'_blank');
-}
-
 function toggleMenu(){
   const open=document.getElementById('dropdown-menu').classList.toggle('open');
   document.getElementById('menu-overlay').classList.toggle('open',open);
@@ -2409,17 +2300,12 @@ function salvarRota(){
     obs: ''
   });
 
-  // Adiciona horário ao registro
-  rotas[rotas.length-1].horario = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-
   save('dc_rotas', rotas);
-  // Vibração ao salvar
-  if(navigator.vibrate) navigator.vibrate([80,30,80]);
   limparTudo();
   renderDashboard();
   renderFeed();
+  // Recalcula meta diária após salvar rota
   atualizarMetaDiaAuto();
-  showToast('✅ Rota salva!');
 }
 
 function limparTudo(){
@@ -2561,6 +2447,36 @@ function renderDashboard(){
   if(faltaDiaTxt){faltaDiaTxt.style.display=batidaDia?'none':'block';faltaDiaTxt.innerHTML=`Faltam <span>${fmt(faltaDia)}</span> · hoje: <span style="color:var(--blue)">${fmt(ganhosHoje)}</span>`;}
   const batidaDiaEl=document.getElementById('meta-dia-batida');
   if(batidaDiaEl) batidaDiaEl.style.display=batidaDia?'block':'none';
+
+  // ── Resumo semanal ─────────────────────────────────────────
+  const agora=new Date();
+  const diaSemana=agora.getDay(); // 0=dom
+  const inicioSemana=new Date(agora); inicioSemana.setDate(agora.getDate()-diaSemana);
+  const inicioSemanaAnterior=new Date(inicioSemana); inicioSemanaAnterior.setDate(inicioSemana.getDate()-7);
+  const fimSemanaAnterior=new Date(inicioSemana); fimSemanaAnterior.setDate(inicioSemana.getDate()-1);
+  const fmtD=d=>d.toISOString().slice(0,10);
+  const ganhosSemana=rotas.filter(r=>r.data>=fmtD(inicioSemana)&&r.data<=hoje()).reduce((s,r)=>s+r.total,0);
+  const ganhosSemAnt=rotas.filter(r=>r.data>=fmtD(inicioSemanaAnterior)&&r.data<=fmtD(fimSemanaAnterior)).reduce((s,r)=>s+r.total,0);
+  const diffSem=ganhosSemana-ganhosSemAnt;
+  const elSemana=document.getElementById('m-semana');
+  const elSemanaVs=document.getElementById('m-semana-vs');
+  if(elSemana) elSemana.textContent=fmt(ganhosSemana);
+  if(elSemanaVs){
+    if(ganhosSemAnt>0) elSemanaVs.innerHTML=`<span style="color:${diffSem>=0?'var(--green)':'var(--red)'}">${diffSem>=0?'▲':'▼'} ${fmt(Math.abs(diffSem))} vs sem. ant.</span>`;
+    else elSemanaVs.textContent='Primeira semana';
+  }
+
+  // ── Previsão mensal ────────────────────────────────────────
+  const diaAtual=agora.getDate();
+  const diasNoMes=new Date(agora.getFullYear(),agora.getMonth()+1,0).getDate();
+  const diasTrabalhados=new Set(rotasMes.map(r=>r.data)).size;
+  const mediaDiaria=diasTrabalhados>0?ganhosMes/diasTrabalhados:0;
+  const diasRestantes=diasNoMes-diaAtual;
+  const previsao=ganhosMes+(mediaDiaria*diasRestantes);
+  const elPrevisao=document.getElementById('m-previsao');
+  const elPrevisaoBase=document.getElementById('m-previsao-base');
+  if(elPrevisao) elPrevisao.textContent=fmt(previsao);
+  if(elPrevisaoBase) elPrevisaoBase.textContent=diasTrabalhados>0?`Média ${fmt(mediaDiaria)}/dia trabalhado`:'Sem dados ainda';
 }
 
 // ============================================================
@@ -2593,7 +2509,7 @@ function renderFeed(){
       <div class="rota-card-top">
         <div class="rota-card-info">
           <div class="rota-card-empresa">${r.empNome}</div>
-          <div class="rota-card-meta">${bairrosResumido||'—'}${r.horario?` · 🕐 ${r.horario}`:''}</div>
+          <div class="rota-card-meta">${bairrosResumido||'—'}</div>
         </div>
         <div class="rota-card-valor">${fmt(r.total)}</div>
       </div>
@@ -2981,6 +2897,58 @@ function renderResGrafico(){
       labels:['Ganhos Brutos','Total Custos','Lucro Est.'],
       datasets:[{data:[ganhos,desp+custoAuto,lucro],backgroundColor:[ganhos>0?'#00ff88':'#ff4444',desp+custoAuto>0?'#ff6666':'#ccc',lucro>0?'#58a6ff':'#ff4444'],borderRadius:6}]
     },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'R$'+v.toFixed(0)}}}}});
+
+  } else if(_resGrafico==='meses'){
+    // Comparativo mês a mês — últimos 6 meses
+    const mesesMap={};
+    const despMap={};
+    rotas.forEach(r=>{ const m=r.data.slice(0,7); mesesMap[m]=(mesesMap[m]||0)+r.total; });
+    despesas.forEach(d=>{ if(d.data){ const m=d.data.slice(0,7); despMap[m]=(despMap[m]||0)+d.valor; }});
+    const sorted=Object.keys(mesesMap).sort().slice(-6);
+    const labels=sorted.map(m=>{ const[y,mo]=m.split('-'); return `${mo}/${y.slice(2)}`; });
+    _resChartInstance=new Chart(ctx,{type:'bar',data:{
+      labels,
+      datasets:[
+        {label:'Ganhos',data:sorted.map(m=>mesesMap[m]||0),backgroundColor:'rgba(0,255,136,0.7)',borderRadius:4},
+        {label:'Despesas',data:sorted.map(m=>despMap[m]||0),backgroundColor:'rgba(255,68,68,0.7)',borderRadius:4},
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}},scales:{y:{ticks:{callback:v=>'R$'+v.toFixed(0)},grid:{color:'rgba(255,255,255,0.06)'}},x:{grid:{display:false}}}}});
+
+  } else if(_resGrafico==='previsao'){
+    // Previsão baseada na média diária do mês atual
+    const mesAtual2=hoje().slice(0,7);
+    const agora2=new Date();
+    const diaAtual2=agora2.getDate();
+    const diasNoMes2=new Date(agora2.getFullYear(),agora2.getMonth()+1,0).getDate();
+    const rotasMes2=rotas.filter(r=>r.data.slice(0,7)===mesAtual2);
+    const ganhosMes2=rotasMes2.reduce((s,r)=>s+r.total,0);
+    const diasTrab2=new Set(rotasMes2.map(r=>r.data)).size;
+    const mediaDia2=diasTrab2>0?ganhosMes2/diasTrab2:0;
+    const previsao2=ganhosMes2+mediaDia2*(diasNoMes2-diaAtual2);
+    const meta2=cfg.meta||0;
+    const diasRestantes2=diasNoMes2-diaAtual2;
+    // Gráfico de linha simulando projeção
+    const labels2=[];
+    const realData=[];
+    const projecaoData=[];
+    // Ganhos acumulados por dia
+    const porDia={};
+    rotasMes2.forEach(r=>{ porDia[r.data]=(porDia[r.data]||0)+r.total; });
+    let acum=0;
+    for(let d=1;d<=diasNoMes2;d++){
+      const dataStr=`${mesAtual2}-${String(d).padStart(2,'0')}`;
+      labels2.push(d);
+      if(d<=diaAtual2){ acum+=(porDia[dataStr]||0); realData.push(acum); projecaoData.push(null); }
+      else{ realData.push(null); acum+=mediaDia2; projecaoData.push(acum); }
+    }
+    _resChartInstance=new Chart(ctx,{type:'line',data:{
+      labels:labels2,
+      datasets:[
+        {label:'Real',data:realData,borderColor:'#00ff88',backgroundColor:'rgba(0,255,136,0.1)',fill:true,tension:0.3,pointRadius:2,spanGaps:false},
+        {label:'Projeção',data:projecaoData,borderColor:'#58a6ff',borderDash:[5,5],backgroundColor:'rgba(88,166,255,0.05)',fill:true,tension:0.3,pointRadius:0,spanGaps:false},
+        ...(meta2>0?[{label:'Meta',data:Array(diasNoMes2).fill(meta2),borderColor:'#ffd700',borderDash:[3,3],pointRadius:0,fill:false}]:[])
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw||0)}`}}},scales:{y:{ticks:{callback:v=>'R$'+v.toFixed(0)},grid:{color:'rgba(255,255,255,0.06)'}},x:{grid:{display:false}}}}});
   }
 }
 
@@ -3320,7 +3288,6 @@ function renderHistorico(){
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
           <div style="text-align:right;">${totalLabel}</div>
-          <button onclick="event.stopPropagation();adicionarAoDia('${data}')" style="background:rgba(66,133,244,0.15);border:1px solid #4285f4;color:#4285f4;border-radius:6px;padding:3px 7px;font-size:0.65rem;cursor:pointer;white-space:nowrap;" title="Adicionar ao Google Agenda">📅</button>
           <span class="hist3-dia-chev" id="chev-${diaId}">▼</span>
         </div>
       </div>
@@ -4781,7 +4748,6 @@ function renderFinanceiro(){
           <div style="display:flex;gap:8px;margin-top:8px;">
             <button class="btn btn-primary" style="flex:1;" onclick="registrarPagamento(${emp.id})">✅ Confirmar Pagamento</button>
             ${emp.tel?`<button class="btn btn-whatsapp" onclick="cobrarWpp(${emp.id})">📲 Cobrar</button>`:''}
-            <button class="btn btn-secondary" style="font-size:0.78rem;" onclick="abrirContestacao(${emp.id})">⚠️ Contestar</button>
           </div>
         </div>`:''}
       </div>
@@ -5285,17 +5251,33 @@ function fazerLogout(){
   </div>
 </div>
 
-<!-- MODAL CONTESTAÇÃO -->
-<div id="modal-contestacao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9000;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--card);border:1px solid var(--red);border-radius:14px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;">
-    <div style="font-size:0.85rem;font-weight:700;color:var(--red);margin-bottom:4px;">⚠️ Contestação de Pagamento</div>
-    <div id="contestacao-emp-nome" style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;"></div>
-    <input type="hidden" id="contestacao-emp-id">
-    <pre id="contestacao-txt" style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:12px;font-size:0.72rem;white-space:pre-wrap;color:var(--text);max-height:320px;overflow-y:auto;margin-bottom:12px;font-family:'Courier New',monospace;line-height:1.5;"></pre>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-whatsapp" style="flex:1;" onclick="enviarContestacaoWpp()">📱 Enviar WhatsApp</button>
-      <button class="btn btn-secondary" onclick="fecharContestacao()">Fechar</button>
+<!-- MODAL ROTA RÁPIDA -->
+<div id="modal-rota-rapida" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--green);border-radius:14px;padding:20px;width:100%;max-width:400px;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--green);margin-bottom:14px;">⚡ Rota Rápida</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="field"><label>Empresa</label><select id="rr-empresa"></select></div>
+      <div class="field"><label>Bairro / Destino</label><input type="text" id="rr-bairro" placeholder="Ex: Centro"></div>
+      <div class="field"><label>Valor R$</label><input type="number" id="rr-valor" placeholder="0,00" min="0" step="0.01"></div>
+      <div class="field"><label>Gorjeta R$ <span style="color:var(--muted);font-size:0.7rem;">(opcional)</span></label><input type="number" id="rr-gorjeta" placeholder="0,00" min="0" step="0.01"></div>
     </div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="salvarRotaRapida()">✅ Salvar</button>
+      <button class="btn btn-secondary" onclick="fecharRotaRapida()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VOZ -->
+<div id="modal-voz" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9001;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--red);border-radius:14px;padding:24px;width:100%;max-width:400px;text-align:center;">
+    <div id="voz-icone" style="font-size:3rem;margin-bottom:10px;">🎙️</div>
+    <div style="font-size:0.9rem;font-weight:700;color:var(--red);margin-bottom:8px;" id="voz-status">Ouvindo...</div>
+    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;" id="voz-texto">Fale: empresa, bairro e valor</div>
+    <div style="font-size:0.7rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:10px;margin-bottom:16px;text-align:left;">
+      💡 Exemplos:<br>"iFood, Centro, quinze reais"<br>"Rappi, Kobrasol, vinte e dois"
+    </div>
+    <button class="btn btn-secondary" onclick="pararVoz()">✕ Cancelar</button>
   </div>
 </div>
 
