@@ -439,6 +439,7 @@ select option{background:var(--card);}
       <button class="menu-item" id="menu-item-resumos" onclick="isPro()?showPage('resumos'):alert('📊 Resumos e Gráficos disponíveis apenas no Plano Pro!\n\nAcesse ⭐ Plano para fazer upgrade.')">📊 &nbsp;Resumos</button>
       <button class="menu-item" onclick="showPage('historico')">📋 &nbsp;Histórico</button>
       <button class="menu-item" onclick="showPage('financeiro')">💰 &nbsp;Financeiro</button>
+      <button class="menu-item" onclick="showPage('orcamento')">📋 &nbsp;Orçamento</button>
       <button class="menu-item" onclick="showPage('retroativo')">🕐 &nbsp;Lançamento Retroativo</button>
       <button class="menu-item" onclick="showPage('empresas')">🏢 &nbsp;Empresas</button>
       <button class="menu-item" onclick="showPage('despesas')">📊 &nbsp;Despesas &amp; Meta</button>
@@ -1103,6 +1104,57 @@ select option{background:var(--card);}
 <!-- ==================== CONFIGURAÇÕES (mantida para compatibilidade) ==================== -->
 <div id="page-configuracoes" class="page" style="display:none;"></div>
 <!-- ==================== WHATSAPP (mantida para compatibilidade) ==================== -->
+<div id="page-orcamento" class="page">
+  <div class="card">
+    <div class="painel-header" style="margin-bottom:14px;">
+      <div class="section-title">📋 Orçamento de Entrega</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+
+    <!-- Empresa (sempre presente) -->
+    <div class="field" style="margin-bottom:10px;">
+      <label>Empresa</label>
+      <select id="orc-empresa">
+        <option value="">Selecione a empresa...</option>
+      </select>
+    </div>
+
+    <!-- Campos dinâmicos -->
+    <div id="orc-campos" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+
+    <!-- Adicionar campo -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:flex-end;">
+      <div class="field" style="flex:1;margin:0;">
+        <label>Adicionar campo</label>
+        <select id="orc-add-tipo">
+          <option value="texto">Texto livre</option>
+          <option value="numero">Número</option>
+          <option value="moeda">Valor R$</option>
+        </select>
+      </div>
+      <div class="field" style="flex:2;margin:0;">
+        <label>Nome do campo</label>
+        <input type="text" id="orc-add-nome" placeholder="Ex: Endereço, Prazo, KM...">
+      </div>
+      <button class="btn btn-secondary" style="margin-bottom:1px;" onclick="adicionarCampoOrc()">+ Adicionar</button>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="gerarOrcamento()">📋 Gerar Orçamento</button>
+      <button class="btn btn-secondary" onclick="salvarModeloOrc()" title="Salvar campos como modelo padrão">💾 Salvar modelo</button>
+    </div>
+
+    <div id="orc-preview-container" style="display:none;margin-top:14px;">
+      <pre id="orc-preview" style="background:#1a2730;border:1px solid #2d4a3e;border-radius:8px;padding:12px;font-size:0.75rem;white-space:pre-wrap;color:#e0ffe8;max-height:280px;overflow-y:auto;margin-bottom:10px;"></pre>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-whatsapp" onclick="enviarOrcamentoWpp()">📱 Enviar WhatsApp</button>
+        <button class="btn btn-secondary" onclick="copiarOrcamento()">📋 Copiar</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('orc-preview-container').style.display='none'">✕ Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="page-whatsapp" class="page" style="display:none;"></div>
 
 <!-- ==================== PLANO / ASSINATURA ==================== -->
@@ -1730,6 +1782,7 @@ function showPage(p){
   if(p==='empresas')   renderEmpresas();
   if(p==='custos')     renderCustos();
   if(p==='financeiro') renderFinanceiro();
+  if(p==='orcamento')  renderOrcamento();
   if(p==='despesas')   { renderDespesas(); loadCfgToForm(); setTimeout(renderGraficos,100); }
   if(p==='backup')     renderBackupInfo();
   if(p==='resumos')    initResumos();
@@ -2772,6 +2825,41 @@ async function deletarPagamento(id){
   save('dc_pagamentos',pagamentos);
   renderFinanceiro();
 }
+
+function editarPagamento(id){
+  id=Number(id);
+  const p=pagamentos.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('modal-pag-valor').value=p.valor;
+  document.getElementById('modal-pag-data').value=p.data;
+  document.getElementById('modal-pag-obs').value=p.obs||'';
+  const modal=document.getElementById('modal-edit-pag');
+  modal._editId=id;
+  modal.style.display='flex';
+}
+
+function fecharModalPag(){
+  document.getElementById('modal-edit-pag').style.display='none';
+}
+
+function confirmarEdicaoPagamento(){
+  const modal=document.getElementById('modal-edit-pag');
+  const id=Number(modal._editId);
+  const valor=parseFloat(document.getElementById('modal-pag-valor').value)||0;
+  const data=document.getElementById('modal-pag-data').value||hoje();
+  const obs=document.getElementById('modal-pag-obs').value.trim()||'';
+  if(valor<=0){ alert('Informe o valor!'); return; }
+  const idx=pagamentos.findIndex(p=>p.id===id);
+  if(idx>=0){ pagamentos[idx]={...pagamentos[idx],valor,data,obs}; }
+  save('dc_pagamentos',pagamentos);
+  fecharModalPag();
+  renderFinanceiro();
+}
+
+function salvarEdicaoPagamento(id){
+  // mantida por compatibilidade — redireciona para modal
+  editarPagamento(id);
+}
 async function deletarDespesa(id){
   id=Number(id);
   if(!await confirmar('Excluir esta despesa?')) return;
@@ -3477,26 +3565,41 @@ function gerarWpp(){
   const rotasEmp=rotas.filter(r=>r.data===data&&r.empId==empId);
   if(rotasEmp.length===0){container.style.display='none';empty.innerHTML='<div class="icon">📭</div>Nenhuma entrega para esta empresa na data';empty.style.display='block';return;}
   const total  =rotasEmp.reduce((s,r)=>s+r.total,0);
-  const kmTotal=rotasEmp.reduce((s,r)=>s+r.km,0);
+  const kmTotal=rotasEmp.reduce((s,r)=>s+(r.km||0),0);
   let t=`🚗 *FECHAMENTO DRIVECASH*\n📅 Data: ${formatData(data)}\n🏢 Cliente: *${emp.nome}*\n━━━━━━━━━━━━━━━━\n\n`;
   let idx=1;
   rotasEmp.forEach(r=>{
     if(r.multipla && r.entregas){
       r.entregas.forEach(e=>{
         t+=`📦 *Entrega ${idx++}*\n`;
-        t+=`   Destino: ${e.bairro||'—'}\n`;
-        t+=`   KM: ${e.km} km\n`;
-        t+=`   💰 Valor: *${fmt(e.valorUnit)}*\n\n`;
+        if(e.bairro)       t+=`   📍 Bairro: ${e.bairro}\n`;
+        if(e.endereco)     t+=`   🏠 Endereço: ${e.endereco}\n`;
+        if(e.destinatario) t+=`   👤 Destinatário: ${e.destinatario}\n`;
+        if(e.km)           t+=`   📏 KM: ${e.km} km\n`;
+        t+=`   💰 Valor: *${fmt(e.valorUnit||0)}*\n`;
+        if(e.obs)          t+=`   💬 Obs: ${e.obs}\n`;
+        t+=`\n`;
       });
-      if(r.gorjeta>0) t+=`🎁 Gorjeta: ${fmt(r.gorjeta)}\n`;
+      if(r.gorjeta>0) t+=`🎁 Gorjeta: ${fmt(r.gorjeta)}\n\n`;
     } else {
+      const e=r.entregas&&r.entregas[0]?r.entregas[0]:{};
       t+=`📦 *Entrega ${idx++}*\n`;
-      if(r.entregas&&r.entregas[0]) t+=`   Destino: ${r.entregas[0].bairro||'—'}\n   KM: ${r.km} km\n`;
-      if(r.gorjeta>0) t+=`   Gorjeta: ${fmt(r.gorjeta)}\n`;
-      t+=`   💰 Valor: *${fmt(r.total)}*\n\n`;
+      if(emp.nome)         t+=`   🏢 Empresa: ${emp.nome}\n`;
+      if(e.bairro)         t+=`   📍 Bairro: ${e.bairro}\n`;
+      if(e.endereco)       t+=`   🏠 Endereço: ${e.endereco}\n`;
+      if(e.destinatario)   t+=`   👤 Destinatário: ${e.destinatario}\n`;
+      if(r.km)             t+=`   📏 KM: ${r.km} km\n`;
+      t+=`   💰 Valor: *${fmt(r.total)}*\n`;
+      if(r.gorjeta>0)      t+=`   🎁 Gorjeta: ${fmt(r.gorjeta)}\n`;
+      if(e.obs)            t+=`   💬 Obs: ${e.obs}\n`;
+      t+=`\n`;
     }
   });
-  t+=`━━━━━━━━━━━━━━━━\n📏 KM Total: ${kmTotal} km\n✅ *TOTAL: ${fmt(total)}*\n\nObrigado pela parceria! 🤝`;
+  t+=`━━━━━━━━━━━━━━━━\n`;
+  if(kmTotal>0) t+=`📏 KM Total: ${kmTotal} km\n`;
+  t+=`✅ *TOTAL: ${fmt(total)}*\n`;
+  t+=`\n💳 *Chave PIX:* 47992030653\n`;
+  t+=`\nObrigado pela parceria! 🤝`;
   document.getElementById('wpp-preview').textContent=t;
   container.style.display='block'; empty.style.display='none';
 }
@@ -4239,6 +4342,7 @@ function gerarWppEmpresa(empId){
   if(saldoAnterior>0) txt+=`⚠️ Saldo anterior: *${fmt(saldoAnterior)}*\n`;
   if(rotasNovas.length>0) txt+=`📦 Novas entregas: *${fmt(totalNovas)}*\n`;
   txt+=`💰 *TOTAL A RECEBER: ${fmt(totalGeral)}*\n`;
+  txt+=`\n💳 *Chave PIX:* 47992030653\n`;
   txt+=`\nObrigado pela parceria! 🤝`;
 
   prev.innerHTML=`<pre id="wpp-txt-${empId}" style="background:#1a2730;border:1px solid #2d4a3e;border-radius:8px;padding:12px;font-size:0.75rem;white-space:pre-wrap;color:#e0ffe8;max-height:240px;overflow-y:auto;margin-bottom:10px;">${txt.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
@@ -4447,16 +4551,18 @@ function renderFinanceiro(){
           ${pagEmp.length>0 ? `
             <div class="fin-pag-lista">
               ${pagEmp.map(p=>`
-                <div class="fin-pag-item">
+                <div class="fin-pag-item" onclick="editarPagamento(${p.id})" style="cursor:pointer;" title="Toque para editar">
                   <div class="fin-pag-left">
                     <div class="fin-pag-data">📅 ${formatData(p.data)}</div>
                     ${p.obs?`<div class="fin-pag-obs">💬 ${p.obs}</div>`:''}
                   </div>
-                  <div style="display:flex;align-items:center;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:6px;">
                     <span class="fin-pag-valor">+${fmt(p.valor)}</span>
-                    <button onclick="deletarPagamento(${p.id})" style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:0.9rem;padding:2px 5px;">✕</button>
+                    <span style="font-size:0.7rem;color:var(--muted);">✏️</span>
+                    <button onclick="event.stopPropagation();deletarPagamento(${p.id})" style="background:transparent;border:none;color:var(--red);cursor:pointer;font-size:0.9rem;padding:2px 5px;">✕</button>
                   </div>
-                </div>`).join('')}
+                </div>
+                <div id="pag-edit-${p.id}"></div>`).join('')}
               <div class="fin-pag-total-box">
                 <span class="fin-pag-total-label">Total Recebido</span>
                 <span class="fin-pag-total-val">${fmt(totalPago)}</span>
@@ -4491,30 +4597,32 @@ function renderGraficos(){
   const ctx=document.getElementById('grafico-canvas').getContext('2d');
   const cfg=loadCfg();
   Chart.defaults.color='#8b949e';
+  const mesAtual=hoje().slice(0,7);
 
   if(graficoAtual==='pizza'){
-    // Despesas por categoria
+    // Despesas por categoria — APENAS MÊS ATUAL
     const cats={};
-    despesas.forEach(d=>{ cats[d.cat]=(cats[d.cat]||0)+d.valor; });
-    const totalKm=rotas.reduce((s,r)=>s+r.km,0);
-    const gasCalc=cfg.kml>0?(totalKm/cfg.kml)*cfg.gas:0;
-    const manutCalc=totalKm*cfg.manut;
+    despesas.filter(d=>d.data&&d.data.slice(0,7)===mesAtual).forEach(d=>{ cats[d.cat]=(cats[d.cat]||0)+d.valor; });
+    const kmDiasData=loadKmDias();
+    const kmOdoMes=Object.entries(kmDiasData).filter(([d])=>d.startsWith(mesAtual)).reduce((s,[,v])=>s+(v.total||0),0);
+    const rotasMes=rotas.filter(r=>r.data.slice(0,7)===mesAtual);
+    const kmRotasMes=rotasMes.reduce((s,r)=>s+(r.km||0),0);
+    const kmMes=kmOdoMes>0?kmOdoMes:kmRotasMes;
+    const gasCalc=cfg.kml>0?(kmMes/cfg.kml)*cfg.gas:0;
+    const manutCalc=kmMes*(cfg.manut||0);
     if(gasCalc>0) cats['Combustível (Auto)']=(cats['Combustível (Auto)']||0)+gasCalc;
     if(manutCalc>0) cats['Manutenção (Auto)']=(cats['Manutenção (Auto)']||0)+manutCalc;
     const labels=Object.keys(cats);
     const data=Object.values(cats);
-    if(data.length===0){document.getElementById('grafico-container').innerHTML='<div class="empty-state" style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="icon">📊</div>Sem despesas registradas</div>';return;}
+    if(data.length===0){document.getElementById('grafico-container').innerHTML='<div class="empty-state" style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div class="icon">📊</div>Sem despesas no mês atual</div>';return;}
     document.getElementById('grafico-container').innerHTML='<canvas id="grafico-canvas"></canvas>';
     const ctx2=document.getElementById('grafico-canvas').getContext('2d');
     const colors=['#ff4444','#ff9800','#ffd700','#58a6ff','#b06ee0','#00ff88','#00cfff','#ff6b9d'];
     chartInstance=new Chart(ctx2,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors.slice(0,labels.length),borderColor:'#161b22',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)}`}}}}});
-    // Legenda manual
     document.getElementById('grafico-legenda').innerHTML=labels.map((l,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;margin:3px 6px 3px 0;font-size:0.75rem;"><span style="width:10px;height:10px;border-radius:50%;background:${colors[i]||'#aaa'};display:inline-block;"></span>${l}: ${fmt(data[i])}</span>`).join('');
 
-    // ── Editar nomes de categoria das despesas reais ──────────
     const catsEdit=document.getElementById('grafico-cats-editar');
     if(catsEdit){
-      // Só despesas reais do usuário (não as automáticas)
       const despCats=[...new Set(despesas.map(d=>d.cat||'Outros'))];
       if(despCats.length>0){
         catsEdit.innerHTML=`
@@ -4528,18 +4636,13 @@ function renderGraficos(){
                 💾 OK
               </button>
             </div>`).join('')}`;
-      } else {
-        catsEdit.innerHTML='';
-      }
+      } else { catsEdit.innerHTML=''; }
     }
 
   } else if(graficoAtual==='barras'){
     // Ganhos por mês (últimos 6 meses)
     const meses={};
-    rotas.forEach(r=>{
-      const m=r.data.substring(0,7);
-      meses[m]=(meses[m]||0)+r.total;
-    });
+    rotas.forEach(r=>{ const m=r.data.substring(0,7); meses[m]=(meses[m]||0)+r.total; });
     const sorted=Object.keys(meses).sort().slice(-6);
     const labels=sorted.map(m=>{const[y,mo]=m.split('-');return `${mo}/${y.slice(2)}`});
     const data=sorted.map(m=>meses[m]||0);
@@ -4549,12 +4652,16 @@ function renderGraficos(){
     document.getElementById('grafico-legenda').innerHTML='';
 
   } else if(graficoAtual==='meta'){
-    // Gauge-like: lucro vs meta
-    const totalBruto=rotas.reduce((s,r)=>s+r.total,0);
-    const totalKm=rotas.reduce((s,r)=>s+r.km,0);
-    const gasCalc=cfg.kml>0?(totalKm/cfg.kml)*cfg.gas:0;
-    const manutCalc=totalKm*cfg.manut;
-    const totalDesp=despesas.reduce((s,d)=>s+d.valor,0);
+    // Meta vs Lucro — APENAS MÊS ATUAL
+    const rotasMes=rotas.filter(r=>r.data.slice(0,7)===mesAtual);
+    const totalBruto=rotasMes.reduce((s,r)=>s+r.total,0);
+    const kmDiasData=loadKmDias();
+    const kmOdoMes=Object.entries(kmDiasData).filter(([d])=>d.startsWith(mesAtual)).reduce((s,[,v])=>s+(v.total||0),0);
+    const kmRotasMes=rotasMes.reduce((s,r)=>s+(r.km||0),0);
+    const kmMes=kmOdoMes>0?kmOdoMes:kmRotasMes;
+    const gasCalc=cfg.kml>0?(kmMes/cfg.kml)*cfg.gas:0;
+    const manutCalc=kmMes*(cfg.manut||0);
+    const totalDesp=despesas.filter(d=>d.data&&d.data.slice(0,7)===mesAtual).reduce((s,d)=>s+d.valor,0);
     const caixa=gasCalc+manutCalc+totalDesp;
     const lucro=Math.max(totalBruto-caixa,0);
     const meta=cfg.meta||1;
@@ -4564,11 +4671,130 @@ function renderGraficos(){
     chartInstance=new Chart(ctx2,{type:'doughnut',data:{labels:['Lucro Atual','Faltando'],datasets:[{data:[Math.min(lucro,meta),falta],backgroundColor:[lucro>=meta?'#ffd700':'#00ff88','rgba(255,255,255,0.07)'],borderColor:['#161b22','#161b22'],borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)}`}}}}});
     document.getElementById('grafico-legenda').innerHTML=`
       <div style="text-align:center;">
+        <div style="font-size:0.68rem;color:var(--muted);margin-bottom:4px;">Mês atual</div>
         <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:${lucro>=meta?'var(--gold)':'var(--green)'};">${Math.min(lucro/meta*100,100).toFixed(0)}%</div>
         <div style="font-size:0.78rem;color:var(--muted);">Lucro ${fmt(lucro)} de ${fmt(meta)} meta</div>
         ${falta>0?`<div style="font-size:0.75rem;color:var(--muted);margin-top:2px;">Faltam ${fmt(falta)}</div>`:'<div style="font-size:0.8rem;color:var(--gold);font-weight:700;">META BATIDA! 🔥</div>'}
       </div>`;
   }
+}
+
+// ============================================================
+// ORÇAMENTO DE ENTREGA — Campos personalizáveis
+// ============================================================
+let orcCampos = [];
+
+function renderOrcamento(){
+  const sel=document.getElementById('orc-empresa');
+  if(!sel) return;
+  sel.innerHTML='<option value="">Selecione a empresa...</option>'+
+    empresas.map(e=>`<option value="${e.id}">${e.nome}</option>`).join('');
+  // Carrega modelo salvo ou campos padrão
+  const modelo=loadObj('dc_orc_modelo');
+  if(modelo && modelo.length>0) orcCampos=[...modelo];
+  else if(orcCampos.length===0) orcCampos=[
+    {id:1,nome:'Endereço de coleta',tipo:'texto'},
+    {id:2,nome:'Endereço de entrega',tipo:'texto'},
+    {id:3,nome:'Valor R$',tipo:'moeda'},
+  ];
+  renderCamposOrc();
+}
+
+function renderCamposOrc(){
+  const container=document.getElementById('orc-campos');
+  if(!container) return;
+  container.innerHTML=orcCampos.map((c,i)=>`
+    <div style="display:flex;gap:8px;align-items:flex-end;">
+      <div class="field" style="flex:1;margin:0;">
+        <label style="display:flex;justify-content:space-between;align-items:center;">
+          <span>${c.nome}</span>
+          <span style="font-size:0.65rem;color:var(--muted);">${c.tipo==='moeda'?'R$':c.tipo==='numero'?'#':'txt'}</span>
+        </label>
+        <input type="${c.tipo==='texto'?'text':'number'}"
+          id="orc-campo-${c.id}"
+          ${c.tipo==='moeda'?'step="0.01" min="0"':''}
+          ${c.tipo==='numero'?'step="0.1" min="0"':''}
+          placeholder="${c.tipo==='moeda'?'0,00':c.tipo==='numero'?'0':c.nome}">
+      </div>
+      <button onclick="removerCampoOrc(${i})" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--red);cursor:pointer;padding:8px 10px;margin-bottom:1px;">✕</button>
+    </div>`).join('');
+}
+
+function adicionarCampoOrc(){
+  const nome=document.getElementById('orc-add-nome').value.trim();
+  const tipo=document.getElementById('orc-add-tipo').value;
+  if(!nome){ alert('Digite o nome do campo!'); return; }
+  orcCampos.push({id:Date.now(),nome,tipo});
+  document.getElementById('orc-add-nome').value='';
+  renderCamposOrc();
+}
+
+function removerCampoOrc(idx){
+  orcCampos.splice(idx,1);
+  renderCamposOrc();
+}
+
+function salvarModeloOrc(){
+  save('dc_orc_modelo',orcCampos);
+  alert('✅ Modelo salvo! Esses campos serão lembrados.');
+}
+
+function gerarOrcamento(){
+  const empId=document.getElementById('orc-empresa').value;
+  const emp=empresas.find(e=>e.id==empId);
+  const agora=new Date();
+  const dataFmt=agora.toLocaleDateString('pt-BR');
+  const horaFmt=agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+  let t=`📋 *ORÇAMENTO DE ENTREGA*\n`;
+  t+=`🚗 DriveCash — ${dataFmt} às ${horaFmt}\n`;
+  t+=`━━━━━━━━━━━━━━━━\n\n`;
+  if(emp) t+=`🏢 *Empresa:* ${emp.nome}\n`;
+
+  let temValor=false;
+  orcCampos.forEach(c=>{
+    const el=document.getElementById(`orc-campo-${c.id}`);
+    const val=el?el.value.trim():'';
+    if(!val) return;
+    if(c.tipo==='moeda'){
+      const n=parseFloat(val);
+      if(n>0){ t+=`💰 *${c.nome}:* R$ ${n.toFixed(2).replace('.',',')}\n`; temValor=true; }
+    } else if(c.tipo==='numero'){
+      t+=`📏 *${c.nome}:* ${val}\n`;
+    } else {
+      t+=`📍 *${c.nome}:* ${val}\n`;
+    }
+  });
+
+  t+=`\n━━━━━━━━━━━━━━━━\n`;
+  t+=`💳 *Chave PIX:* 47992030653\n`;
+  t+=`\nAguardo sua confirmação! 🤝`;
+
+  document.getElementById('orc-preview').textContent=t;
+  const cont=document.getElementById('orc-preview-container');
+  cont.style.display='block';
+  cont._txt=t;
+  cont._empId=empId;
+}
+
+function enviarOrcamentoWpp(){
+  const container=document.getElementById('orc-preview-container');
+  const empId=container._empId;
+  const txt=container._txt||'';
+  const emp=empresas.find(e=>e.id==empId);
+  if(!emp?.tel){ alert('Cadastre o telefone desta empresa para enviar pelo WhatsApp!'); return; }
+  window.open(`https://wa.me/55${emp.tel.replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`,'_blank');
+}
+
+function copiarOrcamento(){
+  const txt=document.getElementById('orc-preview-container')._txt||'';
+  navigator.clipboard.writeText(txt).then(()=>alert('✅ Orçamento copiado!'));
+}
+
+function limparOrcamento(){
+  orcCampos.forEach(c=>{ const el=document.getElementById(`orc-campo-${c.id}`); if(el) el.value=''; });
+  document.getElementById('orc-empresa').value='';
+  document.getElementById('orc-preview-container').style.display='none';
 }
 
 // ============================================================
@@ -4783,5 +5009,24 @@ function fazerLogout(){
   }
 }
 </script>
+<!-- MODAL EDITAR PAGAMENTO -->
+<div id="modal-edit-pag" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;width:100%;max-width:400px;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:14px;">✏️ Editar Pagamento</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="field"><label>Valor R$</label>
+        <input type="number" id="modal-pag-valor" min="0" step="0.01"></div>
+      <div class="field"><label>Data</label>
+        <input type="date" id="modal-pag-data"></div>
+      <div class="field"><label>Observação</label>
+        <input type="text" id="modal-pag-obs" placeholder="Pix, dinheiro..."></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="confirmarEdicaoPagamento()">💾 Salvar</button>
+      <button class="btn btn-secondary" onclick="fecharModalPag()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
