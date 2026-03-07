@@ -4630,15 +4630,30 @@ function gerarWppEmpresa(empId){
       txt+=`📅 *${formatData(data)}*\n`;
       porData[data].forEach(r=>{
         if(r.multipla&&r.entregas){
-          r.entregas.forEach(e=>{ txt+=`  📦 ${idx++}. ${e.bairro||'—'} — *${fmt(e.valorUnit||0)}*\n`; });
+          r.entregas.forEach(e=>{
+            txt+=`  📦 *Entrega ${idx++}*${r.horario?' · 🕐 '+r.horario:''}\n`;
+            if(e.bairro)         txt+=`     📍 Bairro: ${e.bairro}\n`;
+            if(e.endereco)       txt+=`     🏠 Endereço: ${e.endereco}\n`;
+            if(e.destinatario)   txt+=`     👤 Destinatário: ${e.destinatario}\n`;
+            if(e.km)             txt+=`     📏 KM: ${e.km} km\n`;
+            if(e.obs)            txt+=`     💬 Obs: ${e.obs}\n`;
+            txt+=`     💰 Valor: *${fmt(e.valorUnit||0)}*\n`;
+          });
         } else {
-          const dest=r.entregas&&r.entregas[0]?r.entregas[0].bairro:'—';
-          txt+=`  📦 ${idx++}. ${dest} — *${fmt(r.total)}*\n`;
+          const e=r.entregas&&r.entregas[0]?r.entregas[0]:{};
+          txt+=`  📦 *Entrega ${idx++}*${r.horario?' · 🕐 '+r.horario:''}\n`;
+          if(e.bairro)         txt+=`     📍 Bairro: ${e.bairro}\n`;
+          if(e.endereco)       txt+=`     🏠 Endereço: ${e.endereco}\n`;
+          if(e.destinatario)   txt+=`     👤 Destinatário: ${e.destinatario}\n`;
+          if(r.km)             txt+=`     📏 KM: ${r.km} km\n`;
+          if(e.obs||r.obs)     txt+=`     💬 Obs: ${e.obs||r.obs}\n`;
+          txt+=`     💰 Valor: *${fmt(r.total)}*\n`;
         }
-        if(r.gorjeta>0) txt+=`     🎁 gorjeta: ${fmt(r.gorjeta)}\n`;
+        if(r.gorjeta>0) txt+=`     🎁 Gorjeta: ${fmt(r.gorjeta)}\n`;
+        txt+=`\n`;
       });
       const sub=porData[data].reduce((s,r)=>s+r.total,0);
-      txt+=`  Subtotal: ${fmt(sub)}\n\n`;
+      txt+=`  📊 Subtotal ${formatData(data)}: *${fmt(sub)}*\n\n`;
     });
     txt+=`📦 Total entregas novas: *${idx-1}* — *${fmt(totalNovas)}*\n`;
   }
@@ -5031,14 +5046,43 @@ function gerarNotaServico(){
   let idx=1;
   rotasDia.forEach(r=>{
     if(r.multipla&&r.entregas&&r.entregas.length>1){
-      r.entregas.forEach(e=>{txt+=`${idx++}. ${e.bairro||'—'}${r.horario?' ('+r.horario+')':''} — *${fmt(e.valorUnit||0)}*
-`;});
+      r.entregas.forEach(e=>{
+        txt+=`📦 *${idx++}. Entrega*${r.horario?' · 🕐 '+r.horario:''}
+`;
+        if(e.bairro)       txt+=`   📍 Bairro: ${e.bairro}
+`;
+        if(e.endereco)     txt+=`   🏠 Endereço: ${e.endereco}
+`;
+        if(e.destinatario) txt+=`   👤 Destinatário: ${e.destinatario}
+`;
+        if(e.km)           txt+=`   📏 KM: ${e.km} km
+`;
+        if(e.obs)          txt+=`   💬 Obs: ${e.obs}
+`;
+        txt+=`   💰 Valor: *${fmt(e.valorUnit||0)}*
+
+`;
+      });
     } else {
-      const dest=r.entregas&&r.entregas[0]?r.entregas[0].bairro:'—';
-      txt+=`${idx++}. ${dest}${r.horario?' ('+r.horario+')':''} — *${fmt(r.total)}*
+      const e=r.entregas&&r.entregas[0]?r.entregas[0]:{};
+      txt+=`📦 *${idx++}. Entrega*${r.horario?' · 🕐 '+r.horario:''}
+`;
+      if(e.bairro)       txt+=`   📍 Bairro: ${e.bairro}
+`;
+      if(e.endereco)     txt+=`   🏠 Endereço: ${e.endereco}
+`;
+      if(e.destinatario) txt+=`   👤 Destinatário: ${e.destinatario}
+`;
+      if(r.km)           txt+=`   📏 KM: ${r.km} km
+`;
+      if(e.obs||r.obs)   txt+=`   💬 Obs: ${e.obs||r.obs}
+`;
+      txt+=`   💰 Valor: *${fmt(r.total)}*
+
 `;
     }
-    if(r.gorjeta>0) txt+=`    🎁 Gorjeta: ${fmt(r.gorjeta)}
+    if(r.gorjeta>0) txt+=`   🎁 Gorjeta: ${fmt(r.gorjeta)}
+
 `;
   });
   txt+=`
@@ -5444,7 +5488,11 @@ function gerarOrcamento(){
   let t=`📋 *ORÇAMENTO DE ENTREGA*\n`;
   t+=`🚗 DriveCash — ${dataFmt} às ${horaFmt}\n`;
   t+=`━━━━━━━━━━━━━━━━\n\n`;
-  if(emp) t+=`🏢 *Empresa:* ${emp.nome}\n`;
+  if(emp){
+    t+=`🏢 *Empresa:* ${emp.nome}\n`;
+    if(emp.tel) t+=`📱 *Contato:* ${emp.tel}\n`;
+  }
+  t+=`\n`;
 
   let temValor=false;
   orcCampos.forEach(c=>{
