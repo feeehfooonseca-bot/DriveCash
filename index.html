@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DriveCash 🚗</title>
+<meta name="theme-color" content="#0c1117">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DriveCash">
+<link rel="manifest" href="manifest.json">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 :root{
@@ -416,6 +422,14 @@ select option{background:var(--card);}
 .confirm-yes:hover{background:#e03030;}
 .confirm-no{background:var(--card2);color:var(--text);border:1px solid var(--border)!important;}
 .confirm-no:hover{border-color:var(--green)!important;color:var(--green);}
+/* ── TOAST ─────────────────────────────────────────────── */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e3a2f;border:1px solid var(--green);color:var(--green);padding:10px 20px;border-radius:20px;font-size:0.82rem;font-weight:600;z-index:99999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.error{background:#3a1e1e;border-color:var(--red);color:var(--red);}
+/* ── IDA E VOLTA ────────────────────────────────────────── */
+.ida-volta-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px 10px;background:rgba(88,166,255,0.06);border:1px solid rgba(88,166,255,0.2);border-radius:8px;cursor:pointer;}
+.ida-volta-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);cursor:pointer;}
+.ida-volta-row label{font-size:0.82rem;color:var(--blue);cursor:pointer;user-select:none;}
 </style>
 </head>
 <body>
@@ -549,6 +563,21 @@ select option{background:var(--card);}
           <option value="">Selecionar...</option>
         </select>
       </div>
+    </div>
+
+    <!-- CIDADE DE ORIGEM -->
+    <div class="form-row single">
+      <div class="field">
+        <label>Cidade de Origem <span style="color:var(--muted);font-size:0.7rem;">(persiste)</span></label>
+        <input type="text" id="r-cidade-origem" placeholder="Ex: Balneário Camboriú"
+          oninput="localStorage.setItem('dc_cidade_origem',this.value)">
+      </div>
+    </div>
+
+    <!-- IDA E VOLTA -->
+    <div class="ida-volta-row" onclick="toggleIdaVolta()">
+      <input type="checkbox" id="chk-ida-volta" onchange="toggleIdaVolta()">
+      <label for="chk-ida-volta">🔄 Cobrar Ida e Volta (dobrar KM e valor)</label>
     </div>
 
     <!-- SLOTS DE ENTREGA (múltiplas) -->
@@ -980,7 +1009,10 @@ select option{background:var(--card);}
   <div class="card" id="fin-resumo-card">
     <div class="painel-header" style="margin-bottom:10px;">
       <div class="section-title">💰 Financeiro</div>
-      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn btn-secondary" style="font-size:0.75rem;padding:5px 10px;" onclick="exportarRelatorioMensal()">📊 CSV Mensal</button>
+        <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+      </div>
     </div>
     <div id="fin-resumo"></div>
   </div>
@@ -1556,6 +1588,16 @@ console.log('🔥 Firebase inicializado');
 // ============================================================
 const load    = k => JSON.parse(localStorage.getItem(k) || '[]');
 const loadObj = k => JSON.parse(localStorage.getItem(k) || 'null');
+
+let _toastTimer=null;
+function showToast(msg, type='ok'){
+  const t=document.getElementById('toast');
+  if(!t) return;
+  clearTimeout(_toastTimer);
+  t.textContent=msg;
+  t.className='show'+(type==='error'?' error':'');
+  _toastTimer=setTimeout(()=>t.className='',2500);
+}
 const save    = (k,v) => {
   localStorage.setItem(k, JSON.stringify(v));       // cache local imediato
   if(window._fbSave) window._fbSave(k, v);          // sincroniza Firebase
@@ -1724,6 +1766,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderDashboard();
   renderFeed();
   initLogin();
+  initCidadeOrigem();
   // Inicializa botões dias semana (precisam do DOM pronto)
   setTimeout(()=>{
     renderDiasSemBtns();
@@ -1792,6 +1835,19 @@ function voltarDashboard(){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-dashboard').classList.add('active');
   renderDashboard(); renderFeed();
+}
+
+function toggleIdaVolta(){
+  const chk=document.getElementById('chk-ida-volta');
+  if(!chk) return;
+  // just trigger recalc
+  calcPreviewGlobal();
+}
+
+function initCidadeOrigem(){
+  const saved=localStorage.getItem('dc_cidade_origem')||'';
+  const el=document.getElementById('r-cidade-origem');
+  if(el && saved) el.value=saved;
 }
 
 // ============================================================
@@ -2137,6 +2193,10 @@ function salvarRota(){
 
   totalValor += extras;
 
+  // Ida e volta — dobra km e valor
+  const idaVolta = document.getElementById('chk-ida-volta')?.checked;
+  if(idaVolta){ totalKm *= 2; totalValor *= 2; }
+
   if(totalValor === 0){ alert('Informe pelo menos um valor!'); return; }
 
   const isMultipla = entregas.length > 1;
@@ -2148,6 +2208,8 @@ function salvarRota(){
     corrida: isCarroApp_sv,
     empId: empId || null,
     empNome: emp ? emp.nome : 'Sem empresa',
+    cidadeOrigem: document.getElementById('r-cidade-origem')?.value?.trim()||'',
+    idaVolta: document.getElementById('chk-ida-volta')?.checked||false,
     km: totalKm,
     total: totalValor,
     paradas,
@@ -2163,8 +2225,8 @@ function salvarRota(){
   limparTudo();
   renderDashboard();
   renderFeed();
-  // Recalcula meta diária após salvar rota
   atualizarMetaDiaAuto();
+  showToast('✅ Rota salva!');
 }
 
 function limparTudo(){
@@ -2854,7 +2916,7 @@ function confirmarEdicaoPagamento(){
   save('dc_pagamentos',pagamentos);
   fecharModalPag();
   renderFinanceiro();
-}
+  showToast('✅ Pagamento atualizado!');
 
 function salvarEdicaoPagamento(id){
   // mantida por compatibilidade — redireciona para modal
@@ -3657,6 +3719,7 @@ function salvarDespesa(){
   document.getElementById('desp-obs').value='';
   renderDespesas();
   renderDashboard();
+  showToast('✅ Despesa salva!');
 }
 
 function renomearCategoria(catAntiga, catNova){
@@ -4453,6 +4516,41 @@ function registrarPagamento(empId){
   pagamentos.push({ id: Date.now(), empId, valor, data, obs });
   save('dc_pagamentos', pagamentos);
   renderFinanceiro();
+  showToast('✅ Pagamento registrado!');
+
+function exportarRelatorioMensal(){
+  const mesAtual=hoje().slice(0,7);
+  const [ano,mes]=mesAtual.split('-');
+  const rotasMes=rotas.filter(r=>r.data.slice(0,7)===mesAtual);
+  if(rotasMes.length===0){ showToast('Sem rotas no mês atual','error'); return; }
+
+  const linhas=[['Data','Empresa','Tipo','Bairro/Destino','KM','Valor','Gorjeta','Ida/Volta','Obs']];
+  rotasMes.forEach(r=>{
+    const emp=empresas.find(e=>e.id==r.empId);
+    const nomeEmp=emp?emp.nome:(r.empNome||'—');
+    if(r.entregas&&r.entregas.length>0){
+      r.entregas.forEach(e=>{
+        linhas.push([r.data,nomeEmp,r.tipo||'urbano',e.bairro||'—',e.km||0,(e.valorUnit||0).toFixed(2),(r.gorjeta||0).toFixed(2),r.idaVolta?'Sim':'Não',e.obs||'']);
+      });
+    } else {
+      linhas.push([r.data,nomeEmp,r.tipo||'urbano','—',r.km||0,r.total.toFixed(2),(r.gorjeta||0).toFixed(2),r.idaVolta?'Sim':'Não','']);
+    }
+  });
+
+  // Totais
+  linhas.push([]);
+  linhas.push(['TOTAL','','','',
+    rotasMes.reduce((s,r)=>s+(r.km||0),0),
+    rotasMes.reduce((s,r)=>s+r.total,0).toFixed(2),
+    rotasMes.reduce((s,r)=>s+(r.gorjeta||0),0).toFixed(2),'','']);
+
+  const csv=linhas.map(l=>l.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`drivecash-${mes}-${ano}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  showToast('📊 CSV exportado!');
 }
 
 function renderFinanceiro(){
@@ -5009,6 +5107,9 @@ function fazerLogout(){
   }
 }
 </script>
+<!-- TOAST -->
+<div id="toast"></div>
+
 <!-- MODAL EDITAR PAGAMENTO -->
 <div id="modal-edit-pag" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;">
   <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;width:100%;max-width:400px;">
@@ -5028,5 +5129,10 @@ function fazerLogout(){
   </div>
 </div>
 
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
 </body>
 </html>
