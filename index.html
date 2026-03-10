@@ -1,5 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+<!--
+╔══════════════════════════════════════════════════════════════════╗
+║                    DRIVECASH — ÍNDICE DO ARQUIVO                  ║
+╠══════════════════════════════════════════════════════════════════╣
+║                                                                    ║
+║  ESTRUTURA GERAL                                                   ║
+║  ├── [  1 -  10] <head>  Meta, fontes, CSS                        ║
+║  ├── [ 11 - 491] <style> Todo o CSS do app                        ║
+║  └── [492 - 1563] PÁGINAS HTML (cada <div id="page-*">)           ║
+║                                                                    ║
+║  PÁGINAS HTML                                                      ║
+║  ├── [ 492] DASHBOARD       — Métricas, feed, registrar rota      ║
+║  ├── [ 679] RESUMOS         — Gráficos e totais                   ║
+║  ├── [ 744] HISTÓRICO       — Dia → Empresa → Rota                ║
+║  ├── [ 780] RETROATIVO      — Lançamento retroativo               ║
+║  ├── [ 998] EMPRESAS        — Cadastro de empresas                ║
+║  ├── [1017] CUSTOS          — Registro de custos                  ║
+║  ├── [1039] FINANCEIRO      — Contas a receber                    ║
+║  ├── [1064] NOTA DE SERVIÇO — Geração de notas                    ║
+║  ├── [1107] DESPESAS & META — Controle de despesas                ║
+║  ├── [1274] PLANO           — Assinatura e planos                 ║
+║  ├── [1393] INSIGHTS        — Análise de desempenho               ║
+║  ├── [1406] RELATÓRIO IR    — Declaração anual autônomo           ║
+║  ├── [1421] IMPORTAR CSV    — Importação de corridas              ║
+║  ├── [1448] BACKUP          — Backup e restauração                ║
+║  └── [1496] LOGIN           — Tela de autenticação                ║
+║                                                                    ║
+║  JAVASCRIPT — FIREBASE                                             ║
+║  ├── [1564] Firebase SDK    — Inicialização e config              ║
+║  ├── [1566] Firebase Auth   — Login, cadastro, logout             ║
+║  └── [1800] Firebase Sync   — _fbSave, _fbSavePlano, _fbCarregar  ║
+║                                                                    ║
+║  JAVASCRIPT — CORE                                                 ║
+║  ├── [1804] Storage         — save(), load(), loadObj()           ║
+║  ├── [1828] Config          — loadCfg(), saveCfg()                ║
+║  ├── [4723] Helpers         — fmt(), hoje(), formatData()         ║
+║  └── [4901] Toast           — showToast()                         ║
+║                                                                    ║
+║  JAVASCRIPT — APP                                                  ║
+║  ├── [2086] Init            — DOMContentLoaded                    ║
+║  ├── [2127] Menu            — toggleMenu(), drawer                ║
+║  ├── [2141] Pages           — showPage(), voltarDashboard()       ║
+║  ├── [2171] Tipo de Rota    — setTipo(), tipoRota                 ║
+║  ├── [2186] Slots           — Entrega múltipla, slots dinâmicos   ║
+║  ├── [2332] Autocomplete    — Bairros, endereços                  ║
+║  ├── [2411] Cálculo Global  — calcPreviewGlobal()                 ║
+║  ├── [2456] Salvar Rota     — salvarRota(), validação             ║
+║  ├── [2555] KM Diário       — loadKmDias(), salvarKmDia()         ║
+║  ├── [2594] Dashboard       — renderDashboard()                   ║
+║  ├── [2715] Feed            — renderFeed(), cards do dia          ║
+║  ├── [2779] Veículo         — setVeiculo(), controles             ║
+║  ├── [1878] Rota Rápida     — abrirRotaRapida(), modal            ║
+║  ├── [1914] Voz             — iniciarVoz(), Web Speech API        ║
+║  └── [2924] Editar Rota     — abrirEditRota(), modal edição       ║
+║                                                                    ║
+║  JAVASCRIPT — TELAS                                                ║
+║  ├── [3002] Resumos         — initResumos(), gráficos             ║
+║  ├── [3330] Histórico       — renderHistorico() 3 níveis          ║
+║  ├── [3603] Empresa Selects — populateEmpresaSelects()            ║
+║  ├── [3616] Retroativo      — initRetroativo()                    ║
+║  ├── [3837] Empresas        — salvarEmpresa(), renderEmpresas()   ║
+║  ├── [3980] Custos          — salvarCusto()                       ║
+║  ├── [4015] WhatsApp        — gerarWpp(), fechamento do dia       ║
+║  ├── [4090] Financeiro      — calcSaldoEmpresa(), renderFinanceiro║
+║  ├── [4104] Despesas        — salvarDespesa(), metas              ║
+║  ├── [4277] Lote            — sub-tabs, importação lote           ║
+║  ├── [4293] Excel Import    — importador inteligente xlsx         ║
+║  ├── [4729] WhatsApp Emp.   — gerarWppEmpresa(), contestação      ║
+║  ├── [4865] Planilha CSV    — exportarPlanilhaEmpresa()           ║
+║  ├── [4914] Theme           — toggleTheme(), light/dark           ║
+║  ├── [4931] Google Agenda   — adicionarAoDia()                    ║
+║  ├── [4950] Contestação     — abrirContestacao()                  ║
+║  ├── [5034] Rel. Semanal    — gerarRelatorioSemanal()             ║
+║  ├── [5106] Controle Serv.  — renderControleServico()             ║
+║  ├── [5151] Nota de Serviço — gerarNotaServico(), loadCfgNota()   ║
+║  ├── [5344] Render Financ.  — registrarPagamento()                ║
+║  ├── [5484] Gráficos        — Chart.js, pizza/barras/linha        ║
+║  ├── [5586] Orçamento       — orcCampos, gerarOrcamento()         ║
+║  ├── [5708] Backup          — renderBackupInfo(), exportar        ║
+║  └── [5774] Login UI        — fazerLogin(), fazerCadastro()       ║
+║                                                                    ║
+║  JAVASCRIPT — FEATURES PRO                                         ║
+║  ├── [2819] Plano           — loadPlano(), isPro(), checkout      ║
+║  ├── [5986] Checkout        — iniciarCheckout(), modal PIX        ║
+║  ├── [6056] Insights        — renderInsights(), preview card      ║
+║  ├── [6192] Relatório IR    — initRelatorioIR(), compartilhar     ║
+║  ├── [6290] Importar CSV    — processarCSV(), importarCSV()       ║
+║  ├── [6391] Notificações    — verificarNotificacoes(), banner     ║
+║  └── [6462] Hook showPage   — intercepta showPage p/ novas págs  ║
+║                                                                    ║
+╚══════════════════════════════════════════════════════════════════╝
+-->
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -468,6 +561,9 @@ select option{background:var(--card);}
       <button class="menu-item" onclick="showPage('backup')">☁️ &nbsp;Backup</button>
       <button class="menu-item" onclick="showPage('nota-servico')">📋 &nbsp;Nota de Serviço</button>
       <button class="menu-item" onclick="gerarRelatorioSemanal()">📊 &nbsp;Relatório Semanal</button>
+      <button class="menu-item" onclick="isPro()?showPage('insights'):alertProFeature('Insights')">💡 &nbsp;Insights</button>
+      <button class="menu-item" onclick="isPro()?showPage('relatorio-ir'):alertProFeature('Relatório IR')">📄 &nbsp;Relatório IR</button>
+      <button class="menu-item" onclick="isPro()?showPage('importar-csv'):alertProFeature('Importar CSV')">📥 &nbsp;Importar CSV</button>
       <button class="menu-item" onclick="fazerLogout()" style="color:var(--red);border-top:1px solid var(--border);margin-top:4px;">🚪 &nbsp;Sair da conta</button>
     </div>
   </div>
@@ -553,6 +649,20 @@ select option{background:var(--card);}
     </div>
     <div class="meta-falta" id="meta-dia-falta-txt">Faltam <span>R$ 0,00</span> para meta do dia</div>
     <div class="meta-batida" id="meta-dia-batida" style="display:none;color:var(--blue);">META DO DIA BATIDA! ☀️🔥</div>
+  </div>
+
+  <!-- ALERTAS INTELIGENTES -->
+  <div id="notif-banner"></div>
+
+  <!-- CARD INSIGHTS PRO -->
+  <div id="insights-preview-card" style="display:none;background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:14px;margin-bottom:4px;cursor:pointer;" onclick="showPage('insights')">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">💡 Insights Pro</div>
+        <div id="insights-preview-txt" style="font-size:0.82rem;color:var(--text);margin-top:4px;"></div>
+      </div>
+      <span style="color:var(--green);font-size:1.1rem;">›</span>
+    </div>
   </div>
 
   <!-- ===== RESUMO SEMANAL + PREVISÃO ===== -->
@@ -1201,6 +1311,8 @@ select option{background:var(--card);}
 <!-- ==================== CONFIGURAÇÕES (mantida para compatibilidade) ==================== -->
 <div id="page-configuracoes" class="page" style="display:none;"></div>
 <!-- ==================== WHATSAPP (mantida para compatibilidade) ==================== -->
+
+<!-- ==================== ORÇAMENTO ==================== -->
 <div id="page-orcamento" class="page">
   <div class="card">
     <div class="painel-header" style="margin-bottom:14px;">
@@ -1258,12 +1370,11 @@ select option{background:var(--card);}
 <div id="page-plano" class="page">
   <div class="card">
     <div class="painel-header">
-      <div class="section-title">⭐ Plano & Assinatura</div>
+      <div class="section-title">⭐ Plano &amp; Assinatura</div>
       <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
     </div>
     <div id="plano-status-banner"></div>
 
-    <!-- PLANOS -->
     <div style="display:grid;gap:12px;margin-bottom:20px;" id="plano-cards-container">
 
       <!-- BÁSICO -->
@@ -1271,7 +1382,7 @@ select option{background:var(--card);}
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div>
             <div style="font-weight:700;font-size:1rem;">📦 Básico</div>
-            <div style="color:var(--green);font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 9,99<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
+            <div style="color:var(--green);font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 14,90<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
           </div>
           <span class="plan-badge basic">BÁSICO</span>
         </div>
@@ -1283,9 +1394,10 @@ select option{background:var(--card);}
           <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Até 200 entregas/mês</div>
           <div style="padding:4px 0;border-bottom:1px solid var(--border);color:var(--red);">❌ Detalhes no histórico</div>
           <div style="padding:4px 0;border-bottom:1px solid var(--border);color:var(--red);">❌ Gráficos e Resumos</div>
-          <div style="padding:4px 0;color:var(--red);">❌ Relatório WhatsApp</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);color:var(--red);">❌ Insights de desempenho</div>
+          <div style="padding:4px 0;color:var(--red);">❌ Relatório IR Autônomo</div>
         </div>
-        <button class="btn btn-secondary" style="width:100%;" onclick="ativarPlano('basico')">Assinar Básico</button>
+        <button class="btn btn-secondary" style="width:100%;" onclick="iniciarCheckout('basico')">Assinar Básico — R$ 14,90/mês</button>
       </div>
 
       <!-- PRO -->
@@ -1293,7 +1405,7 @@ select option{background:var(--card);}
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div>
             <div style="font-weight:700;font-size:1rem;">🚀 Pro</div>
-            <div style="color:var(--gold);font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 19,99<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
+            <div style="color:var(--gold);font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 29,90<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
           </div>
           <span class="plan-badge pro">PRO</span>
         </div>
@@ -1303,18 +1415,127 @@ select option{background:var(--card);}
           <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Entregas ilimitadas</div>
           <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Gráficos e Resumos</div>
           <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Relatório WhatsApp</div>
-          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Importar Excel</div>
-          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Detalhes completos</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Importar CSV</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Insights de desempenho</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Relatório IR Autônomo</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Notificações inteligentes</div>
           <div style="padding:4px 0;">✅ 7 dias grátis</div>
         </div>
-        <button class="btn btn-gold" style="width:100%;" onclick="ativarPlano('pro_trial')">🎁 Começar 7 dias grátis</button>
-        <button class="btn btn-secondary" style="width:100%;margin-top:6px;" onclick="ativarPlano('pro')">Assinar Pro</button>
+        <button class="btn btn-gold" style="width:100%;" onclick="iniciarCheckout('pro_trial')">🎁 Começar 7 dias grátis</button>
+        <button class="btn btn-secondary" style="width:100%;margin-top:6px;" onclick="iniciarCheckout('pro')">Assinar Pro — R$ 29,90/mês</button>
+      </div>
+
+      <!-- EMPRESA -->
+      <div class="plan-card" id="plan-card-empresa" style="border:2px solid #9b59b6;border-radius:12px;padding:16px;background:rgba(155,89,182,0.05);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div>
+            <div style="font-weight:700;font-size:1rem;">🏢 Empresa</div>
+            <div style="color:#9b59b6;font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 89,90<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
+          </div>
+          <span class="plan-badge" style="background:#9b59b6;color:#fff;font-size:0.65rem;padding:2px 8px;border-radius:20px;font-weight:700;">EMPRESA</span>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Tudo do Pro</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Até 10 motoristas</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Painel do gestor</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Relatório consolidado da frota</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Custo por motorista</div>
+          <div style="padding:4px 0;">✅ Suporte prioritário</div>
+        </div>
+        <button class="btn" style="width:100%;background:#9b59b6;color:#fff;border:none;border-radius:8px;padding:12px;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="iniciarCheckout('empresa')">Contratar plano Empresa</button>
       </div>
     </div>
 
-    <div style="font-size:0.72rem;color:var(--muted);text-align:center;">
-      Para desenvolvimento: use os botões acima para simular ativação de plano.<br>
-      A cobrança real será integrada via Google Play Billing na versão publicada.
+    <div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:8px 0;">
+      🔒 Pagamento seguro · Cancele quando quiser
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CHECKOUT -->
+<div id="modal-checkout" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9500;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:360px;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;">💳 Assinar DriveCash</div>
+      <button onclick="fecharCheckout()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="checkout-resumo" style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.88rem;"></div>
+    <div style="margin-bottom:12px;">
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:6px;font-weight:600;">FORMA DE PAGAMENTO</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button onclick="selecionarPagamento('pix')" id="pay-pix" class="btn btn-secondary" style="font-size:0.8rem;padding:10px;">🏦 PIX</button>
+        <button onclick="selecionarPagamento('cartao')" id="pay-cartao" class="btn btn-secondary" style="font-size:0.8rem;padding:10px;">💳 Cartão</button>
+      </div>
+    </div>
+    <div id="checkout-pix-area" style="display:none;margin-bottom:14px;">
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:6px;">Chave PIX para pagamento:</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:0.85rem;font-family:monospace;word-break:break-all;" id="checkout-pix-key"></div>
+      <div style="font-size:0.72rem;color:var(--muted);margin-top:6px;">Após pagar, envie o comprovante via WhatsApp para ativar seu plano.</div>
+    </div>
+    <div id="checkout-cartao-area" style="display:none;margin-bottom:14px;">
+      <div style="font-size:0.78rem;color:var(--muted);text-align:center;padding:12px;background:var(--bg);border-radius:8px;">
+        Integração com Mercado Pago em breve.<br>
+        <span style="font-size:0.72rem;">Por enquanto use PIX ou entre em contato.</span>
+      </div>
+    </div>
+    <button id="checkout-btn-confirmar" onclick="confirmarCheckout()" class="btn btn-gold" style="width:100%;display:none;">✅ Enviar comprovante via WhatsApp</button>
+    <div style="font-size:0.7rem;color:var(--muted);text-align:center;margin-top:10px;">
+      Dúvidas? <span style="color:var(--green);cursor:pointer;" onclick="abrirSuporteWpp()">Falar no WhatsApp</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== INSIGHTS ====================  -->
+<div id="page-insights" class="page">
+  <div class="card">
+    <div class="painel-header">
+      <div class="section-title">💡 Insights de Desempenho</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+    <div id="insights-container">
+      <div style="text-align:center;color:var(--muted);padding:30px 0;">Carregando insights...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RELATÓRIO IR ====================  -->
+<div id="page-relatorio-ir" class="page">
+  <div class="card">
+    <div class="painel-header">
+      <div class="section-title">📄 Relatório IR — Autônomo</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:0.8rem;color:var(--muted);display:block;margin-bottom:6px;">Ano-base</label>
+      <select id="ir-ano" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;width:100%;font-size:0.9rem;" onchange="renderRelatorioIR()"></select>
+    </div>
+    <div id="ir-container"></div>
+  </div>
+</div>
+
+<!-- ==================== IMPORTAR CSV ====================  -->
+<div id="page-importar-csv" class="page">
+  <div class="card">
+    <div class="painel-header">
+      <div class="section-title">📥 Importar CSV</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+    <div style="background:rgba(88,166,255,0.08);border:1px solid rgba(88,166,255,0.25);border-radius:10px;padding:14px;margin-bottom:16px;font-size:0.82rem;color:var(--blue);">
+      <strong>Formato CSV:</strong> data, empresa, destino, km, valor, gorjeta, obs<br>
+      <span style="color:var(--muted);">Ex: 2024-03-15, iFood, Centro, 5.2, 18.50, 2.00, obs</span><br>
+      A primeira linha deve ser o cabeçalho.
+    </div>
+    <div style="margin-bottom:14px;">
+      <input type="file" id="csv-file-input" accept=".csv,.txt" style="display:none;" onchange="processarCSV(this)">
+      <button class="btn btn-secondary" style="width:100%;padding:14px;" onclick="document.getElementById('csv-file-input').click()">📁 Selecionar arquivo CSV</button>
+    </div>
+    <div id="csv-preview" style="display:none;">
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;" id="csv-preview-info"></div>
+      <div id="csv-preview-table" style="overflow-x:auto;margin-bottom:14px;font-size:0.78rem;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn btn-secondary" onclick="cancelarCSV()">✕ Cancelar</button>
+        <button class="btn btn-gold" onclick="importarCSVConfirmar()">✅ Importar</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1558,6 +1779,21 @@ function _garantirTelaLogin(){
 
 // ── Carregar todos os dados do Firestore ─────────────────────
 window._fbCarregarDados = async function(uid){
+  // Carrega plano do servidor (fonte de verdade)
+  try{
+    var planoSnap = await getDoc(doc(db, 'usuarios', uid, 'plano', 'status'));
+    if(planoSnap.exists()){
+      var pd = planoSnap.data();
+      localStorage.setItem('dc_plano', JSON.stringify(pd));
+      window._planoServidor = pd;
+    } else {
+      var trialData = { tipo: 'pro_trial', expira: null, ativadoEm: new Date().toISOString() };
+      await setDoc(doc(db, 'usuarios', uid, 'plano', 'status'), trialData);
+      localStorage.setItem('dc_plano', JSON.stringify(trialData));
+      window._planoServidor = trialData;
+    }
+  }catch(e){ console.warn('Erro ao carregar plano', e); }
+
   const chaves = ['dc_rotas','dc_empresas','dc_custos','dc_despesas','dc_pagamentos','dc_cfg','dc_backup_info','dc_km_dias','dc_notas_emitidas','dc_cfg_nota'];
   for(const chave of chaves){
     try{
@@ -1579,6 +1815,7 @@ window._fbCarregarDados = async function(uid){
     window.populateEmpresaSelects();
     window.renderDashboard();
     window.renderFeed();
+    setTimeout(function(){ if(typeof verificarNotificacoes==='function') verificarNotificacoes(); if(typeof atualizarInsightsPreview==='function') atualizarInsightsPreview(); }, 800);
   }catch(e){ console.warn('Render error após login', e); }
 };
 
@@ -1588,6 +1825,16 @@ window._fbSave = async function(chave, valor){
   try{
     await setDoc(doc(db, 'usuarios', window._fbUser.uid, 'dados', chave), { valor });
   }catch(e){ console.warn('Firebase write error', chave, e); }
+};
+
+// ── Salvar plano no servidor ──────────────────────────────────
+window._fbSavePlano = async function(planoData){
+  if(!window._fbUser) return;
+  try{
+    await setDoc(doc(db, 'usuarios', window._fbUser.uid, 'plano', 'status'), planoData);
+    window._planoServidor = planoData;
+    localStorage.setItem('dc_plano', JSON.stringify(planoData));
+  }catch(e){ console.warn('Firebase plano write error', e); }
 };
 
 // ── AUTH: Cadastro ───────────────────────────────────────────
@@ -1650,7 +1897,7 @@ console.log('🔥 Firebase inicializado');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ============================================================
-// STORAGE
+// STORAGE — save(), load(), loadObj()
 // ============================================================
 const load    = k => JSON.parse(localStorage.getItem(k) || '[]');
 const loadObj = k => JSON.parse(localStorage.getItem(k) || 'null');
@@ -1674,7 +1921,7 @@ let loteCount = 0;
 let turnoInterval=null, turnoSegundos=0, turnoPausado=false;
 
 // ============================================================
-// CONFIG
+// CONFIG — loadCfg(), saveCfg()
 // ============================================================
 function loadCfg(){
   const d=loadObj('dc_cfg');
@@ -1724,7 +1971,7 @@ function diasTrabalhoTotalMes(diasSemana,mes,ano){
 
 // ── Calcula e salva a meta diária automática ──────────────────────────────────
 // ============================================================
-// ROTA RÁPIDA
+// ROTA RÁPIDA — abrirRotaRapida()
 // ============================================================
 function abrirRotaRapida(){
   const modal=document.getElementById('modal-rota-rapida');
@@ -1760,7 +2007,7 @@ function salvarRotaRapida(){
 }
 
 // ============================================================
-// REGISTRO POR VOZ
+// REGISTRO POR VOZ — Web Speech API
 // ============================================================
 let _recognition=null;
 function iniciarVoz(){
@@ -1932,7 +2179,7 @@ function renderDiasSemBtns(){
 }
 
 // ============================================================
-// INIT
+// INIT — DOMContentLoaded
 // ============================================================
 document.addEventListener('DOMContentLoaded', ()=>{
   setDate('c-data'); setDate('wpp-data'); setDate('desp-data');
@@ -1973,7 +2220,7 @@ function hoje(){
 }
 
 // ============================================================
-// MENU
+// MENU — toggleMenu(), drawer lateral
 // ============================================================
 function toggleMenu(){
   const open=document.getElementById('dropdown-menu').classList.toggle('open');
@@ -1985,7 +2232,7 @@ function fecharMenu(){
 }
 
 // ============================================================
-// PAGES
+// PAGES — showPage(), voltarDashboard()
 // ============================================================
 function showPage(p){
   fecharMenu();
@@ -2015,7 +2262,7 @@ function voltarDashboard(){
 }
 
 // ============================================================
-// TIPO DE ROTA
+// TIPO DE ROTA — setTipo(), urbano/viagem
 // ============================================================
 function setTipo(t){
   tipoRota = t;
@@ -2032,7 +2279,7 @@ function setTipo(t){
 }
 
 // ============================================================
-// SLOTS DE ENTREGA MÚLTIPLA
+// SLOTS DE ENTREGA MÚLTIPLA — dinâmicos
 // ============================================================
 function getBairrosSugestoes(empId){
   const emp = empresas.find(e=>e.id==empId);
@@ -2178,7 +2425,7 @@ function addSlot(){
 }
 
 // ============================================================
-// AUTOCOMPLETE BAIRRO
+// AUTOCOMPLETE — bairros e endereços
 // ============================================================
 let acIndexes = {}; // armazena índice selecionado por slot
 
@@ -2257,7 +2504,7 @@ function onEmpresaChange(){
 }
 
 // ============================================================
-// CÁLCULO GLOBAL
+// CÁLCULO GLOBAL — calcPreviewGlobal()
 // ============================================================
 function calcPreviewGlobal(){
   const paradas   = parseFloat(document.getElementById('r-paradas').value)   || 0;
@@ -2302,7 +2549,7 @@ function calcPreviewGlobal(){
 }
 
 // ============================================================
-// SALVAR ROTA
+// SALVAR ROTA — salvarRota(), validação
 // ============================================================
 function salvarRota(){
   // Verificar limites do plano
@@ -2401,7 +2648,7 @@ function limparTudo(){
 }
 
 // ============================================================
-// KM DIÁRIO — Hodômetro por dia
+// KM DIÁRIO — loadKmDias(), salvarKmDia()
 // ============================================================
 function loadKmDias(){
   return JSON.parse(localStorage.getItem('dc_km_dias')||'{}');
@@ -2440,7 +2687,7 @@ function initKmDiaForm(){
 }
 
 // ============================================================
-// DASHBOARD RENDER
+// DASHBOARD — renderDashboard()
 // ============================================================
 function renderDashboard(){
   const cfg=loadCfg();
@@ -2561,7 +2808,7 @@ function renderDashboard(){
 }
 
 // ============================================================
-// FEED DE ROTAS DO DIA
+// FEED — renderFeed()
 // ============================================================
 function renderFeed(){
   // Mostra rotas de hoje — persistem até meia-noite
@@ -2625,7 +2872,7 @@ function agendarMeiaNoite(){
 agendarMeiaNoite();
 
 // ============================================================
-// VEÍCULO & KM DO DIA
+// VEÍCULO — setVeiculo()
 // ============================================================
 function setVeiculo(v){
   const cfg=loadCfg(); cfg.veiculo=v; save('dc_cfg',cfg);
@@ -2665,11 +2912,11 @@ function adaptarFormularioPorVeiculo(v,sub){
 })();
 
 // ============================================================
-// PLANO & ASSINATURA
+// PLANO — loadPlano(), isPro(), ativarPlano()
 // ============================================================
 function loadPlano(){
-  const p = loadObj('dc_plano');
-  if(!p) return { tipo: 'pro_trial', expira: null, trialAtivo: true }; // default: pro durante dev
+  var p = window._planoServidor || loadObj('dc_plano');
+  if(!p) return { tipo: 'pro_trial', expira: null, trialAtivo: true };
   return p;
 }
 
@@ -2696,16 +2943,19 @@ function checkPlanoLimits(){
 }
 
 function ativarPlano(tipo){
-  let expira = null;
+  var expira = null;
   if(tipo === 'pro_trial'){
-    expira = new Date();
-    expira.setDate(expira.getDate() + 7);
-    expira = expira.toISOString();
+    var d = new Date();
+    d.setDate(d.getDate() + 7);
+    expira = d.toISOString();
     tipo = 'pro_trial';
   }
-  save('dc_plano', { tipo, expira, ativadoEm: new Date().toISOString() });
+  var planoData = { tipo: tipo, expira: expira, ativadoEm: new Date().toISOString() };
+  save('dc_plano', planoData);
+  if(window._fbSavePlano) window._fbSavePlano(planoData);
   renderPlanoPage();
-  alert(tipo==='pro_trial' ? '🎉 7 dias Pro ativados gratuitamente!' : `✅ Plano ${tipo} ativado!`);
+  renderPlanoBadgeMenu();
+  showToast(tipo==='pro_trial' ? '7 dias Pro ativados!' : 'Plano '+tipo+' ativado!', 'success');
 }
 
 function renderPlanoPage(){
@@ -2735,7 +2985,7 @@ function renderPlanoBadgeMenu(){
 }
 
 // ============================================================
-// AUTOCOMPLETE DE ENDEREÇOS (usa banco de dados de rotas)
+// AUTOCOMPLETE — endereços DB
 // ============================================================
 function getEnderecosDB(){
   const set = new Set();
@@ -2765,7 +3015,7 @@ function acEnderecoSel(inputId, listId, val){
 }
 
 // ============================================================
-// EDITAR ROTA NO HISTÓRICO
+// EDITAR ROTA — abrirEditRota()
 // ============================================================
 let _editRotaId = null;
 
@@ -2845,7 +3095,7 @@ function salvarEditRota(){
 }
 
 // ============================================================
-// RESUMOS COM GRÁFICOS COMPLETOS
+// RESUMOS — initResumos(), gráficos
 // ============================================================
 let _resModo = 'mes';
 let _resGrafico = 'totais';
@@ -3070,7 +3320,7 @@ function fecharModal(e){ if(e.target===document.getElementById('modal-info')) fe
 function fecharModalBtn(){ document.getElementById('modal-info').classList.remove('open'); }
 
 // ============================================================
-// CONFIRM MODAL (substitui window.confirm bloqueado em iframes)
+// CONFIRM MODAL — confirmar()
 // ============================================================
 let _confirmResolve = null;
 function confirmar(msg){
@@ -3173,7 +3423,7 @@ async function deletarDespesa(id){
 }
 
 // ============================================================
-// HISTÓRICO 3 NÍVEIS: Dia → Empresa → Rota
+// HISTÓRICO — renderHistorico() 3 níveis
 // ============================================================
 function renderHistorico(){
   const filtMes  = document.getElementById('filtro-mes-hist')?.value || '';
@@ -3282,7 +3532,7 @@ function renderHistorico(){
         // Detalhes das entregas
         const entregasHTML = pro ? (r.entregas||[]).map((e,i)=>`
           <div style="margin:6px 0 3px;font-size:0.71rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">📦 Entrega ${i+1}</div>
-          <div class="detail-row"><span>${r.tipo==='urbano'?'Bairro':'Destino'}</span><span>${e.bairro||'—'}</span></div>
+          <div class="detail-row"><span>${r.tipo==='viagem'?'🏙️ Cidade':'📍 Bairro'}</span><span>${e.bairro||'—'}</span></div>
           ${e.valorUnit?`<div class="detail-row"><span>Valor</span><span style="color:var(--green);font-weight:600">${fmt(e.valorUnit)}</span></div>`:''}
           ${e.endereco?`<div class="detail-row"><span>📍 Endereço</span><span>${e.endereco}</span></div>`:''}
           ${(e.destinatario||e.empDest)?`<div class="detail-row"><span>🏪 Destinatário</span><span style="color:var(--blue)">${e.destinatario||e.empDest}</span></div>`:''}
@@ -3446,7 +3696,7 @@ function deletarDespesaHistorico(id){
 
 
 // ============================================================
-// EMPRESA SELECTS
+// EMPRESA SELECTS — populateEmpresaSelects()
 // ============================================================
 function populateEmpresaSelects(){
   ['r-empresa','filtro-empresa','wpp-empresa','ret-empresa','lote-empresa'].forEach(id=>{
@@ -3459,7 +3709,7 @@ function populateEmpresaSelects(){
 }
 
 // ============================================================
-// RETROATIVO
+// RETROATIVO — initRetroativo()
 // ============================================================
 function initRetroativo(){
   const el=document.getElementById('ret-data'); if(el&&!el.value) el.value=hoje();
@@ -3680,9 +3930,9 @@ function salvarLote(){
 }
 
 // ============================================================
-// EMPRESAS
+// EMPRESAS — salvarEmpresa(), renderEmpresas()
 // ============================================================
-// RESUMOS — Totais por Dia / Mês / Ano
+// RESUMOS TOTAIS — por dia/mês/ano
 // ============================================================
 function initResumos(){
   const now = new Date();
@@ -3823,7 +4073,7 @@ function editarValorKm(empId,val){ empId=Number(empId); const emp=empresas.find(
 
 
 // ============================================================
-// CUSTOS
+// CUSTOS — salvarCusto()
 // ============================================================
 function salvarCusto(){
   const valor=parseFloat(document.getElementById('c-valor').value)||0;
@@ -3858,7 +4108,7 @@ function renderCustos(){
 
 
 // ============================================================
-// WHATSAPP
+// WHATSAPP — gerarWpp(), fechamento do dia
 // ============================================================
 function gerarWpp(){
   const empId=document.getElementById('wpp-empresa').value;
@@ -3874,10 +4124,12 @@ function gerarWpp(){
   let t=`🚗 *FECHAMENTO DriveCash*\n📅 Data: ${formatData(data)}\n🏢 Cliente: *${emp.nome}*\n━━━━━━━━━━━━━━━━\n\n`;
   let idx=1;
   rotasEmp.forEach(r=>{
+    const isV=(r.tipo==='viagem');
     if(r.multipla && r.entregas){
       r.entregas.forEach(e=>{
-        t+=`📦 *Entrega ${idx++}*\n`;
-        if(e.bairro)       t+=`   📍 Bairro: ${e.bairro}\n`;
+        const lbl=(e.tipo==='viagem')?'🏙️ Cidade':'📍 Bairro';
+        t+=`📦 *Entrega ${idx++}*${r.horario?' · 🕐 '+r.horario:''}\n`;
+        if(e.bairro)       t+=`   ${lbl}: ${e.bairro}\n`;
         if(e.endereco)     t+=`   🏠 Endereço: ${e.endereco}\n`;
         if(e.destinatario) t+=`   👤 Destinatário: ${e.destinatario}\n`;
         if(e.km)           t+=`   📏 KM: ${e.km} km\n`;
@@ -3888,9 +4140,10 @@ function gerarWpp(){
       if(r.gorjeta>0) t+=`🎁 Gorjeta: ${fmt(r.gorjeta)}\n\n`;
     } else {
       const e=r.entregas&&r.entregas[0]?r.entregas[0]:{};
-      t+=`📦 *Entrega ${idx++}*\n`;
+      const lbl=isV?'🏙️ Cidade':'📍 Bairro';
+      t+=`📦 *Entrega ${idx++}*${r.horario?' · 🕐 '+r.horario:''}\n`;
       if(emp.nome)         t+=`   🏢 Empresa: ${emp.nome}\n`;
-      if(e.bairro)         t+=`   📍 Bairro: ${e.bairro}\n`;
+      if(e.bairro)         t+=`   ${lbl}: ${e.bairro}\n`;
       if(e.endereco)       t+=`   🏠 Endereço: ${e.endereco}\n`;
       if(e.destinatario)   t+=`   👤 Destinatário: ${e.destinatario}\n`;
       if(r.km)             t+=`   📏 KM: ${r.km} km\n`;
@@ -3917,7 +4170,7 @@ function enviarWpp(){
 function copiarWpp(){ navigator.clipboard.writeText(document.getElementById('wpp-preview').textContent).then(()=>alert('✅ Copiado!')); }
 
 // ============================================================
-// CFG FORM LOAD (Despesas page)
+// CFG FORM — loadCfgToForm()
 // ============================================================
 function loadCfgToForm(){
   const cfg=loadCfg();
@@ -3930,7 +4183,7 @@ function loadCfgToForm(){
 }
 
 // ============================================================
-// FINANCEIRO — Contas a Receber por Empresa
+// FINANCEIRO — calcSaldoEmpresa()
 // ============================================================
 function calcSaldoEmpresa(empId){
   empId=Number(empId);
@@ -3944,7 +4197,7 @@ function calcSaldoEmpresa(empId){
 }
 
 // ============================================================
-// DESPESAS
+// DESPESAS — salvarDespesa(), metas
 // ============================================================
 function salvarDespesa(){
   const nome  = document.getElementById('desp-nome').value.trim();
@@ -4117,7 +4370,7 @@ function salvarEditDespInline(id){
 
 
 // ============================================================
-// LOTE SUB-TABS
+// LOTE SUB-TABS — setLoteSubTab()
 // ============================================================
 function setLoteSubTab(t){
   document.getElementById('lote-subtab-manual').classList.toggle('active',t==='manual');
@@ -4133,10 +4386,10 @@ function setLoteSubTab(t){
 }
 
 // ============================================================
-// EXCEL IMPORT
+// EXCEL IMPORT — importador xlsx
 // ============================================================
 // ============================================================
-// IMPORTADOR INTELIGENTE DE EXCEL
+// IMPORTADOR EXCEL — mapeamento automático
 // ============================================================
 let _xlDados    = [];   // array de arrays (linhas brutas)
 let _xlHeaders  = [];   // primeira linha ou primeira coluna
@@ -4563,13 +4816,13 @@ function excelReset(){
 }
 
 // ============================================================
-// HELPERS
+// HELPERS — fmt(), hoje(), formatData()
 // ============================================================
 function fmt(v){ return 'R$ '+(v||0).toFixed(2).replace('.',','); }
 function formatData(d){ if(!d)return ''; const[y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
 
 // ============================================================
-// WHATSAPP NO FINANCEIRO — gerado dentro do card da empresa
+// WHATSAPP EMPRESA — gerarWppEmpresa()
 // ============================================================
 function gerarWppEmpresa(empId){
   empId=Number(empId);
@@ -4629,10 +4882,12 @@ function gerarWppEmpresa(empId){
     Object.keys(porData).sort().forEach(data=>{
       txt+=`📅 *${formatData(data)}*\n`;
       porData[data].forEach(r=>{
+        const isV=(r.tipo==='viagem');
         if(r.multipla&&r.entregas){
           r.entregas.forEach(e=>{
+            const lbl=(e.tipo==='viagem')?'🏙️ Cidade':'📍 Bairro';
             txt+=`  📦 *Entrega ${idx++}*${r.horario?' · 🕐 '+r.horario:''}\n`;
-            if(e.bairro)         txt+=`     📍 Bairro: ${e.bairro}\n`;
+            if(e.bairro)         txt+=`     ${lbl}: ${e.bairro}\n`;
             if(e.endereco)       txt+=`     🏠 Endereço: ${e.endereco}\n`;
             if(e.destinatario)   txt+=`     👤 Destinatário: ${e.destinatario}\n`;
             if(e.km)             txt+=`     📏 KM: ${e.km} km\n`;
@@ -4641,8 +4896,9 @@ function gerarWppEmpresa(empId){
           });
         } else {
           const e=r.entregas&&r.entregas[0]?r.entregas[0]:{};
+          const lbl=isV?'🏙️ Cidade':'📍 Bairro';
           txt+=`  📦 *Entrega ${idx++}*${r.horario?' · 🕐 '+r.horario:''}\n`;
-          if(e.bairro)         txt+=`     📍 Bairro: ${e.bairro}\n`;
+          if(e.bairro)         txt+=`     ${lbl}: ${e.bairro}\n`;
           if(e.endereco)       txt+=`     🏠 Endereço: ${e.endereco}\n`;
           if(e.destinatario)   txt+=`     👤 Destinatário: ${e.destinatario}\n`;
           if(r.km)             txt+=`     📏 KM: ${r.km} km\n`;
@@ -4702,7 +4958,7 @@ function copiarWppEmpresa(empId){
 }
 
 // ============================================================
-// PLANILHA EXCEL (CSV download — abre no Excel/Sheets)
+// PLANILHA CSV — exportarPlanilhaEmpresa()
 // ============================================================
 function exportarPlanilhaEmpresa(empId,dataIni,dataFim){
   empId=Number(empId);
@@ -4738,7 +4994,7 @@ function exportarPlanilhaEmpresa(empId,dataIni,dataFim){
 }
 
 // ============================================================
-// TOAST
+// TOAST — showToast()
 // ============================================================
 function showToast(msg,type='success'){
   const e=document.getElementById('dc-toast'); if(e) e.remove();
@@ -4751,7 +5007,7 @@ function showToast(msg,type='success'){
 }
 
 // ============================================================
-// LIGHT / DARK MODE
+// THEME — toggleTheme(), light/dark mode
 // ============================================================
 function toggleTheme(){
   const isLight=document.body.classList.toggle('light-mode');
@@ -4768,7 +5024,7 @@ function initTheme(){
 }
 
 // ============================================================
-// GOOGLE AGENDA
+// GOOGLE AGENDA — adicionarAoDia()
 // ============================================================
 function adicionarAoDia(data){
   const rotasDia=rotas.filter(r=>r.data===data);
@@ -4787,7 +5043,7 @@ Registrado pelo DriveCash`);
 }
 
 // ============================================================
-// CONTESTAÇÃO DE PAGAMENTO
+// CONTESTAÇÃO — abrirContestacao()
 // ============================================================
 function abrirContestacao(empId){
   empId=Number(empId);
@@ -4818,11 +5074,12 @@ function abrirContestacao(empId){
 `;
     porData[data].forEach(r=>{
       if(r.multipla&&r.entregas){
-        r.entregas.forEach(e=>{txt+=`  ${idx++}. ${e.bairro||'—'}${r.horario?' ('+r.horario+')':''} — *${fmt(e.valorUnit||0)}*
-`;});
+        r.entregas.forEach(e=>{ const lblC=(e.tipo==='viagem')?'🏙️':'📍'; txt+=`  ${idx++}. ${lblC} ${e.bairro||'—'}${r.horario?' ('+r.horario+')':''} — *${fmt(e.valorUnit||0)}*
+`; });
       } else {
         const dest=r.entregas&&r.entregas[0]?r.entregas[0].bairro:'—';
-        txt+=`  ${idx++}. ${dest}${r.horario?' ('+r.horario+')':''} — *${fmt(r.total)}*
+        const lblC2=(r.tipo==='viagem')?'🏙️':'📍';
+        txt+=`  ${idx++}. ${lblC2} ${dest}${r.horario?' ('+r.horario+')':''} — *${fmt(r.total)}*
 `;
       }
     });
@@ -4870,7 +5127,7 @@ function enviarContestacaoWpp(){
 }
 
 // ============================================================
-// RELATÓRIO SEMANAL
+// RELATÓRIO SEMANAL — gerarRelatorioSemanal()
 // ============================================================
 function gerarRelatorioSemanal(){
   const agora=new Date(), diaSem=agora.getDay();
@@ -4942,7 +5199,7 @@ function agendarRelatorioSemanal(){
 }
 
 // ============================================================
-// CONTROLE DE SERVIÇO
+// CONTROLE DE SERVIÇO — renderControleServico()
 // ============================================================
 function renderControleServico(){
   const card=document.getElementById('controle-servico-card');
@@ -4987,7 +5244,7 @@ function gerarNotaRapida(empId){
 }
 
 // ============================================================
-// NOTA DE SERVIÇO
+// NOTA DE SERVIÇO — gerarNotaServico()
 // ============================================================
 function loadCfgNota(){return JSON.parse(localStorage.getItem('dc_cfg_nota')||'{}');}
 function salvarCfgNota(){
@@ -5045,11 +5302,13 @@ function gerarNotaServico(){
 `;
   let idx=1;
   rotasDia.forEach(r=>{
+    const isViagem=(r.tipo==='viagem');
     if(r.multipla&&r.entregas&&r.entregas.length>1){
       r.entregas.forEach(e=>{
+        const lbl=(e.tipo==='viagem')?'🏙️ Cidade':'📍 Bairro';
         txt+=`📦 *${idx++}. Entrega*${r.horario?' · 🕐 '+r.horario:''}
 `;
-        if(e.bairro)       txt+=`   📍 Bairro: ${e.bairro}
+        if(e.bairro)       txt+=`   ${lbl}: ${e.bairro}
 `;
         if(e.endereco)     txt+=`   🏠 Endereço: ${e.endereco}
 `;
@@ -5065,9 +5324,10 @@ function gerarNotaServico(){
       });
     } else {
       const e=r.entregas&&r.entregas[0]?r.entregas[0]:{};
+      const lbl=isViagem?'🏙️ Cidade':'📍 Bairro';
       txt+=`📦 *${idx++}. Entrega*${r.horario?' · 🕐 '+r.horario:''}
 `;
-      if(e.bairro)       txt+=`   📍 Bairro: ${e.bairro}
+      if(e.bairro)       txt+=`   ${lbl}: ${e.bairro}
 `;
       if(e.endereco)     txt+=`   🏠 Endereço: ${e.endereco}
 `;
@@ -5177,7 +5437,7 @@ function exportarPlanilhaGeral(){
 }
 
 // ============================================================
-// RENDERFINANCEIRO — agora com WhatsApp integrado
+// RENDER FINANCEIRO — registrarPagamento()
 // ============================================================
 function registrarPagamento(empId){
   empId = Number(empId);
@@ -5317,7 +5577,7 @@ function renderFinanceiro(){
 
 
 // ============================================================
-// GRÁFICOS (Chart.js via CDN)
+// GRÁFICOS — Chart.js, pizza/barras/linha
 // ============================================================
 let graficoAtual='pizza';
 let chartInstance=null;
@@ -5419,7 +5679,7 @@ function renderGraficos(){
 }
 
 // ============================================================
-// ORÇAMENTO DE ENTREGA — Campos personalizáveis
+// ORÇAMENTO — gerarOrcamento(), campos
 // ============================================================
 let orcCampos = [];
 
@@ -5541,7 +5801,7 @@ function limparOrcamento(){
 }
 
 // ============================================================
-// BACKUP & RESTORE
+// BACKUP & RESTORE — exportar, importar
 // ============================================================
 function renderBackupInfo(){
   const ultimo=loadObj('dc_backup_info');
@@ -5608,7 +5868,7 @@ function importarBackup(input){
 
 // ============================================================
 // ============================================================
-// LOGIN — Firebase Auth (e-mail & senha)
+// LOGIN UI — fazerLogin(), fazerCadastro()
 // ============================================================
 const AUTH_KEY = 'dc_auth'; // mantido apenas para pré-preencher e-mail
 
@@ -5816,3 +6076,493 @@ function fazerLogout(){
 
 </body>
 </html>
+
+<script>
+// ============================================================
+// CHECKOUT — iniciarCheckout(), modal PIX
+// ============================================================
+var _checkoutTipo = null;
+
+function alertProFeature(nome){
+  showToast('Recurso ' + nome + ' disponivel no Plano Pro. Acesse o menu Plano.', 'warn');
+}
+
+function iniciarCheckout(tipo){
+  _checkoutTipo = tipo;
+  var modal = document.getElementById('modal-checkout');
+  var resumo = document.getElementById('checkout-resumo');
+  var labels = {
+    'basico':    'Plano Basico — R$ 14,90/mes',
+    'pro_trial': 'Plano Pro — 7 dias gratis, depois R$ 29,90/mes',
+    'pro':       'Plano Pro — R$ 29,90/mes',
+    'empresa':   'Plano Empresa — R$ 89,90/mes'
+  };
+  resumo.innerHTML = '<strong>' + (labels[tipo] || tipo) + '</strong><br><span style="font-size:0.75rem;color:var(--muted);">Renova mensalmente. Cancele quando quiser.</span>';
+  document.getElementById('checkout-pix-area').style.display = 'none';
+  document.getElementById('checkout-cartao-area').style.display = 'none';
+  document.getElementById('checkout-btn-confirmar').style.display = 'none';
+  document.getElementById('pay-pix').className = 'btn btn-secondary';
+  document.getElementById('pay-cartao').className = 'btn btn-secondary';
+  modal.style.display = 'flex';
+}
+
+function fecharCheckout(){
+  document.getElementById('modal-checkout').style.display = 'none';
+}
+
+function selecionarPagamento(tipo){
+  document.getElementById('pay-pix').className = 'btn ' + (tipo === 'pix' ? 'btn-gold' : 'btn-secondary');
+  document.getElementById('pay-cartao').className = 'btn ' + (tipo === 'cartao' ? 'btn-gold' : 'btn-secondary');
+  if(tipo === 'pix'){
+    var cfg = loadObj('dc_cfg') || {};
+    var pixKey = cfg.pixKey || '47992030653';
+    document.getElementById('checkout-pix-key').textContent = pixKey;
+    document.getElementById('checkout-pix-area').style.display = 'block';
+    document.getElementById('checkout-cartao-area').style.display = 'none';
+    document.getElementById('checkout-btn-confirmar').style.display = 'block';
+  } else {
+    document.getElementById('checkout-cartao-area').style.display = 'block';
+    document.getElementById('checkout-pix-area').style.display = 'none';
+    document.getElementById('checkout-btn-confirmar').style.display = 'none';
+  }
+}
+
+function confirmarCheckout(){
+  if(!_checkoutTipo) return;
+  var labels = {
+    'basico':    'Plano Basico — R$ 14,90/mes',
+    'pro_trial': 'Plano Pro (trial 7 dias)',
+    'pro':       'Plano Pro — R$ 29,90/mes',
+    'empresa':   'Plano Empresa — R$ 89,90/mes'
+  };
+  var msg = 'Ola! Quero assinar o DriveCash.\n\n';
+  msg += 'Plano: ' + (labels[_checkoutTipo] || _checkoutTipo) + '\n';
+  msg += 'Pagamento: PIX\n';
+  if(window._fbUser) msg += 'E-mail: ' + window._fbUser.email + '\n';
+  msg += '\nSegue o comprovante em anexo.';
+  fecharCheckout();
+  window.open('https://wa.me/5547992030653?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function abrirSuporteWpp(){
+  window.open('https://wa.me/5547992030653?text=' + encodeURIComponent('Ola! Preciso de ajuda com o DriveCash.'), '_blank');
+}
+
+// ============================================================
+// INSIGHTS — renderInsights(), preview
+// ============================================================
+function renderInsights(){
+  var container = document.getElementById('insights-container');
+  if(!container) return;
+
+  var mesAtual = hoje().slice(0, 7);
+  var d = new Date();
+  d.setMonth(d.getMonth() - 1);
+  var mesAnterior = d.toISOString().slice(0, 7);
+
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mesAtual; });
+  var rotasAnt = rotas.filter(function(r){ return r.data.slice(0,7) === mesAnterior; });
+
+  var totalMes = rotasMes.reduce(function(s,r){ return s + r.total; }, 0);
+  var totalAnt = rotasAnt.reduce(function(s,r){ return s + r.total; }, 0);
+  var kmMes    = rotasMes.reduce(function(s,r){ return s + (r.km||0); }, 0);
+  var kmAnt    = rotasAnt.reduce(function(s,r){ return s + (r.km||0); }, 0);
+  var rpmMes   = kmMes > 0 ? totalMes / kmMes : 0;
+  var rpmAnt   = kmAnt > 0 ? totalAnt / kmAnt : 0;
+
+  var diasObj = {};
+  rotasMes.forEach(function(r){ diasObj[r.data] = (diasObj[r.data]||0) + r.total; });
+  var diasAtivos = Object.keys(diasObj).length;
+  var mediaDia   = diasAtivos > 0 ? totalMes / diasAtivos : 0;
+
+  var porEmp = {};
+  rotasMes.forEach(function(r){
+    porEmp[r.empNome] = (porEmp[r.empNome] || 0) + r.total;
+  });
+  var empTopNome = null; var empTopVal = 0;
+  Object.keys(porEmp).forEach(function(n){
+    if(porEmp[n] > empTopVal){ empTopVal = porEmp[n]; empTopNome = n; }
+  });
+
+  var empKmVal = {}; var empKmKm = {};
+  rotasMes.forEach(function(r){
+    if(r.km > 0){
+      empKmVal[r.empNome] = (empKmVal[r.empNome]||0) + r.total;
+      empKmKm[r.empNome]  = (empKmKm[r.empNome]||0) + r.km;
+    }
+  });
+  var empPiorNome = null; var piorRpm = 99999;
+  Object.keys(empKmKm).forEach(function(n){
+    var rpm = empKmKm[n] > 0 ? empKmVal[n] / empKmKm[n] : 0;
+    if(rpm > 0 && rpm < piorRpm){ piorRpm = rpm; empPiorNome = n; }
+  });
+
+  var varPct  = totalAnt > 0 ? Math.round(((totalMes - totalAnt) / totalAnt) * 100) : null;
+  var varRpm  = rpmAnt   > 0 ? Math.round(((rpmMes  - rpmAnt)  / rpmAnt)  * 100) : null;
+
+  function card(icon, titulo, valor, detalhe, cor){
+    return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+      + '<span style="font-size:1.2rem;">' + icon + '</span>'
+      + '<span style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">' + titulo + '</span>'
+      + '</div>'
+      + '<div style="font-size:1.3rem;font-weight:700;color:' + cor + ';font-family:\'Rajdhani\',sans-serif;">' + valor + '</div>'
+      + '<div style="font-size:0.75rem;color:var(--muted);margin-top:3px;">' + detalhe + '</div>'
+      + '</div>';
+  }
+
+  function alerta(icon, msg){
+    return '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.3);border-radius:10px;padding:12px;margin-bottom:10px;font-size:0.82rem;display:flex;gap:10px;">'
+      + '<span>' + icon + '</span><span>' + msg + '</span></div>';
+  }
+
+  if(rotasMes.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">Nenhuma entrega registrada este mes.</div>';
+    return;
+  }
+
+  var html = '<div style="font-size:0.75rem;color:var(--muted);margin-bottom:14px;text-align:center;">Dados de ' + new Date().toLocaleString('pt-BR',{month:'long',year:'numeric'}) + '</div>';
+
+  var varTxt = varPct !== null ? ((varPct >= 0 ? '+' : '') + varPct + '% vs mes anterior (' + fmt(totalAnt) + ')') : (diasAtivos + ' dias trabalhados');
+  html += card('💰', 'Ganho bruto este mes', fmt(totalMes), varTxt, varPct !== null && varPct >= 0 ? 'var(--green)' : 'var(--red)');
+
+  var rpmTxt = rpmMes > 0 ? 'R$ ' + rpmMes.toFixed(2) + '/km' : 'Sem KM registrado';
+  var rpmDetalhe = varRpm !== null ? ((varRpm >= 0 ? '+' : '') + varRpm + '% vs mes anterior') : 'Registre KM nas rotas para calcular';
+  html += card('📏', 'R$/KM medio este mes', rpmTxt, rpmDetalhe, rpmMes >= (rpmAnt||rpmMes) ? 'var(--green)' : 'var(--orange)');
+
+  html += card('☀️', 'Media por dia trabalhado', fmt(mediaDia), diasAtivos + ' dias ativos · ' + rotasMes.length + ' entregas no mes', 'var(--blue)');
+
+  if(empTopNome){
+    html += card('🏆', 'Empresa mais lucrativa', empTopNome, fmt(empTopVal) + ' · ' + Math.round((empTopVal/totalMes)*100) + '% do total', 'var(--gold)');
+  }
+
+  if(empPiorNome && piorRpm < rpmMes * 0.7){
+    html += alerta('⚠️', '<strong>' + empPiorNome + '</strong> tem R$/KM baixo (R$ ' + piorRpm.toFixed(2) + '/km). Considere renegociar a tabela com essa empresa.');
+  }
+
+  if(varPct !== null && varPct < -15){
+    html += alerta('📉', 'Seus ganhos cairam ' + Math.abs(varPct) + '% em relacao ao mes passado.');
+  }
+
+  var cfg = loadObj('dc_cfg') || {};
+  var metaMes = cfg.meta || 0;
+  if(metaMes > 0 && totalMes < metaMes){
+    var diasNoMes = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+    var diasRestantes = diasNoMes - new Date().getDate();
+    var falta = metaMes - totalMes;
+    var porDia = diasRestantes > 0 ? falta / diasRestantes : falta;
+    html += alerta('🎯', 'Faltam <strong>' + fmt(falta) + '</strong> para bater sua meta. Voce precisa de <strong>' + fmt(porDia) + '</strong>/dia nos proximos ' + diasRestantes + ' dias.');
+  }
+
+  var desp = (loadObj('dc_despesas') || []).filter(function(d){ return d.data && d.data.slice(0,7) === mesAtual; });
+  var totalDesp = desp.reduce(function(s,d){ return s + (d.valor||0); }, 0);
+  if(totalDesp > 0){
+    var lucro = totalMes - totalDesp;
+    html += card('📊', 'Lucro liquido estimado', fmt(lucro), 'Receita ' + fmt(totalMes) + ' menos Despesas ' + fmt(totalDesp), lucro >= 0 ? 'var(--green)' : 'var(--red)');
+  }
+
+  container.innerHTML = html;
+}
+
+function atualizarInsightsPreview(){
+  var card = document.getElementById('insights-preview-card');
+  var txt  = document.getElementById('insights-preview-txt');
+  if(!card || !txt || !isPro()){ if(card) card.style.display='none'; return; }
+
+  var mesAtual = hoje().slice(0,7);
+  var d2 = new Date(); d2.setMonth(d2.getMonth()-1);
+  var mesAnt = d2.toISOString().slice(0,7);
+
+  var total = rotas.filter(function(r){ return r.data.slice(0,7)===mesAtual; }).reduce(function(s,r){ return s+r.total; },0);
+  var ant   = rotas.filter(function(r){ return r.data.slice(0,7)===mesAnt; }).reduce(function(s,r){ return s+r.total; },0);
+  if(total === 0){ card.style.display='none'; return; }
+
+  var varP = ant > 0 ? Math.round(((total-ant)/ant)*100) : null;
+  var msg  = fmt(total) + ' este mes';
+  if(varP !== null) msg += ' · ' + (varP >= 0 ? '+' : '') + varP + '% vs mes passado';
+  txt.textContent = msg;
+  card.style.display = 'block';
+}
+
+// ============================================================
+// RELATÓRIO IR — initRelatorioIR()
+// ============================================================
+function initRelatorioIR(){
+  var sel = document.getElementById('ir-ano');
+  if(!sel) return;
+  sel.innerHTML = '';
+  var anoAtual = new Date().getFullYear();
+  for(var a = anoAtual; a >= anoAtual - 3; a--){
+    var opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    sel.appendChild(opt);
+  }
+  renderRelatorioIR();
+}
+
+function renderRelatorioIR(){
+  var container = document.getElementById('ir-container');
+  if(!container) return;
+  var sel = document.getElementById('ir-ano');
+  var ano = sel ? sel.value : String(new Date().getFullYear());
+
+  var rotasAno = rotas.filter(function(r){ return r.data.slice(0,4) === ano; });
+  var desp     = (loadObj('dc_despesas')||[]).filter(function(d){ return d.data && d.data.slice(0,4) === ano; });
+
+  if(rotasAno.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">Nenhuma entrega em ' + ano + '.</div>';
+    return;
+  }
+
+  var bruto  = rotasAno.reduce(function(s,r){ return s+r.total; },0);
+  var despT  = desp.reduce(function(s,d){ return s+(d.valor||0); },0);
+  var km     = rotasAno.reduce(function(s,r){ return s+(r.km||0); },0);
+  var gorj   = rotasAno.reduce(function(s,r){ return s+(r.gorjeta||0); },0);
+  var meses  = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var porMes = [0,0,0,0,0,0,0,0,0,0,0,0];
+  rotasAno.forEach(function(r){ porMes[parseInt(r.data.slice(5,7))-1] += r.total; });
+
+  var html = '<div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:16px;margin-bottom:14px;">'
+    + '<div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Resumo ' + ano + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem;">'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">Receita bruta</div><div style="font-weight:700;color:var(--green);">' + fmt(bruto) + '</div></div>'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">Despesas</div><div style="font-weight:700;color:var(--red);">' + fmt(despT) + '</div></div>'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">Lucro liquido est.</div><div style="font-weight:700;color:var(--blue);">' + fmt(bruto-despT) + '</div></div>'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">KM rodados</div><div style="font-weight:700;">' + km.toFixed(0) + ' km</div></div>'
+    + (gorj > 0 ? '<div><div style="color:var(--muted);font-size:0.7rem;">Gorjetas</div><div style="font-weight:700;color:var(--gold);">' + fmt(gorj) + '</div></div>' : '')
+    + '</div></div>';
+
+  html += '<div style="background:rgba(88,166,255,0.07);border:1px solid rgba(88,166,255,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">'
+    + '<div style="font-size:0.75rem;color:var(--blue);font-weight:600;margin-bottom:8px;">Para declaracao de IR</div>'
+    + '<div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">'
+    + 'Como autonomo sem CNPJ, declare seus rendimentos como <strong style="color:var(--text);">Rendimentos Tributaveis de Pessoa Fisica</strong>.<br><br>'
+    + '• Informe a receita total em <strong style="color:var(--text);">Rendimentos Recebidos de PF</strong><br>'
+    + '• Despesas com moto (combustivel, manutencao) podem ser deduzidas como despesa de obtencao de renda<br>'
+    + '• Guarde notas e recibos de todas as despesas<br><br>'
+    + '<span style="color:var(--orange);">Consulte um contador para sua declaracao oficial.</span>'
+    + '</div></div>';
+
+  html += '<div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Receita por mes</div>'
+    + '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.8rem;">'
+    + '<thead><tr style="border-bottom:1px solid var(--border);">'
+    + '<th style="text-align:left;padding:6px 4px;color:var(--muted);">Mes</th>'
+    + '<th style="text-align:right;padding:6px 4px;color:var(--muted);">Receita</th>'
+    + '<th style="text-align:right;padding:6px 4px;color:var(--muted);">% do ano</th>'
+    + '</tr></thead><tbody>';
+  for(var m = 0; m < 12; m++){
+    if(porMes[m] > 0){
+      html += '<tr style="border-bottom:1px solid var(--border);">'
+        + '<td style="padding:6px 4px;">' + meses[m] + '/' + ano + '</td>'
+        + '<td style="text-align:right;padding:6px 4px;color:var(--green);font-weight:600;">' + fmt(porMes[m]) + '</td>'
+        + '<td style="text-align:right;padding:6px 4px;color:var(--muted);">' + Math.round((porMes[m]/bruto)*100) + '%</td>'
+        + '</tr>';
+    }
+  }
+  html += '</tbody></table></div>';
+  html += '<button class="btn btn-secondary" style="width:100%;margin-top:14px;" onclick="compartilharIR(\'' + ano + '\',' + bruto + ',' + despT + ',' + km + ')">📱 Compartilhar com contador</button>';
+
+  container.innerHTML = html;
+}
+
+function compartilharIR(ano, bruto, desp, km){
+  var msg = 'DriveCash — Relatorio IR ' + ano + '\n\n';
+  msg += 'Receita bruta: ' + fmt(bruto) + '\n';
+  msg += 'Despesas: ' + fmt(desp) + '\n';
+  msg += 'Lucro liquido estimado: ' + fmt(bruto - desp) + '\n';
+  msg += 'KM rodados: ' + km.toFixed(0) + ' km\n\nGerado pelo DriveCash';
+  if(navigator.share){
+    navigator.share({ title: 'Relatorio IR ' + ano, text: msg }).catch(function(){});
+  } else {
+    navigator.clipboard.writeText(msg).then(function(){
+      showToast('Copiado para area de transferencia!', 'success');
+    }).catch(function(){
+      var w = window.open('','_blank');
+      if(w) w.document.write('<pre>' + msg + '</pre>');
+    });
+  }
+}
+
+// ============================================================
+// IMPORTAR CSV — processarCSV()
+// ============================================================
+var _csvDados = null;
+
+function processarCSV(input){
+  var file = input.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var text  = e.target.result;
+    var linhas = text.trim().split(/\r?\n/);
+    if(linhas.length < 2){ showToast('CSV vazio ou sem dados', 'error'); return; }
+    var header = linhas[0].split(',').map(function(h){ return h.trim().toLowerCase(); });
+    var dados = []; var erros = 0;
+    for(var i = 1; i < linhas.length; i++){
+      var cols = linhas[i].split(',').map(function(c){ return c.trim(); });
+      if(cols.length < 3){ erros++; continue; }
+      var row = {};
+      header.forEach(function(h, idx){ row[h] = cols[idx] || ''; });
+      var data    = row['data'] || row['date'] || '';
+      var empresa = row['empresa'] || row['company'] || '';
+      var destino = row['destino'] || row['bairro'] || row['cidade'] || '';
+      var km      = parseFloat(row['km']) || 0;
+      var valor   = parseFloat((row['valor'] || row['value'] || '0').replace(',','.'));
+      var gorjeta = parseFloat((row['gorjeta'] || '0').replace(',','.'));
+      var obs     = row['obs'] || row['observacao'] || '';
+      if(!data || !empresa || !valor){ erros++; continue; }
+      dados.push({ data:data, empresa:empresa, destino:destino, km:km, valor:valor, gorjeta:gorjeta, obs:obs });
+    }
+    if(dados.length === 0){ showToast('Nenhuma linha valida. Verifique o formato.', 'error'); return; }
+    _csvDados = dados;
+    renderCSVPreview(dados, erros);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function renderCSVPreview(dados, erros){
+  document.getElementById('csv-preview').style.display = 'block';
+  var info = dados.length + ' linhas validas';
+  if(erros > 0) info += ' · ' + erros + ' ignoradas';
+  document.getElementById('csv-preview-info').textContent = info;
+  var amostra = dados.slice(0, 5);
+  var table = '<table style="width:100%;border-collapse:collapse;">'
+    + '<thead><tr style="border-bottom:1px solid var(--border);">'
+    + '<th style="padding:4px;text-align:left;color:var(--muted);">Data</th>'
+    + '<th style="padding:4px;text-align:left;color:var(--muted);">Empresa</th>'
+    + '<th style="padding:4px;text-align:right;color:var(--muted);">Valor</th>'
+    + '</tr></thead><tbody>';
+  amostra.forEach(function(r){
+    table += '<tr style="border-bottom:1px solid var(--border);">'
+      + '<td style="padding:4px;">' + r.data + '</td>'
+      + '<td style="padding:4px;">' + r.empresa + '</td>'
+      + '<td style="padding:4px;text-align:right;color:var(--green);">' + fmt(r.valor) + '</td>'
+      + '</tr>';
+  });
+  if(dados.length > 5) table += '<tr><td colspan="3" style="padding:4px;color:var(--muted);font-size:0.72rem;text-align:center;">...e mais ' + (dados.length-5) + ' linhas</td></tr>';
+  table += '</tbody></table>';
+  document.getElementById('csv-preview-table').innerHTML = table;
+}
+
+function cancelarCSV(){
+  _csvDados = null;
+  document.getElementById('csv-preview').style.display = 'none';
+  document.getElementById('csv-file-input').value = '';
+}
+
+function importarCSVConfirmar(){
+  if(!_csvDados || _csvDados.length === 0) return;
+  var importadas = 0;
+  _csvDados.forEach(function(row){
+    var emp = null;
+    for(var i = 0; i < empresas.length; i++){
+      if(empresas[i].nome.toLowerCase() === row.empresa.toLowerCase()){ emp = empresas[i]; break; }
+    }
+    var empId   = emp ? emp.id   : Date.now() + Math.random();
+    var empNome = emp ? emp.nome : row.empresa;
+    var novaRota = {
+      id: Date.now() + Math.random(),
+      data: row.data,
+      tipo: row.km > 0 ? 'viagem' : 'urbano',
+      empId: empId, empNome: empNome,
+      km: row.km,
+      total: row.valor + row.gorjeta,
+      gorjeta: row.gorjeta,
+      multipla: false,
+      entregas: [{ bairro: row.destino, km: row.km, valorUnit: row.valor, tipo: row.km>0?'viagem':'urbano', obs: row.obs }],
+      obs: row.obs,
+      importadoCSV: true
+    };
+    rotas.push(novaRota);
+    importadas++;
+  });
+  save('dc_rotas', rotas);
+  renderDashboard();
+  renderFeed();
+  cancelarCSV();
+  voltarDashboard();
+  showToast(importadas + ' rotas importadas!', 'success');
+}
+
+// ============================================================
+// NOTIFICAÇÕES — verificarNotificacoes()
+// ============================================================
+function verificarNotificacoes(){
+  if(!isPro()) return;
+  var mesAtual = hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mesAtual; });
+  var totalMes = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+  var cfg      = loadObj('dc_cfg') || {};
+  var alertas  = [];
+
+  // 1. Meta em risco
+  if(cfg.meta > 0 && totalMes < cfg.meta){
+    var diasNoMes     = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+    var diaHoje       = new Date().getDate();
+    var pctMes        = Math.round((diaHoje / diasNoMes) * 100);
+    var pctMeta       = Math.round((totalMes / cfg.meta) * 100);
+    if(pctMes > pctMeta + 20){
+      var diasRest = diasNoMes - diaHoje;
+      var porDia   = diasRest > 0 ? (cfg.meta - totalMes) / diasRest : 0;
+      alertas.push('🎯 Voce esta abaixo do ritmo para bater a meta. Precisa de ' + fmt(porDia) + '/dia nos proximos ' + diasRest + ' dias.');
+    }
+  }
+
+  // 2. Empresa devedora ha mais de 15 dias
+  var pags = loadObj('dc_pagamentos') || [];
+  var agora = new Date();
+  for(var i = 0; i < empresas.length; i++){
+    var emp = empresas[i];
+    var rotasEmp  = rotas.filter(function(r){ return r.empId === emp.id; });
+    var faturado  = rotasEmp.reduce(function(s,r){ return s+r.total; },0);
+    var pago      = pags.filter(function(p){ return p.empId === emp.id; }).reduce(function(s,p){ return s+(p.valor||0); },0);
+    var saldo     = faturado - pago;
+    if(saldo > 0 && rotasEmp.length > 0){
+      var ult  = rotasEmp.slice().sort(function(a,b){ return b.data.localeCompare(a.data); })[0];
+      var dias = Math.floor((agora - new Date(ult.data)) / (1000*60*60*24));
+      if(dias >= 15){
+        alertas.push('⚠️ ' + emp.nome + ' tem ' + fmt(saldo) + ' em aberto ha ' + dias + ' dias.');
+      }
+    }
+  }
+
+  // 3. Nenhuma entrega hoje (entre 14h e 21h)
+  var hora = new Date().getHours();
+  if(hora >= 14 && hora <= 21){
+    var entregasHoje = rotas.filter(function(r){ return r.data === hoje(); });
+    if(entregasHoje.length === 0){
+      alertas.push('💤 Nenhuma entrega registrada hoje. Nao esqueca de registrar suas rotas!');
+    }
+  }
+
+  if(alertas.length === 0) return;
+
+  // Limita frequencia: max 1x a cada 4h
+  var ultTs = loadObj('dc_notif_ts');
+  var now   = Date.now();
+  if(ultTs && (now - ultTs) < 4*60*60*1000) return;
+  save('dc_notif_ts', now);
+
+  var banner = document.getElementById('notif-banner');
+  if(!banner) return;
+  var itens = alertas.map(function(a){
+    return '<div style="padding:8px 0;border-bottom:1px solid rgba(255,152,0,0.2);font-size:0.8rem;">' + a + '</div>';
+  }).join('');
+  banner.innerHTML = '<div style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);border-radius:10px;padding:12px;margin-bottom:12px;">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+    + '<span style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">🔔 Alertas</span>'
+    + '<span style="cursor:pointer;color:var(--muted);font-size:1rem;" onclick="document.getElementById(\'notif-banner\').innerHTML=\'\'">✕</span>'
+    + '</div>' + itens + '</div>';
+}
+
+// ============================================================
+// HOOK showPage — intercepta para novas páginas
+// ============================================================
+(function(){
+  var origShow = window.showPage;
+  window.showPage = function(p){
+    if(typeof origShow === 'function') origShow(p);
+    if(p === 'insights')     renderInsights();
+    if(p === 'relatorio-ir') initRelatorioIR();
+  };
+})();
+</script>
