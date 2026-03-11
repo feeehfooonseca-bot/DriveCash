@@ -646,7 +646,28 @@ select option{background:var(--card);}
 .manut-icon-box{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
 .manut-tipo-badge{font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:10px;border:1px solid;}
 
+
+/* ── SKELETON SCREEN ─────────────────────────────────────────── */
+@keyframes skPulse{ 0%,100%{opacity:.4} 50%{opacity:.9} }
+.sk{ background:var(--border);border-radius:6px;animation:skPulse 1.4s ease infinite; }
+.sk-line{ height:14px;margin-bottom:10px; }
+.sk-line.sm{ height:10px;width:60%; }
+.sk-line.lg{ height:20px;width:80%; }
+.sk-card{ background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px; }
+.sk-circle{ border-radius:50%; }
+#skeleton-dashboard{ display:none; }
+
+
+/* ── VALIDAÇÃO INLINE ────────────────────────────────────────── */
+.field-error input, .field-error select{ border-color:var(--red) !important; }
+.field-error textarea{ border-color:var(--red) !important; }
+.field-hint{ font-size:0.7rem;margin-top:4px;display:none; }
+.field-hint.erro{ color:var(--red);display:block; }
+.field-hint.ok{ color:var(--green);display:block; }
+.field-ok input, .field-ok select{ border-color:var(--green) !important; }
+
 </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.4/dexie.min.js"></script>
 </head>
 <body>
 
@@ -706,6 +727,30 @@ select option{background:var(--card);}
 
 <!-- ==================== DASHBOARD ==================== -->
 <div id="page-dashboard" class="page active">
+
+  <!-- SKELETON: visível enquanto dados carregam -->
+  <div id="skeleton-dashboard">
+    <div class="sk-card">
+      <div class="sk sk-line lg" style="width:50%;margin-bottom:16px;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div class="sk sk-line" style="height:60px;border-radius:10px;"></div>
+        <div class="sk sk-line" style="height:60px;border-radius:10px;"></div>
+        <div class="sk sk-line" style="height:60px;border-radius:10px;"></div>
+        <div class="sk sk-line" style="height:60px;border-radius:10px;"></div>
+      </div>
+    </div>
+    <div class="sk-card">
+      <div class="sk sk-line" style="width:40%;margin-bottom:14px;"></div>
+      <div class="sk sk-line sm"></div>
+      <div class="sk sk-line sm" style="width:75%;"></div>
+      <div class="sk sk-line sm" style="width:55%;"></div>
+    </div>
+    <div class="sk-card">
+      <div class="sk sk-line" style="width:35%;margin-bottom:14px;"></div>
+      <div class="sk sk-line sm"></div>
+      <div class="sk sk-line sm" style="width:70%;"></div>
+    </div>
+  </div>
 
   <!-- VEÍCULO -->
   <div class="card">
@@ -821,9 +866,10 @@ select option{background:var(--card);}
     <div class="form-row single">
       <div class="field">
         <label>Empresa</label>
-        <select id="r-empresa" onchange="onEmpresaChange()">
+        <select id="r-empresa" onchange="onEmpresaChange(); validarCampoRota('r-empresa')" onblur="validarCampoRota('r-empresa')">
           <option value="">Selecionar...</option>
         </select>
+        <div class="field-hint" id="hint-r-empresa"></div>
       </div>
     </div>
 
@@ -877,7 +923,7 @@ select option{background:var(--card);}
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="salvarRota()">✅ Salvar Rota</button>
+      <button class="btn btn-primary" onclick="validarESalvarRota()">✅ Salvar Rota</button>
       <button class="btn btn-secondary" onclick="limparTudo()">🗑️ Limpar</button>
     </div>
   </div>
@@ -2044,6 +2090,27 @@ select option{background:var(--card);}
     <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:10px;">🔐 Segurança</div>
     <button class="btn btn-secondary" style="width:100%;" onclick="abrirTrocarSenha()">🔑 Trocar senha</button>
   </div>
+
+  <!-- SNAPSHOTS AUTOMÁTICOS -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;">⏱️ Snapshots Automáticos</div>
+      <button class="btn btn-secondary" style="font-size:0.72rem;padding:5px 10px;" onclick="tirarSnapshotManual()">📸 Tirar agora</button>
+    </div>
+    <div style="font-size:0.78rem;color:var(--muted);margin-bottom:10px;">
+      Cópias locais tiradas automaticamente a cada 30 min enquanto você usa o app. Servem para recuperar dados deletados por engano.
+    </div>
+    <div id="snapshots-lista">
+      <div style="text-align:center;padding:12px;color:var(--muted);font-size:0.8rem;">Nenhum snapshot ainda.</div>
+    </div>
+  </div>
+
+  <!-- STATUS DE SYNC -->
+  <div class="card">
+    <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:10px;">☁️ Status de Sincronização</div>
+    <div id="sync-status-lista"></div>
+    <button class="btn btn-secondary" style="width:100%;margin-top:10px;" onclick="forcarSyncCompleto()">🔄 Forçar sync completo agora</button>
+  </div>
 </div>
 
 <!-- ==================== LOGIN ==================== -->
@@ -2303,6 +2370,9 @@ onAuthStateChanged(auth, user => {
   if(user){
     window._fbUser  = user;
     window._fbReady = true;
+    // Mostra skeleton no dashboard enquanto dados carregam
+    var skEl = document.getElementById('skeleton-dashboard');
+    if(skEl) skEl.style.display = 'block';
     // Mostra loading enquanto carrega dados
     document.getElementById('login-screen').innerHTML = `
       <div style="text-align:center;">
@@ -2332,7 +2402,7 @@ function _esperarAppPronto(cb, tentativas){
   } else if(tentativas < 50){
     setTimeout(() => _esperarAppPronto(cb, tentativas + 1), 100);
   } else {
-    console.warn('App não ficou pronto a tempo');
+    console.warn('App não ficou pronto a tempo'); showToast('Erro ao inicializar. Recarregue a página.', 'error');
     document.getElementById('login-screen').style.display = 'none';
   }
 }
@@ -2415,7 +2485,7 @@ window._fbCarregarDados = async function(uid){
     }
   }catch(e){ console.warn('Erro ao carregar plano', e); }
 
-  const chaves = ['dc_rotas','dc_empresas','dc_custos','dc_despesas','dc_pagamentos','dc_cfg','dc_backup_info','dc_km_dias','dc_notas_emitidas','dc_cfg_nota'];
+  const chaves = ['dc_rotas','dc_empresas','dc_custos','dc_despesas','dc_pagamentos','dc_cfg','dc_backup_info','dc_km_dias','dc_notas_emitidas','dc_cfg_nota','dc_manutencoes','dc_contestacoes','dc_orcamentos_saved'];
   for(const chave of chaves){
     try{
       const snap = await getDoc(doc(db, 'usuarios', uid, 'dados', chave));
@@ -2433,6 +2503,8 @@ window._fbCarregarDados = async function(uid){
   // Esconde login e renderiza app
   document.getElementById('login-screen').style.display = 'none';
   try{
+    var skEl2 = document.getElementById('skeleton-dashboard');
+    if(skEl2) skEl2.style.display = 'none';
     window.populateEmpresaSelects();
     window.renderDashboard();
     window.renderFeed();
@@ -2444,7 +2516,7 @@ window._fbCarregarDados = async function(uid){
       // Onboarding: mostra apenas se nunca completou
       if(typeof verificarOnboarding==='function') verificarOnboarding();
     }, 600);
-  }catch(e){ console.warn('Render error após login', e); }
+  }catch(e){ console.warn('Render error após login', e); showToast('Erro ao carregar dados. Tente novamente.', 'error'); }
 };
 
 // ── Salvar dado no Firestore ─────────────────────────────────
@@ -2452,7 +2524,7 @@ window._fbSave = async function(chave, valor){
   if(!window._fbUser) return;
   try{
     await setDoc(doc(db, 'usuarios', window._fbUser.uid, 'dados', chave), { valor });
-  }catch(e){ console.warn('Firebase write error', chave, e); }
+  }catch(e){ console.warn('Firebase write error', chave, e); showToast('Erro ao salvar dado. Verifique sua conexão.', 'error'); }
 };
 
 // ── Salvar plano no servidor ──────────────────────────────────
@@ -2462,7 +2534,7 @@ window._fbSavePlano = async function(planoData){
     await setDoc(doc(db, 'usuarios', window._fbUser.uid, 'plano', 'status'), planoData);
     window._planoServidor = planoData;
     localStorage.setItem('dc_plano', JSON.stringify(planoData));
-  }catch(e){ console.warn('Firebase plano write error', e); }
+  }catch(e){ console.warn('Firebase plano write error', e); showToast('Erro ao salvar plano. Tente novamente.', 'error'); }
 };
 
 // ── FROTA: Criar frota (gestor) ──────────────────────────────
@@ -2562,7 +2634,7 @@ window._fbSairFrota = async function(){
     await deleteDoc(doc(db, 'usuarios', window._fbUser.uid, 'frota', 'vinculo'));
     window._vinculoFrota = null;
     localStorage.removeItem('dc_frota_vinculo');
-  }catch(e){ console.warn('Erro sair frota', e); }
+  }catch(e){ console.warn('Erro sair frota', e); showToast('Erro ao sair da frota. Tente novamente.', 'error'); }
 };
 
 // ── FROTA: Listar motoristas e rotas (gestor) ────────────────
@@ -2627,7 +2699,7 @@ window._fbIniciarListenerFrota = function(){
         if(typeof verificarNotificacoesGestor === 'function') verificarNotificacoesGestor(lista);
       });
     },
-    function(err){ console.warn('Listener frota erro', err); }
+    function(err){ console.warn('Listener frota erro', err); showToast('Conexão com frota perdida. Recarregue o app.', 'error'); }
   );
   window._frotaUnsubscribes.push(unsub);
 };
@@ -2663,7 +2735,7 @@ window._fbRemoverMoto = async function(motoId){
   if(!window._fbUser) return;
   try{
     await setDoc(doc(db, 'frotas', window._fbUser.uid, 'motos', motoId), { ativo:false }, { merge:true });
-  }catch(e){ console.warn('Erro remover moto', e); }
+  }catch(e){ console.warn('Erro remover moto', e); showToast('Erro ao remover moto.', 'error'); }
 };
 
 // ── FROTA: Salvar manutenção da moto ─────────────────────────
@@ -2697,7 +2769,7 @@ window._fbSalvarConfigMotorista = async function(motUid, config){
   if(!window._fbUser) return;
   try{
     await setDoc(doc(db, 'frotas', window._fbUser.uid, 'motoristas', motUid), config, { merge:true });
-  }catch(e){ console.warn('Erro salvar config motorista', e); }
+  }catch(e){ console.warn('Erro salvar config motorista', e); showToast('Erro ao salvar configuração.', 'error'); }
 };
 
 // ── FROTA: Carregar config do motorista (pelo proprio motorista) ──
@@ -2718,7 +2790,7 @@ window._fbRemoverMotorista = async function(motUid){
     var frotaId = window._fbUser.uid;
     await setDoc(doc(db, 'frotas', frotaId, 'motoristas', motUid), { ativo: false }, { merge: true });
     await deleteDoc(doc(db, 'usuarios', motUid, 'frota', 'vinculo'));
-  }catch(e){ console.warn('Erro remover motorista', e); }
+  }catch(e){ console.warn('Erro remover motorista', e); showToast('Erro ao remover motorista.', 'error'); }
 };
 
 // ── AUTH: Cadastro ───────────────────────────────────────────
@@ -2785,9 +2857,19 @@ console.log('🔥 Firebase inicializado');
 // ============================================================
 const load    = k => JSON.parse(localStorage.getItem(k) || '[]');
 const loadObj = k => JSON.parse(localStorage.getItem(k) || 'null');
-const save    = (k,v) => {
-  localStorage.setItem(k, JSON.stringify(v));       // cache local imediato
-  if(window._fbSave) window._fbSave(k, v);          // sincroniza Firebase
+const save    = function(k,v) {
+  // Proteção: não salva null/undefined nem arrays/objetos corrompidos
+  if(v === null || v === undefined) return;
+  var serializado;
+  try{ serializado = JSON.stringify(v); }catch(e){ console.warn('save(): valor invalido para '+k, e); return; }
+  // Proteção: não sobrescreve dado existente com vazio se havia dados antes
+  var anterior = localStorage.getItem(k);
+  if(anterior && anterior.length > 10 && serializado.length < 3){
+    console.warn('save(): bloqueado para evitar apagar dados de '+k+' (novo='+serializado+')');
+    return;
+  }
+  localStorage.setItem(k, serializado);
+  if(window._fbSave) window._fbSave(k, v);
 };
 
 let rotas    = load('dc_rotas');
@@ -3118,26 +3200,45 @@ function fecharMenu(){
 // ============================================================
 // PAGES — showPage(), voltarDashboard()
 // ============================================================
+// ============================================================
+// showPage — sistema de eventos (substitui múltiplos hooks)
+// ============================================================
+window._showPageHandlers = {};
+window.onShowPage = function(pagina, fn){
+  if(!window._showPageHandlers[pagina]) window._showPageHandlers[pagina] = [];
+  window._showPageHandlers[pagina].push(fn);
+};
+
 function showPage(p){
   fecharMenu();
-  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  if(p==='historico')  {
-    // Define mês atual no filtro
-    const mesEl = document.getElementById('filtro-mes-hist');
+  document.querySelectorAll('.page').forEach(function(el){ el.classList.remove('active'); });
+  var pageEl = document.getElementById('page-'+p);
+  if(!pageEl){ console.warn('showPage: pagina nao encontrada:', p); return; }
+  pageEl.classList.add('active');
+
+  // Handlers nativos
+  if(p==='historico'){
+    var mesEl = document.getElementById('filtro-mes-hist');
     if(mesEl && !mesEl.value) mesEl.value = hoje().slice(0,7);
-    renderHistorico(); populateEmpresaSelects();
+    if(typeof renderHistorico==='function') renderHistorico();
+    if(typeof populateEmpresaSelects==='function') populateEmpresaSelects();
   }
-  if(p==='retroativo') { populateEmpresaSelects(); initRetroativo(); }
-  if(p==='empresas')   renderEmpresas();
-  if(p==='custos')     renderCustos();
-  if(p==='financeiro') { renderFinanceiro(); renderControleServico(); }
-  if(p==='nota-servico') initNotaServico();
-  if(p==='orcamento')  renderOrcamento();
-  if(p==='despesas')   { renderDespesas(); loadCfgToForm(); setTimeout(renderGraficos,100); }
-  if(p==='backup')     renderBackupInfo();
-  if(p==='resumos')    initResumos();
-  if(p==='plano')      renderPlanoPage();
+  if(p==='retroativo'){ if(typeof populateEmpresaSelects==='function') populateEmpresaSelects(); if(typeof initRetroativo==='function') initRetroativo(); }
+  if(p==='empresas')   { if(typeof renderEmpresas==='function') renderEmpresas(); }
+  if(p==='custos')     { if(typeof renderCustos==='function') renderCustos(); }
+  if(p==='financeiro') { if(typeof renderFinanceiro==='function') renderFinanceiro(); if(typeof renderControleServico==='function') renderControleServico(); }
+  if(p==='nota-servico'){ if(typeof initNotaServico==='function') initNotaServico(); }
+  if(p==='orcamento')  { if(typeof renderOrcamento==='function') renderOrcamento(); }
+  if(p==='despesas')   { if(typeof renderDespesas==='function') renderDespesas(); if(typeof loadCfgToForm==='function') loadCfgToForm(); setTimeout(function(){ if(typeof renderGraficos==='function') renderGraficos(); },100); }
+  if(p==='backup')     { if(typeof renderBackupInfo==='function') renderBackupInfo(); }
+  if(p==='resumos')    { if(typeof initResumos==='function') initResumos(); }
+  if(p==='plano')      { if(typeof renderPlanoPage==='function') renderPlanoPage(); }
+
+  // Dispara handlers registrados via onShowPage()
+  var handlers = window._showPageHandlers[p] || [];
+  for(var i=0;i<handlers.length;i++){
+    try{ handlers[i](); }catch(e){ console.warn('showPage handler erro ['+p+']:', e); }
+  }
 }
 function voltarDashboard(){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
@@ -3546,7 +3647,7 @@ function loadKmDias(){
   return JSON.parse(localStorage.getItem('dc_km_dias')||'{}');
 }
 function saveKmDias(obj){
-  localStorage.setItem('dc_km_dias',JSON.stringify(obj));
+  save('dc_km_dias', obj);
   if(window._fbSave) window._fbSave('dc_km_dias',obj);
 }
 
@@ -6148,7 +6249,7 @@ function salvarCfgNota(){
     pix:document.getElementById('nota-pix')?.value||'',
     assinatura:document.getElementById('nota-assinatura')?.value||''
   };
-  localStorage.setItem('dc_cfg_nota',JSON.stringify(cfg));
+  save('dc_cfg_nota', cfg);
 }
 function loadNotasEmitidas(){return JSON.parse(localStorage.getItem('dc_notas_emitidas')||'[]');}
 function initNotaServico(){
@@ -6257,7 +6358,7 @@ function gerarNotaServico(){
   txt+=`${assinatura}`;
   const notas=loadNotasEmitidas();
   notas.unshift({id:Date.now(),num,empId,empNome:emp.nome,data,total,qtd:totalEntregas,txt});
-  localStorage.setItem('dc_notas_emitidas',JSON.stringify(notas.slice(0,100)));
+  save('dc_notas_emitidas', notas.slice(0,100));
   const area=document.getElementById('nota-preview-area');
   const pre=document.getElementById('nota-preview-txt');
   if(area) area.style.display='block';
@@ -6306,7 +6407,7 @@ function reenviarNota(id){
 }
 function deletarNota(id){
   const notas=loadNotasEmitidas().filter(n=>n.id!==Number(id));
-  localStorage.setItem('dc_notas_emitidas',JSON.stringify(notas));
+  save('dc_notas_emitidas', notas);
   renderNotaHistorico();
 }
 
@@ -7551,14 +7652,9 @@ function verificarNotificacoes(){
 // ============================================================
 // HOOK showPage — intercepta para novas páginas
 // ============================================================
-(function(){
-  var origShow = window.showPage;
-  window.showPage = function(p){
-    if(typeof origShow === 'function') origShow(p);
-    if(p === 'insights')     renderInsights();
-    if(p === 'relatorio-ir') initRelatorioIR();
-  };
-})();
+// Registra handlers via novo sistema de eventos
+window.onShowPage('insights',     function(){ if(typeof renderInsights==='function') renderInsights(); });
+window.onShowPage('relatorio-ir', function(){ if(typeof initRelatorioIR==='function') initRelatorioIR(); });
 </script>
 
 <script>
@@ -7845,15 +7941,9 @@ function confirmarSairFrota(){
 // ============================================================
 // HOOK showPage — adiciona painel gestor, frota motorista, criar frota
 // ============================================================
-(function(){
-  var origShow = window.showPage;
-  window.showPage = function(p){
-    if(typeof origShow === 'function') origShow(p);
-    if(p === 'painel-gestor')    initPainelGestor();
-    if(p === 'frota-motorista')  initFrotaMotorista();
-    if(p === 'criar-frota')      initCriarFrota();
-  };
-})();
+window.onShowPage('painel-gestor',   function(){ if(typeof initPainelGestor==='function') initPainelGestor(); });
+window.onShowPage('frota-motorista', function(){ if(typeof initFrotaMotorista==='function') initFrotaMotorista(); });
+window.onShowPage('criar-frota',     function(){ if(typeof initCriarFrota==='function') initCriarFrota(); });
 
 // ============================================================
 // MENU — item Criar Frota (só aparece p/ plano empresa sem frota)
@@ -8126,14 +8216,7 @@ function exportarCSVPlataformas(){
   showToast('CSV exportado!', 'success');
 }
 
-// ── Hook showPage ────────────────────────────────────────────
-(function(){
-  var origShow = window.showPage;
-  window.showPage = function(p){
-    if(typeof origShow === 'function') origShow(p);
-    if(p === 'plataformas') initPlataformasPage();
-  };
-})();
+window.onShowPage('plataformas', function(){ if(typeof initPlataformasPage==='function') initPlataformasPage(); });
 
 // ── Card no dashboard (Top plataforma do mês) ────────────────
 function renderCardPlataformasDash(){
@@ -8937,7 +9020,10 @@ function salvarBaixaComissao(){
   lista.push({ id:Date.now()+'', valor:valor, data:hoje(), obs:obs });
   localStorage.setItem(chave, JSON.stringify(lista));
 
-  // Também salva no Firestore para persistência
+  // Sincroniza via save() para Firebase (dados do usuário)
+  if(typeof save === 'function') save(chave, lista);
+
+  // Também salva na subcoleção de frota para acesso do gestor
   if(window._fbUser && typeof setDoc !== 'undefined'){
     var docRef = doc(db, 'frotas', window._fbUser.uid, 'comissoes', uid + '_' + mes);
     setDoc(docRef, { uid:uid, mes:mes, pagamentos:lista }, { merge:true }).catch(function(e){ console.warn('Erro salvar comissão', e); });
@@ -9020,4 +9106,408 @@ function verificarNotificacoes(){
     verificarNotificacoesGestor(window._motoristasFrota);
   }
 }
+</script>
+
+<script>
+// ============================================================
+// INDEXEDDB — camada de persistência (ES5, substitui localStorage)
+// ============================================================
+var _dcDB = null;
+var DC_SCHEMA_VERSION = 1;
+
+function _initDB(cb){
+  if(_dcDB){ cb(_dcDB); return; }
+  if(typeof Dexie === 'undefined'){
+    console.warn('Dexie nao disponivel, usando localStorage fallback');
+    cb(null); return;
+  }
+  var db = new Dexie('DriveCashDB');
+  db.version(DC_SCHEMA_VERSION).stores({
+    dados: 'chave'  // chave primária, valor livre
+  });
+  db.open().then(function(){
+    _dcDB = db;
+    cb(db);
+  }).catch(function(e){
+    console.warn('IndexedDB erro ao abrir:', e);
+    cb(null);
+  });
+}
+
+// save() com IndexedDB como primário, localStorage como fallback
+var _origSave = window.save || function(k,v){ localStorage.setItem(k, JSON.stringify(v)); };
+window.save = function(k, v){
+  // Sempre mantém localStorage sincronizado (fallback + Firebase sync)
+  _origSave(k, v);
+  // Também salva no IndexedDB de forma assíncrona
+  _initDB(function(db){
+    if(!db) return;
+    db.dados.put({ chave: k, valor: v, ts: Date.now() }).catch(function(e){
+      console.warn('IndexedDB write error', k, e);
+    });
+  });
+};
+
+// loadObj() tenta IndexedDB, cai para localStorage
+window.loadIDB = function(k, cb){
+  _initDB(function(db){
+    if(!db){ cb(null); return; }
+    db.dados.get(k).then(function(rec){
+      cb(rec ? rec.valor : null);
+    }).catch(function(){ cb(null); });
+  });
+};
+
+// ── Schema migration: detecta mudanças de estrutura ──────────
+window._dcRunMigrations = function(){
+  var currentSchema = parseInt(localStorage.getItem('dc_schema_v')||'0');
+  if(currentSchema >= DC_SCHEMA_VERSION) return;
+
+  console.log('DriveCash: rodando migration de schema', currentSchema, '->', DC_SCHEMA_VERSION);
+
+  // Migration 1: garante que todas as rotas têm campo 'id'
+  if(currentSchema < 1){
+    try{
+      var rotasRaw = localStorage.getItem('dc_rotas');
+      if(rotasRaw){
+        var rs = JSON.parse(rotasRaw);
+        var changed = false;
+        rs.forEach(function(r, i){
+          if(!r.id){ r.id = Date.now() + i; changed = true; }
+        });
+        if(changed) localStorage.setItem('dc_rotas', JSON.stringify(rs));
+      }
+    }catch(e){ console.warn('Migration 1 erro:', e); }
+  }
+
+  localStorage.setItem('dc_schema_v', DC_SCHEMA_VERSION + '');
+  console.log('DriveCash: migrations concluídas');
+};
+
+// ── Verificação de uso do localStorage ───────────────────────
+window._dcCheckStorageUsage = function(){
+  try{
+    var total = 0;
+    for(var k in localStorage){
+      if(localStorage.hasOwnProperty(k)) total += (localStorage[k]||'').length * 2;
+    }
+    var totalKB = Math.round(total / 1024);
+    var limitKB = 5000; // 5MB estimado
+    var pct = Math.round((totalKB / limitKB) * 100);
+    console.log('localStorage uso:', totalKB + 'KB (' + pct + '% de ~5MB)');
+    // Alerta se > 80%
+    if(pct > 80){
+      showToast('Atenção: armazenamento em ' + pct + '% da capacidade. Faça backup!', 'error');
+    }
+    return { totalKB: totalKB, pct: pct };
+  }catch(e){ return { totalKB: 0, pct: 0 }; }
+};
+
+// Roda migrations e verifica uso ao iniciar
+(function(){
+  if(typeof window._dcRunMigrations === 'function') window._dcRunMigrations();
+  setTimeout(function(){
+    if(typeof window._dcCheckStorageUsage === 'function') window._dcCheckStorageUsage();
+    _initDB(function(db){
+      if(db) console.log('DriveCash: IndexedDB ativo');
+    });
+  }, 3000);
+})();
+
+// ============================================================
+// VALIDAÇÃO INLINE — formulário de rota  (ES5)
+// ============================================================
+
+function validarCampoRota(id){
+  var el    = document.getElementById(id);
+  var hint  = document.getElementById('hint-' + id);
+  if(!el) return true;
+
+  var field = el.closest ? el.closest('.field') : el.parentElement;
+  var val   = el.value ? el.value.trim() : '';
+  var ok    = true;
+  var msg   = '';
+
+  if(id === 'r-empresa'){
+    if(!val){ ok = false; msg = 'Selecione uma empresa.'; }
+    else msg = '✓ Empresa selecionada';
+  }
+
+  if(field){
+    field.classList.toggle('field-error', !ok);
+    field.classList.toggle('field-ok',    ok && !!val);
+  }
+  if(hint){
+    hint.textContent = msg;
+    hint.className   = 'field-hint ' + (ok && val ? 'ok' : (!ok ? 'erro' : ''));
+  }
+  return ok;
+}
+
+function validarFormularioRota(){
+  var ok = true;
+  // Empresa obrigatória
+  if(!validarCampoRota('r-empresa')) ok = false;
+
+  // Verifica se tem pelo menos 1 slot com valor > 0
+  var slots = document.querySelectorAll('.entrega-slot');
+  var temValor = false;
+  for(var i = 0; i < slots.length; i++){
+    var n = slots[i].id.replace('slot-','');
+    var taxaEl = document.getElementById('slot-taxa-'+n) || document.getElementById('slot-taxa-v-'+n);
+    if(taxaEl && parseFloat(taxaEl.value||'0') > 0){ temValor = true; break; }
+  }
+  if(!temValor){
+    showToast('Informe o valor de pelo menos uma entrega.', 'error');
+    ok = false;
+  }
+  return ok;
+}
+
+function validarESalvarRota(){
+  if(!validarFormularioRota()) return;
+  if(typeof salvarRota === 'function') salvarRota();
+}
+
+// Limpa erros visuais ao limpar formulário
+var _origLimparTudo = window.limparTudo || function(){};
+window.limparTudo = function(){
+  _origLimparTudo();
+  document.querySelectorAll('.field-error,.field-ok').forEach(function(el){
+    el.classList.remove('field-error','field-ok');
+  });
+  document.querySelectorAll('.field-hint').forEach(function(el){
+    el.textContent = '';
+    el.className = 'field-hint';
+  });
+};
+</script>
+
+<script>
+// ============================================================
+// PROTEÇÃO TOTAL DE DADOS  (ES5 - sem backticks)
+// ============================================================
+
+var DC_CHAVES_CRITICAS = [
+  'dc_rotas','dc_empresas','dc_custos','dc_despesas',
+  'dc_pagamentos','dc_cfg','dc_km_dias',
+  'dc_notas_emitidas','dc_cfg_nota','dc_backup_info'
+];
+var DC_MAX_SNAPSHOTS = 5;
+var DC_SNAPSHOT_KEY  = 'dc_snapshots';
+var _snapshotInterval = null;
+
+// ── 1. SNAPSHOTS AUTOMÁTICOS ──────────────────────────────────
+function tirarSnapshot(silencioso){
+  try{
+    var dados = {};
+    DC_CHAVES_CRITICAS.forEach(function(k){
+      var v = localStorage.getItem(k);
+      if(v) dados[k] = v; // já serializado
+    });
+
+    // Inclui dc_compag_* (pagamentos de comissão)
+    for(var k in localStorage){
+      if(k.indexOf('dc_compag_') === 0) dados[k] = localStorage.getItem(k);
+    }
+
+    var snap = {
+      id:    Date.now(),
+      ts:    new Date().toISOString(),
+      dados: dados,
+      nRotas: rotas ? rotas.length : 0
+    };
+
+    var lista = _carregarSnapshots();
+    lista.unshift(snap);
+    if(lista.length > DC_MAX_SNAPSHOTS) lista = lista.slice(0, DC_MAX_SNAPSHOTS);
+    localStorage.setItem(DC_SNAPSHOT_KEY, JSON.stringify(lista));
+
+    if(!silencioso) showToast('Snapshot salvo (' + snap.nRotas + ' rotas).', 'success');
+
+    // Atualiza lista na tela se backup estiver aberta
+    if(typeof renderSnapshots === 'function') renderSnapshots();
+    return snap;
+  }catch(e){
+    console.warn('Erro ao tirar snapshot:', e);
+    return null;
+  }
+}
+
+function _carregarSnapshots(){
+  try{
+    return JSON.parse(localStorage.getItem(DC_SNAPSHOT_KEY)||'[]');
+  }catch(e){ return []; }
+}
+
+function tirarSnapshotManual(){
+  tirarSnapshot(false);
+}
+
+function iniciarSnapshotsAutomaticos(){
+  if(_snapshotInterval) return;
+  // Tira um snapshot imediatamente ao iniciar
+  setTimeout(function(){ tirarSnapshot(true); }, 5000);
+  // Depois a cada 30 minutos
+  _snapshotInterval = setInterval(function(){ tirarSnapshot(true); }, 30*60*1000);
+}
+
+function restaurarSnapshot(snapshotId){
+  var lista = _carregarSnapshots();
+  var snap  = null;
+  for(var i=0;i<lista.length;i++){ if(lista[i].id === snapshotId){ snap = lista[i]; break; } }
+  if(!snap){ showToast('Snapshot não encontrado.', 'error'); return; }
+
+  var nRotas = snap.nRotas || '?';
+  confirmar('Restaurar snapshot de ' + _formatarTs(snap.ts) + ' (' + nRotas + ' rotas)? Os dados atuais serão substituídos.').then(function(ok){
+    if(!ok) return;
+
+    // Tira snapshot dos dados atuais antes de restaurar (safety net)
+    tirarSnapshot(true);
+
+    // Restaura todos os dados
+    for(var chave in snap.dados){
+      localStorage.setItem(chave, snap.dados[chave]);
+    }
+
+    // Recarrega variáveis em memória
+    try{
+      window.rotas      = JSON.parse(localStorage.getItem('dc_rotas')||'[]');
+      rotas             = window.rotas;
+      window.empresas   = JSON.parse(localStorage.getItem('dc_empresas')||'[]');
+      empresas          = window.empresas;
+      window.despesas   = JSON.parse(localStorage.getItem('dc_despesas')||'[]');
+      despesas          = window.despesas;
+      window.pagamentos = JSON.parse(localStorage.getItem('dc_pagamentos')||'[]');
+      pagamentos        = window.pagamentos;
+    }catch(e){ console.warn('Erro recarregar após restauração', e); }
+
+    showToast('Snapshot restaurado com sucesso!', 'success');
+    if(typeof renderDashboard==='function') renderDashboard();
+    if(typeof renderFeed==='function') renderFeed();
+    if(typeof populateEmpresaSelects==='function') populateEmpresaSelects();
+    if(typeof renderSnapshots==='function') renderSnapshots();
+  });
+}
+
+function _formatarTs(iso){
+  try{
+    var d = new Date(iso);
+    return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){ return iso; }
+}
+
+function renderSnapshots(){
+  var cont = document.getElementById('snapshots-lista');
+  if(!cont) return;
+  var lista = _carregarSnapshots();
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:0.8rem;">Nenhum snapshot ainda.</div>';
+    return;
+  }
+  var html = '';
+  lista.forEach(function(snap, idx){
+    var label = idx === 0 ? ' <span style="font-size:0.65rem;background:rgba(0,255,136,.15);color:var(--green);border-radius:8px;padding:2px 6px;">mais recente</span>' : '';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">'
+      + '<div>'
+      + '<div style="font-size:0.82rem;font-weight:600;">' + _formatarTs(snap.ts) + label + '</div>'
+      + '<div style="font-size:0.7rem;color:var(--muted);">' + (snap.nRotas||0) + ' rotas · ' + Object.keys(snap.dados||{}).length + ' coleções</div>'
+      + '</div>'
+      + '<button onclick="restaurarSnapshot(' + snap.id + ')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--text);font-size:0.72rem;cursor:pointer;">↩️ Restaurar</button>'
+      + '</div>';
+  });
+  cont.innerHTML = html;
+}
+
+// ── 2. SYNC COMPLETO FORÇADO ──────────────────────────────────
+function forcarSyncCompleto(){
+  if(!window._fbUser || !window._fbSave){
+    showToast('Conecte-se para sincronizar.', 'error'); return;
+  }
+  showToast('Sincronizando todos os dados...', 'info');
+  var chaves = DC_CHAVES_CRITICAS.slice();
+
+  // Adiciona dc_compag_* dinamicamente
+  for(var k in localStorage){
+    if(k.indexOf('dc_compag_') === 0) chaves.push(k);
+  }
+
+  var count = 0;
+  chaves.forEach(function(k){
+    var raw = localStorage.getItem(k);
+    if(!raw) return;
+    try{
+      var v = JSON.parse(raw);
+      window._fbSave(k, v);
+      count++;
+    }catch(e){ console.warn('Sync erro para '+k, e); }
+  });
+
+  setTimeout(function(){
+    showToast(count + ' coleções sincronizadas com a nuvem.', 'success');
+    renderSyncStatus();
+  }, 2000);
+}
+
+// ── 3. STATUS DE SINCRONIZAÇÃO ────────────────────────────────
+function renderSyncStatus(){
+  var cont = document.getElementById('sync-status-lista');
+  if(!cont) return;
+
+  var online = navigator.onLine;
+  var logado = !!(window._fbUser);
+  var html = '';
+
+  html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+    + '<span>Conexão com internet</span>'
+    + '<span style="color:' + (online?'var(--green)':'var(--red)') + ';">' + (online?'✅ Online':'❌ Offline') + '</span></div>';
+
+  html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+    + '<span>Firebase Auth</span>'
+    + '<span style="color:' + (logado?'var(--green)':'var(--red)') + ';">' + (logado?'✅ Conectado':'❌ Desconectado') + '</span></div>';
+
+  var ultimoSnap = _carregarSnapshots()[0];
+  html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+    + '<span>Último snapshot local</span>'
+    + '<span style="color:var(--muted);font-size:0.75rem;">' + (ultimoSnap?_formatarTs(ultimoSnap.ts):'Nunca') + '</span></div>';
+
+  // Verifica uso do storage
+  try{
+    var total = 0;
+    for(var k in localStorage){ if(localStorage.hasOwnProperty(k)) total += (localStorage[k]||'').length * 2; }
+    var kb = Math.round(total/1024);
+    var pct = Math.round((kb/5000)*100);
+    var cor = pct > 80 ? 'var(--red)' : pct > 50 ? 'var(--orange)' : 'var(--green)';
+    html += '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:0.82rem;">'
+      + '<span>Armazenamento local</span>'
+      + '<span style="color:' + cor + ';">' + kb + 'KB (' + pct + '%)</span></div>';
+  }catch(e){}
+
+  cont.innerHTML = html;
+}
+
+// ── 4. HOOK NA PÁGINA DE BACKUP ───────────────────────────────
+window.onShowPage('backup', function(){
+  renderSnapshots();
+  renderSyncStatus();
+});
+
+// ── 5. DETECÇÃO DE VOLTA ONLINE → sync automático ─────────────
+window.addEventListener('online', function(){
+  showToast('Conexão restaurada. Sincronizando...', 'info');
+  setTimeout(function(){
+    if(window._fbSave && window._fbUser) forcarSyncCompleto();
+  }, 1500);
+});
+
+window.addEventListener('offline', function(){
+  showToast('Sem conexão. Dados salvos localmente.', 'error');
+});
+
+// ── 6. INICIA SNAPSHOTS QUANDO USUÁRIO LOGAR ─────────────────
+var _origFbCarregar = window._fbCarregarDados;
+window._fbCarregarDados = async function(uid){
+  if(typeof _origFbCarregar === 'function') await _origFbCarregar(uid);
+  iniciarSnapshotsAutomaticos();
+};
 </script>
