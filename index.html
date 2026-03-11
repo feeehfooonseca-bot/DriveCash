@@ -528,6 +528,34 @@ select option{background:var(--card);}
 .confirm-yes:hover{background:#e03030;}
 .confirm-no{background:var(--card2);color:var(--text);border:1px solid var(--border)!important;}
 .confirm-no:hover{border-color:var(--green)!important;color:var(--green);}
+
+/* ── PLATAFORMAS ────────────────────────────────────────────── */
+.plataforma-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px;}
+.btn-plataforma{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;padding:10px 6px;border-radius:10px;border:2px solid var(--border);
+  background:var(--bg);cursor:pointer;transition:all .15s;font-size:0.7rem;
+  color:var(--muted);font-weight:600;line-height:1.2;text-align:center;
+}
+.btn-plataforma:active{transform:scale(.95);}
+.btn-plataforma.sel{border-color:var(--plat-cor,var(--green));background:rgba(var(--plat-rgb,0,255,136),.1);color:var(--text);}
+.btn-plataforma .plat-icon{font-size:1.3rem;line-height:1;}
+.plat-ifood   {--plat-cor:#ea1d2c;--plat-rgb:234,29,44;}
+.plat-uber    {--plat-cor:#000;--plat-rgb:30,30,30;}
+.plat-rappi   {--plat-cor:#ff441f;--plat-rgb:255,68,31;}
+.plat-pedidos10{--plat-cor:#f7931e;--plat-rgb:247,147,30;}
+.plat-james   {--plat-cor:#6c3fc5;--plat-rgb:108,63,197;}
+.plat-loggi   {--plat-cor:#00b4d8;--plat-rgb:0,180,216;}
+.plat-outros  {--plat-cor:var(--muted);--plat-rgb:120,120,120;}
+.plat-tag{display:inline-flex;align-items:center;gap:4px;font-size:0.68rem;font-weight:700;
+  padding:2px 7px;border-radius:20px;background:rgba(120,120,120,.15);color:var(--muted);}
+.plat-tag.plat-ifood   {background:rgba(234,29,44,.15);color:#ea1d2c;}
+.plat-tag.plat-uber    {background:rgba(30,30,30,.15);color:var(--text);}
+.plat-tag.plat-rappi   {background:rgba(255,68,31,.15);color:#ff441f;}
+.plat-tag.plat-pedidos10{background:rgba(247,147,30,.15);color:#f7931e;}
+.plat-tag.plat-james   {background:rgba(108,63,197,.15);color:#6c3fc5;}
+.plat-tag.plat-loggi   {background:rgba(0,180,216,.15);color:#00b4d8;}
+
 </style>
 </head>
 <body>
@@ -561,6 +589,9 @@ select option{background:var(--card);}
       <button class="menu-item" onclick="showPage('backup')">☁️ &nbsp;Backup</button>
       <button class="menu-item" onclick="showPage('nota-servico')">📋 &nbsp;Nota de Serviço</button>
       <button class="menu-item" onclick="gerarRelatorioSemanal()">📊 &nbsp;Relatório Semanal</button>
+      <button class="menu-item" id="menu-item-frota-motorista" style="display:none;" onclick="showPage('frota-motorista')">🏍️ &nbsp;Minha Frota</button>
+      <button class="menu-item" id="menu-item-painel-gestor" style="display:none;" onclick="showPage('painel-gestor')">🏢 &nbsp;Painel da Frota</button>
+      <button class="menu-item" onclick="showPage('plataformas')">📱 &nbsp;Por Plataforma</button>
       <button class="menu-item" onclick="isPro()?showPage('insights'):alertProFeature('Insights')">💡 &nbsp;Insights</button>
       <button class="menu-item" onclick="isPro()?showPage('relatorio-ir'):alertProFeature('Relatório IR')">📄 &nbsp;Relatório IR</button>
       <button class="menu-item" onclick="isPro()?showPage('importar-csv'):alertProFeature('Importar CSV')">📥 &nbsp;Importar CSV</button>
@@ -739,6 +770,20 @@ select option{background:var(--card);}
     </div>
 
     <div class="preview-box" id="preview-calc">💡 Preencha os campos para ver o cálculo</div>
+
+    <!-- PLATAFORMA -->
+    <div style="margin:10px 0 4px;">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;">📱 Plataforma <span style="font-weight:400;font-style:italic;">(opcional)</span></div>
+      <div class="plataforma-grid">
+        <button type="button" class="btn-plataforma plat-ifood"    id="plat-ifood"    onclick="selecionarPlataforma('ifood')">   <span class="plat-icon">🍔</span>iFood</button>
+        <button type="button" class="btn-plataforma plat-uber"     id="plat-uber"     onclick="selecionarPlataforma('uber')">    <span class="plat-icon">🚗</span>Uber Eats</button>
+        <button type="button" class="btn-plataforma plat-rappi"    id="plat-rappi"    onclick="selecionarPlataforma('rappi')">   <span class="plat-icon">🛵</span>Rappi</button>
+        <button type="button" class="btn-plataforma plat-pedidos10" id="plat-pedidos10" onclick="selecionarPlataforma('pedidos10')"><span class="plat-icon">🛍️</span>Pedidos10</button>
+        <button type="button" class="btn-plataforma plat-james"    id="plat-james"    onclick="selecionarPlataforma('james')">   <span class="plat-icon">🟣</span>James</button>
+        <button type="button" class="btn-plataforma plat-loggi"    id="plat-loggi"    onclick="selecionarPlataforma('loggi')">   <span class="plat-icon">📦</span>Loggi</button>
+      </div>
+      <input type="hidden" id="r-plataforma" value="">
+    </div>
 
     <div class="btn-row">
       <button class="btn btn-primary" onclick="salvarRota()">✅ Salvar Rota</button>
@@ -1425,11 +1470,11 @@ select option{background:var(--card);}
         <button class="btn btn-secondary" style="width:100%;margin-top:6px;" onclick="iniciarCheckout('pro')">Assinar Pro — R$ 29,90/mês</button>
       </div>
 
-      <!-- EMPRESA -->
-      <div class="plan-card" id="plan-card-empresa" style="border:2px solid #9b59b6;border-radius:12px;padding:16px;background:rgba(155,89,182,0.05);">
+      <!-- EMPRESA STARTER -->
+      <div class="plan-card" style="border:2px solid #9b59b6;border-radius:12px;padding:16px;background:rgba(155,89,182,0.05);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div>
-            <div style="font-weight:700;font-size:1rem;">🏢 Empresa</div>
+            <div style="font-weight:700;font-size:1rem;">🏢 Empresa Starter</div>
             <div style="color:#9b59b6;font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 89,90<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
           </div>
           <span class="plan-badge" style="background:#9b59b6;color:#fff;font-size:0.65rem;padding:2px 8px;border-radius:20px;font-weight:700;">EMPRESA</span>
@@ -1438,11 +1483,46 @@ select option{background:var(--card);}
           <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Tudo do Pro</div>
           <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Até 10 motoristas</div>
           <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Painel do gestor</div>
-          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Relatório consolidado da frota</div>
-          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Custo por motorista</div>
-          <div style="padding:4px 0;">✅ Suporte prioritário</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Relatório consolidado</div>
+          <div style="padding:4px 0;">✅ Código de convite da frota</div>
         </div>
-        <button class="btn" style="width:100%;background:#9b59b6;color:#fff;border:none;border-radius:8px;padding:12px;font-size:0.9rem;font-weight:700;cursor:pointer;" onclick="iniciarCheckout('empresa')">Contratar plano Empresa</button>
+        <button class="btn" style="width:100%;background:#9b59b6;color:#fff;border:none;border-radius:8px;padding:12px;font-size:0.88rem;font-weight:700;cursor:pointer;" onclick="iniciarCheckout('empresa_starter')">Contratar Starter — R$ 89,90/mês</button>
+      </div>
+
+      <!-- EMPRESA GROWTH -->
+      <div class="plan-card" style="border:2px solid #8e44ad;border-radius:12px;padding:16px;background:rgba(142,68,173,0.07);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div>
+            <div style="font-weight:700;font-size:1rem;">🚀 Empresa Growth</div>
+            <div style="color:#8e44ad;font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 149,90<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
+          </div>
+          <span class="plan-badge" style="background:#8e44ad;color:#fff;font-size:0.65rem;padding:2px 8px;border-radius:20px;font-weight:700;">GROWTH</span>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Tudo do Starter</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Até 20 motoristas</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Relatório por cliente</div>
+          <div style="padding:4px 0;">✅ Exportação CSV da frota</div>
+        </div>
+        <button class="btn" style="width:100%;background:#8e44ad;color:#fff;border:none;border-radius:8px;padding:12px;font-size:0.88rem;font-weight:700;cursor:pointer;" onclick="iniciarCheckout('empresa_growth')">Contratar Growth — R$ 149,90/mês</button>
+      </div>
+
+      <!-- EMPRESA ENTERPRISE -->
+      <div class="plan-card" style="border:2px solid var(--gold);border-radius:12px;padding:16px;background:rgba(240,192,64,0.05);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div>
+            <div style="font-weight:700;font-size:1rem;">🏆 Empresa Enterprise</div>
+            <div style="color:var(--gold);font-size:1.4rem;font-family:'Rajdhani',sans-serif;font-weight:700;">R$ 199,90<span style="font-size:0.75rem;color:var(--muted);font-family:inherit;">/mês</span></div>
+          </div>
+          <span class="plan-badge pro" style="font-size:0.65rem;">ENTERPRISE</span>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Tudo do Growth</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Motoristas ilimitados</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border);">✅ Suporte prioritário</div>
+          <div style="padding:4px 0;">✅ Personalização do app</div>
+        </div>
+        <button class="btn btn-gold" style="width:100%;border:none;border-radius:8px;padding:12px;font-size:0.88rem;font-weight:700;cursor:pointer;" onclick="iniciarCheckout('empresa_enterprise')">Contratar Enterprise — R$ 199,90/mês</button>
       </div>
     </div>
 
@@ -1537,6 +1617,150 @@ select option{background:var(--card);}
         <button class="btn btn-gold" onclick="importarCSVConfirmar()">✅ Importar</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ==================== PAINEL GESTOR ==================== -->
+<div id="page-painel-gestor" class="page">
+  <div class="card">
+    <div class="painel-header">
+      <div class="section-title">🏢 Painel do Gestor</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+
+    <!-- Info da frota -->
+    <div id="gestor-frota-info" style="background:rgba(155,89,182,0.08);border:1px solid rgba(155,89,182,0.3);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Sua Frota</div>
+          <div id="gestor-nome-frota" style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">—</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.72rem;color:var(--muted);">Código de convite</div>
+          <div id="gestor-codigo-convite" style="font-family:monospace;font-size:1rem;font-weight:700;color:#9b59b6;letter-spacing:2px;cursor:pointer;" onclick="copiarCodigoConvite()">—</div>
+          <div style="font-size:0.68rem;color:var(--muted);">toque para copiar</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;" id="gestor-stats-row">
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div id="gestor-total-mot" style="font-size:1.3rem;font-weight:700;color:#9b59b6;font-family:'Rajdhani',sans-serif;">0</div>
+          <div style="font-size:0.68rem;color:var(--muted);">Motoristas</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div id="gestor-total-hoje" style="font-size:1.3rem;font-weight:700;color:var(--green);font-family:'Rajdhani',sans-serif;">0</div>
+          <div style="font-size:0.68rem;color:var(--muted);">Entregas hoje</div>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">
+          <div id="gestor-total-mes" style="font-size:1.3rem;font-weight:700;color:var(--gold);font-family:'Rajdhani',sans-serif;">—</div>
+          <div style="font-size:0.68rem;color:var(--muted);">Receita mês</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações do gestor -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+      <button class="btn btn-secondary" style="font-size:0.8rem;padding:10px;" onclick="atualizarPainelGestor()">🔄 Atualizar</button>
+      <button class="btn btn-secondary" style="font-size:0.8rem;padding:10px;" onclick="exportarRelatorioFrota()">📊 Relatório CSV</button>
+    </div>
+
+    <!-- Lista de motoristas -->
+    <div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Motoristas da Frota</div>
+    <div id="gestor-lista-motoristas">
+      <div style="text-align:center;padding:24px;color:var(--muted);">Carregando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FROTA MOTORISTA ==================== -->
+<div id="page-frota-motorista" class="page">
+  <div class="card">
+    <div class="painel-header">
+      <div class="section-title">🏢 Minha Frota</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+
+    <!-- Sem frota -->
+    <div id="frota-sem-vinculo" style="display:none;">
+      <div style="text-align:center;padding:20px 0 14px;">
+        <div style="font-size:2.5rem;margin-bottom:8px;">🏍️</div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:6px;">Entrar numa frota</div>
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:20px;">Se o seu gestor te enviou um código de convite, insira abaixo para vincular sua conta.</div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:0.75rem;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;">CÓDIGO DE CONVITE</label>
+        <input id="input-codigo-convite" type="text" placeholder="Ex: FROTA-XK72" maxlength="12"
+          style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:12px;width:100%;font-size:1rem;font-family:monospace;text-transform:uppercase;box-sizing:border-box;"
+          oninput="this.value=this.value.toUpperCase()">
+      </div>
+      <button class="btn btn-gold" style="width:100%;" onclick="entrarFrota()">Entrar na Frota</button>
+    </div>
+
+    <!-- Com frota -->
+    <div id="frota-com-vinculo" style="display:none;">
+      <div style="background:rgba(155,89,182,0.08);border:1px solid rgba(155,89,182,0.3);border-radius:12px;padding:16px;margin-bottom:16px;">
+        <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Vinculado à frota</div>
+        <div id="frota-nome-vinculo" style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:#9b59b6;">—</div>
+        <div id="frota-gestor-email" style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Gestor: —</div>
+        <div id="frota-entrada-em" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
+      </div>
+      <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.8rem;color:var(--muted);">
+        ✅ Suas entregas são sincronizadas automaticamente com o gestor.<br>
+        Seus dados são <strong style="color:var(--text);">privados</strong> — só o gestor da sua frota vê seus números.
+      </div>
+      <button class="btn btn-secondary" style="width:100%;color:var(--red);border-color:var(--red);" onclick="confirmarSairFrota()">🚪 Sair da frota</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CRIAR FROTA ==================== -->
+<div id="page-criar-frota" class="page">
+  <div class="card">
+    <div class="painel-header">
+      <div class="section-title">🏢 Criar Frota</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+    <div id="criar-frota-existente" style="display:none;">
+      <div style="text-align:center;padding:16px 0;">
+        <div style="font-size:2rem;margin-bottom:8px;">✅</div>
+        <div style="font-size:0.9rem;color:var(--muted);">Você já tem uma frota criada.</div>
+        <button class="btn btn-gold" style="margin-top:14px;" onclick="showPage('painel-gestor')">Ir para o Painel do Gestor →</button>
+      </div>
+    </div>
+    <div id="criar-frota-form">
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;">Configure sua frota. O código de convite será gerado automaticamente para você compartilhar com seus motoristas.</div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:0.75rem;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;">NOME DA FROTA</label>
+        <input id="input-nome-frota" type="text" placeholder="Ex: Motoboys do Sul"
+          style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:12px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+      </div>
+      <div style="background:rgba(240,192,64,0.08);border:1px solid rgba(240,192,64,0.25);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.8rem;">
+        <div style="color:var(--gold);font-weight:600;margin-bottom:4px;">Plano atual:</div>
+        <div id="criar-frota-plano-info" style="color:var(--muted);"></div>
+      </div>
+      <button class="btn btn-gold" style="width:100%;" onclick="criarFrota()">🚀 Criar Frota</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PLATAFORMAS ==================== -->
+<div id="page-plataformas" class="page">
+  <div class="card">
+    <div class="painel-header">
+      <div class="section-title">📱 Por Plataforma</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+
+    <!-- Filtro de mês -->
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;">
+      <select id="plat-mes-sel" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:0.88rem;flex:1;" onchange="renderPlataformasPage()"></select>
+      <button class="btn btn-secondary" style="font-size:0.8rem;padding:8px 12px;white-space:nowrap;" onclick="exportarCSVPlataformas()">📊 CSV</button>
+    </div>
+
+    <!-- Resumo geral -->
+    <div id="plat-resumo-geral" style="margin-bottom:16px;"></div>
+
+    <!-- Cards por plataforma -->
+    <div id="plat-cards-container"></div>
   </div>
 </div>
 
@@ -1671,7 +1895,8 @@ import { getAuth, createUserWithEmailAndPassword,
          EmailAuthProvider, reauthenticateWithCredential }
                                                     from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc,
-         collection, getDocs, deleteDoc, onSnapshot }
+         collection, getDocs, deleteDoc, onSnapshot,
+         query, where, addDoc }
                                                     from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1779,6 +2004,24 @@ function _garantirTelaLogin(){
 
 // ── Carregar todos os dados do Firestore ─────────────────────
 window._fbCarregarDados = async function(uid){
+  // Carrega vinculo de frota (motorista)
+  try{
+    var vinculoSnap = await getDoc(doc(db, 'usuarios', uid, 'frota', 'vinculo'));
+    if(vinculoSnap.exists()){
+      window._vinculoFrota = vinculoSnap.data();
+      localStorage.setItem('dc_frota_vinculo', JSON.stringify(window._vinculoFrota));
+    }
+  }catch(e){ console.warn('Erro carregar vinculo frota', e); }
+
+  // Carrega frota se for gestor
+  try{
+    var frotaGestorSnap = await getDoc(doc(db, 'frotas', uid));
+    if(frotaGestorSnap.exists()){
+      window._frotaData = frotaGestorSnap.data();
+      window._frotaId   = uid;
+    }
+  }catch(e){ console.warn('Erro carregar frota gestor', e); }
+
   // Carrega plano do servidor (fonte de verdade)
   try{
     var planoSnap = await getDoc(doc(db, 'usuarios', uid, 'plano', 'status'));
@@ -1815,7 +2058,7 @@ window._fbCarregarDados = async function(uid){
     window.populateEmpresaSelects();
     window.renderDashboard();
     window.renderFeed();
-    setTimeout(function(){ if(typeof verificarNotificacoes==='function') verificarNotificacoes(); if(typeof atualizarInsightsPreview==='function') atualizarInsightsPreview(); }, 800);
+    setTimeout(function(){ if(typeof verificarNotificacoes==='function') verificarNotificacoes(); if(typeof atualizarInsightsPreview==='function') atualizarInsightsPreview(); if(typeof renderFrotaBadge==='function') renderFrotaBadge(); if(typeof renderCardPlataformasDash==='function') renderCardPlataformasDash(); }, 800);
   }catch(e){ console.warn('Render error após login', e); }
 };
 
@@ -1835,6 +2078,135 @@ window._fbSavePlano = async function(planoData){
     window._planoServidor = planoData;
     localStorage.setItem('dc_plano', JSON.stringify(planoData));
   }catch(e){ console.warn('Firebase plano write error', e); }
+};
+
+// ── FROTA: Criar frota (gestor) ──────────────────────────────
+window._fbCriarFrota = async function(nome, planoEmpresa){
+  if(!window._fbUser) return { ok: false, msg: 'Nao autenticado' };
+  try{
+    var uid = window._fbUser.uid;
+    var codigo = 'FROTA-' + Math.random().toString(36).substr(2,4).toUpperCase();
+    var limites = { 'empresa_starter': 10, 'empresa_growth': 20, 'empresa_enterprise': 999 };
+    var frotaData = {
+      gestorUid: uid,
+      gestorEmail: window._fbUser.email,
+      nome: nome,
+      codigoConvite: codigo,
+      plano: planoEmpresa,
+      limiteMotoristas: limites[planoEmpresa] || 10,
+      criadoEm: new Date().toISOString(),
+      ativo: true
+    };
+    var frotaRef = doc(db, 'frotas', uid);
+    await setDoc(frotaRef, frotaData);
+    window._frotaData = frotaData;
+    window._frotaId = uid;
+    return { ok: true, codigo: codigo, frota: frotaData };
+  }catch(e){ return { ok: false, msg: e.message }; }
+};
+
+// ── FROTA: Carregar frota do gestor ──────────────────────────
+window._fbCarregarFrota = async function(){
+  if(!window._fbUser) return null;
+  try{
+    var snap = await getDoc(doc(db, 'frotas', window._fbUser.uid));
+    if(snap.exists()){
+      window._frotaData = snap.data();
+      window._frotaId   = window._fbUser.uid;
+      return snap.data();
+    }
+    return null;
+  }catch(e){ console.warn('Erro carregar frota', e); return null; }
+};
+
+// ── FROTA: Entrar na frota (motorista) ───────────────────────
+window._fbEntrarFrota = async function(codigo){
+  if(!window._fbUser) return { ok: false, msg: 'Nao autenticado' };
+  try{
+    // Busca frota pelo codigo de convite
+    var q = query(collection(db, 'frotas'), where('codigoConvite', '==', codigo.toUpperCase()));
+    var snap = await getDocs(q);
+    if(snap.empty) return { ok: false, msg: 'Codigo invalido ou nao encontrado.' };
+    var frotaDoc = snap.docs[0];
+    var frotaId  = frotaDoc.id;
+    var frota    = frotaDoc.data();
+    // Verifica limite de motoristas
+    var motSnap = await getDocs(collection(db, 'frotas', frotaId, 'motoristas'));
+    var ativos  = motSnap.docs.filter(function(d){ return d.data().ativo; }).length;
+    if(ativos >= frota.limiteMotoristas) return { ok: false, msg: 'Frota cheia. O gestor precisa fazer upgrade.' };
+    // Vincula motorista
+    await setDoc(doc(db, 'frotas', frotaId, 'motoristas', window._fbUser.uid), {
+      uid:       window._fbUser.uid,
+      email:     window._fbUser.email,
+      entradaEm: new Date().toISOString(),
+      ativo:     true
+    });
+    // Salva referencia da frota no perfil do motorista
+    await setDoc(doc(db, 'usuarios', window._fbUser.uid, 'frota', 'vinculo'), {
+      frotaId:    frotaId,
+      gestorEmail: frota.gestorEmail,
+      nomeFrota:  frota.nome,
+      entradaEm:  new Date().toISOString()
+    });
+    window._vinculoFrota = { frotaId: frotaId, nomeFrota: frota.nome };
+    localStorage.setItem('dc_frota_vinculo', JSON.stringify(window._vinculoFrota));
+    return { ok: true, nomeFrota: frota.nome };
+  }catch(e){ return { ok: false, msg: e.message }; }
+};
+
+// ── FROTA: Carregar vinculo do motorista ─────────────────────
+window._fbCarregarVinculo = async function(){
+  if(!window._fbUser) return null;
+  try{
+    var snap = await getDoc(doc(db, 'usuarios', window._fbUser.uid, 'frota', 'vinculo'));
+    if(snap.exists()){
+      window._vinculoFrota = snap.data();
+      localStorage.setItem('dc_frota_vinculo', JSON.stringify(snap.data()));
+      return snap.data();
+    }
+    return null;
+  }catch(e){ return null; }
+};
+
+// ── FROTA: Sair da frota (motorista) ─────────────────────────
+window._fbSairFrota = async function(){
+  if(!window._fbUser || !window._vinculoFrota) return;
+  try{
+    var fId = window._vinculoFrota.frotaId;
+    await setDoc(doc(db, 'frotas', fId, 'motoristas', window._fbUser.uid), { ativo: false }, { merge: true });
+    await deleteDoc(doc(db, 'usuarios', window._fbUser.uid, 'frota', 'vinculo'));
+    window._vinculoFrota = null;
+    localStorage.removeItem('dc_frota_vinculo');
+  }catch(e){ console.warn('Erro sair frota', e); }
+};
+
+// ── FROTA: Listar motoristas e rotas (gestor) ────────────────
+window._fbListarMotoristas = async function(){
+  if(!window._fbUser) return [];
+  try{
+    var frotaId = window._fbUser.uid;
+    var snap = await getDocs(collection(db, 'frotas', frotaId, 'motoristas'));
+    var lista = [];
+    for(var i = 0; i < snap.docs.length; i++){
+      var m = snap.docs[i].data();
+      if(!m.ativo) continue;
+      // Carrega rotas do motorista
+      var rotasSnap = await getDoc(doc(db, 'usuarios', m.uid, 'dados', 'dc_rotas'));
+      m.rotas = rotasSnap.exists() ? (rotasSnap.data().valor || []) : [];
+      lista.push(m);
+    }
+    return lista;
+  }catch(e){ console.warn('Erro listar motoristas', e); return []; }
+};
+
+// ── FROTA: Remover motorista (gestor) ────────────────────────
+window._fbRemoverMotorista = async function(motUid){
+  if(!window._fbUser) return;
+  try{
+    var frotaId = window._fbUser.uid;
+    await setDoc(doc(db, 'frotas', frotaId, 'motoristas', motUid), { ativo: false }, { merge: true });
+    await deleteDoc(doc(db, 'usuarios', motUid, 'frota', 'vinculo'));
+  }catch(e){ console.warn('Erro remover motorista', e); }
 };
 
 // ── AUTH: Cadastro ───────────────────────────────────────────
@@ -2608,6 +2980,9 @@ function salvarRota(){
 
   const isMultipla = entregas.length > 1;
 
+  var platEl = document.getElementById('r-plataforma');
+  var platVal = platEl ? platEl.value : '';
+
   rotas.push({
     id: Date.now(),
     data: hoje(),
@@ -2623,7 +2998,8 @@ function salvarRota(){
     extras,
     multipla: isMultipla,
     entregas,
-    obs: ''
+    obs: '',
+    plataforma: platVal
   });
 
   rotas[rotas.length-1].horario = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
@@ -2637,6 +3013,10 @@ function salvarRota(){
 }
 
 function limparTudo(){
+  // Limpa seleção de plataforma
+  var platEl2 = document.getElementById('r-plataforma');
+  if(platEl2) platEl2.value = '';
+  document.querySelectorAll('.btn-plataforma').forEach(function(b){ b.classList.remove('sel'); });
   document.getElementById('r-empresa').value = '';
   document.getElementById('r-paradas').value = '0';
   document.getElementById('r-val-parada').value = '';
@@ -2845,6 +3225,7 @@ function renderFeed(){
         ${tipoBadge}
         ${multiBadge}
         ${r.gorjeta>0?`<span class="badge badge-green">🎁 gorjeta</span>`:''}
+        ${r.plataforma?`<span class="plat-tag plat-${r.plataforma}">${platIcon(r.plataforma)} ${platNome(r.plataforma)}</span>`:''}
       </div>
       <div class="rota-card-actions">
         <button class="btn btn-secondary" style="font-size:0.78rem;padding:6px 12px;" onclick="verInfoRota(${r.id})">🔍 Ver Info</button>
@@ -3295,6 +3676,7 @@ function verInfoRota(id){
     <div class="detail-row"><span>Tipo</span><span>${r.tipo==='urbano'?'🏙️ Urbano':'🛣️ Viagem'}</span></div>
     ${r.paradas>0?`<div class="detail-row"><span>Paradas (${r.paradas}×${fmt(r.valParada)})</span><span>${fmt(r.paradas*r.valParada)}</span></div>`:''}
     ${r.gorjeta>0?`<div class="detail-row"><span>🎁 Gorjeta</span><span style="color:var(--gold)">${fmt(r.gorjeta)}</span></div>`:''}
+    ${r.plataforma?`<div class="detail-row"><span>📱 Plataforma</span><span><span class="plat-tag plat-${r.plataforma}">${platIcon(r.plataforma)} ${platNome(r.plataforma)}</span></span></div>`:''}
     <div class="detail-row"><span><strong>Total</strong></span><span style="color:var(--green);font-weight:700">${fmt(r.total)}</span></div>
     ${r.obs?`<div class="detail-row"><span>Obs</span><span style="color:var(--muted)">${r.obs}</span></div>`:''}
   </div>
@@ -3553,6 +3935,7 @@ function renderHistorico(){
             ${entregasHTML}
             ${r.paradas>0?`<div class="detail-row"><span>Paradas (${r.paradas}×${fmt(r.valParada)})</span><span>${fmt(r.paradas*r.valParada)}</span></div>`:''}
             ${r.gorjeta>0?`<div class="detail-row"><span>🎁 Gorjeta</span><span style="color:var(--gold)">${fmt(r.gorjeta)}</span></div>`:''}
+    ${r.plataforma?`<div class="detail-row"><span>📱 Plataforma</span><span><span class="plat-tag plat-${r.plataforma}">${platIcon(r.plataforma)} ${platNome(r.plataforma)}</span></span></div>`:''}
             ${r.obs?`<div class="detail-row"><span>Obs</span><span style="color:var(--muted)">${r.obs}</span></div>`:''}
             <div class="detail-row"><span><strong>Total</strong></span><span style="color:var(--green);font-weight:700">${fmt(r.total)}</span></div>
             <div class="btn-row" style="margin-top:8px;">
@@ -6092,10 +6475,13 @@ function iniciarCheckout(tipo){
   var modal = document.getElementById('modal-checkout');
   var resumo = document.getElementById('checkout-resumo');
   var labels = {
-    'basico':    'Plano Basico — R$ 14,90/mes',
-    'pro_trial': 'Plano Pro — 7 dias gratis, depois R$ 29,90/mes',
-    'pro':       'Plano Pro — R$ 29,90/mes',
-    'empresa':   'Plano Empresa — R$ 89,90/mes'
+    'basico':              'Plano Basico — R$ 14,90/mes',
+    'pro_trial':           'Plano Pro — 7 dias gratis, depois R$ 29,90/mes',
+    'pro':                 'Plano Pro — R$ 29,90/mes',
+    'empresa':             'Plano Empresa Starter — R$ 89,90/mes',
+    'empresa_starter':     'Plano Empresa Starter — R$ 89,90/mes (ate 10 motoristas)',
+    'empresa_growth':      'Plano Empresa Growth — R$ 149,90/mes (ate 20 motoristas)',
+    'empresa_enterprise':  'Plano Empresa Enterprise — R$ 199,90/mes (motoristas ilimitados)'
   };
   resumo.innerHTML = '<strong>' + (labels[tipo] || tipo) + '</strong><br><span style="font-size:0.75rem;color:var(--muted);">Renova mensalmente. Cancele quando quiser.</span>';
   document.getElementById('checkout-pix-area').style.display = 'none';
@@ -6565,4 +6951,606 @@ function verificarNotificacoes(){
     if(p === 'relatorio-ir') initRelatorioIR();
   };
 })();
+</script>
+
+<script>
+// ============================================================
+// PLANO EMPRESA — isGestor(), isEmpresa(), funções de frota
+// ============================================================
+
+function isEmpresa(){
+  var p = loadPlano();
+  return p.tipo === 'empresa_starter' || p.tipo === 'empresa_growth' || p.tipo === 'empresa_enterprise' || p.tipo === 'empresa';
+}
+
+function isGestor(){
+  return isEmpresa() && !!window._frotaData;
+}
+
+function limiteMotoristas(){
+  var p = loadPlano();
+  if(p.tipo === 'empresa_enterprise') return 999;
+  if(p.tipo === 'empresa_growth')     return 20;
+  return 10; // starter ou legado
+}
+
+// Badge da frota no dashboard
+function renderFrotaBadge(){
+  var badge = document.getElementById('frota-badge-dashboard');
+  // Motorista vinculado
+  if(window._vinculoFrota && window._vinculoFrota.frotaId){
+    var mi = document.getElementById('menu-item-frota-motorista');
+    if(mi) mi.style.display = 'block';
+    if(badge){
+      badge.style.display = 'flex';
+      badge.innerHTML = '<span style="font-size:0.75rem;">🏢 ' + (window._vinculoFrota.nomeFrota||'Frota') + '</span>';
+    }
+  }
+  // Gestor com frota criada
+  if(isGestor()){
+    var mg = document.getElementById('menu-item-painel-gestor');
+    if(mg) mg.style.display = 'block';
+    var mc = document.getElementById('menu-item-criar-frota');
+    if(mc) mc.style.display = 'none';
+    if(badge){
+      badge.style.display = 'flex';
+      badge.innerHTML = '<span style="font-size:0.75rem;">🏢 Gestor · ' + (window._frotaData.nome||'Frota') + '</span>';
+    }
+  }
+  // Empresa sem frota ainda
+  if(isEmpresa() && !isGestor()){
+    var mc2 = document.getElementById('menu-item-criar-frota');
+    if(mc2) mc2.style.display = 'block';
+  }
+  // isPro() atualiza badge do menu
+  if(typeof renderPlanoBadgeMenu === 'function') renderPlanoBadgeMenu();
+}
+
+// ============================================================
+// CRIAR FROTA (gestor)
+// ============================================================
+function initCriarFrota(){
+  var info = document.getElementById('criar-frota-plano-info');
+  var form = document.getElementById('criar-frota-form');
+  var exist = document.getElementById('criar-frota-existente');
+  if(!isEmpresa()){
+    if(form) form.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Disponivel apenas nos planos Empresa.<br><button class="btn btn-gold" style="margin-top:14px;" onclick="showPage(\'plano\')">Ver planos</button></div>';
+    return;
+  }
+  if(window._frotaData){
+    if(exist) exist.style.display = 'block';
+    if(form)  form.style.display  = 'none';
+    return;
+  }
+  if(exist) exist.style.display = 'none';
+  if(form)  form.style.display  = 'block';
+  var p = loadPlano();
+  var nomes = { 'empresa_starter':'Starter — ate 10 motoristas', 'empresa_growth':'Growth — ate 20 motoristas', 'empresa_enterprise':'Enterprise — ilimitado', 'empresa':'Starter — ate 10 motoristas' };
+  if(info) info.textContent = nomes[p.tipo] || p.tipo;
+}
+
+function criarFrota(){
+  var nome = (document.getElementById('input-nome-frota')||{}).value || '';
+  nome = nome.trim();
+  if(!nome){ showToast('Digite um nome para a frota.', 'error'); return; }
+  if(!isEmpresa()){ showToast('Disponivel apenas nos planos Empresa.', 'error'); return; }
+  var planoTipo = (loadPlano().tipo || 'empresa_starter');
+  showToast('Criando frota...', 'info');
+  window._fbCriarFrota(nome, planoTipo).then(function(res){
+    if(!res.ok){ showToast('Erro: ' + res.msg, 'error'); return; }
+    window._frotaData = res.frota;
+    window._frotaId   = window._fbUser ? window._fbUser.uid : null;
+    showToast('Frota criada! Codigo: ' + res.codigo, 'success');
+    renderFrotaBadge();
+    showPage('painel-gestor');
+  });
+}
+
+// ============================================================
+// PAINEL GESTOR
+// ============================================================
+function initPainelGestor(){
+  if(!isGestor()){
+    var cont = document.getElementById('gestor-lista-motoristas');
+    if(cont) cont.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Disponivel apenas para gestores com plano Empresa.</div>';
+    return;
+  }
+  var frota = window._frotaData || {};
+  var el = document.getElementById('gestor-nome-frota');
+  var elc = document.getElementById('gestor-codigo-convite');
+  if(el)  el.textContent  = frota.nome || '—';
+  if(elc) elc.textContent = frota.codigoConvite || '—';
+  atualizarPainelGestor();
+}
+
+function atualizarPainelGestor(){
+  var cont = document.getElementById('gestor-lista-motoristas');
+  if(cont) cont.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Carregando motoristas...</div>';
+  window._fbListarMotoristas().then(function(lista){
+    window._motoristasFrota = lista;
+    var hoje2 = hoje();
+    var mesAtual = hoje2.slice(0,7);
+    var totalHoje = 0;
+    var totalMes  = 0;
+    lista.forEach(function(m){
+      var r = m.rotas || [];
+      totalHoje += r.filter(function(rt){ return rt.data === hoje2; }).length;
+      totalMes  += r.filter(function(rt){ return rt.data.slice(0,7) === mesAtual; }).reduce(function(s,rt){ return s + rt.total; }, 0);
+    });
+    var elH = document.getElementById('gestor-total-hoje');
+    var elM = document.getElementById('gestor-total-mot');
+    var elR = document.getElementById('gestor-total-mes');
+    if(elM) elM.textContent = lista.length;
+    if(elH) elH.textContent = totalHoje;
+    if(elR) elR.textContent = fmt(totalMes);
+    renderListaMotoristas(lista);
+  });
+}
+
+function renderListaMotoristas(lista){
+  var cont = document.getElementById('gestor-lista-motoristas');
+  if(!cont) return;
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">'
+      + '<div style="font-size:2rem;margin-bottom:8px;">🏍️</div>'
+      + '<div>Nenhum motorista ainda.</div>'
+      + '<div style="font-size:0.78rem;margin-top:8px;">Compartilhe o codigo de convite para adicionar motoristas.</div>'
+      + '</div>';
+    return;
+  }
+  var hoje2   = hoje();
+  var mesAtual = hoje2.slice(0,7);
+  var html = '';
+  lista.forEach(function(m){
+    var r = m.rotas || [];
+    var entregasHoje = r.filter(function(rt){ return rt.data === hoje2; }).length;
+    var ganhoMes     = r.filter(function(rt){ return rt.data.slice(0,7) === mesAtual; }).reduce(function(s,rt){ return s+rt.total; },0);
+    var kmMes        = r.filter(function(rt){ return rt.data.slice(0,7) === mesAtual; }).reduce(function(s,rt){ return s+(rt.km||0); },0);
+    var status = entregasHoje > 0 ? '🟢' : '🔴';
+    var statusTxt = entregasHoje > 0 ? (entregasHoje + ' entrega' + (entregasHoje>1?'s':'') + ' hoje') : 'Sem entrega hoje';
+    html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
+      + '<div>'
+      + '<div style="font-weight:600;font-size:0.9rem;">' + (m.email || 'Motorista') + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + status + ' ' + statusTxt + '</div>'
+      + '</div>'
+      + '<button onclick="confirmarRemoverMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:4px;" title="Remover">🗑️</button>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--green);font-family:\'Rajdhani\',sans-serif;">' + fmt(ganhoMes) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Mês</div>'
+      + '</div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--blue);font-family:\'Rajdhani\',sans-serif;">' + r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).length + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Entregas</div>'
+      + '</div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;font-family:\'Rajdhani\',sans-serif;">' + kmMes.toFixed(0) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">KM</div>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+  });
+  cont.innerHTML = html;
+}
+
+function confirmarRemoverMotorista(uid, email){
+  confirmar('Remover ' + email + ' da frota?').then(function(ok){
+    if(!ok) return;
+    window._fbRemoverMotorista(uid).then(function(){
+      showToast('Motorista removido.', 'success');
+      atualizarPainelGestor();
+    });
+  });
+}
+
+function copiarCodigoConvite(){
+  var frota = window._frotaData || {};
+  var cod = frota.codigoConvite || '';
+  if(!cod) return;
+  var msg = 'Entre na frota ' + (frota.nome||'') + ' no DriveCash!\nCodigo de convite: ' + cod + '\nApp: https://feeehfooonseca-bot.github.io/DriveCash';
+  if(navigator.share){
+    navigator.share({ title: 'DriveCash — Convite de Frota', text: msg }).catch(function(){});
+  } else {
+    navigator.clipboard.writeText(msg).then(function(){
+      showToast('Codigo copiado!', 'success');
+    }).catch(function(){
+      showToast(cod, 'success');
+    });
+  }
+}
+
+function exportarRelatorioFrota(){
+  var lista = window._motoristasFrota || [];
+  if(lista.length === 0){ showToast('Carregue os dados primeiro.', 'warn'); return; }
+  var mesAtual = hoje().slice(0,7);
+  var linhas = ['Motorista,Entregas mes,Receita mes,KM mes'];
+  lista.forEach(function(m){
+    var r = m.rotas || [];
+    var ents = r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; });
+    var receita = ents.reduce(function(s,rt){ return s+rt.total; },0);
+    var km      = ents.reduce(function(s,rt){ return s+(rt.km||0); },0);
+    linhas.push((m.email||'') + ',' + ents.length + ',' + receita.toFixed(2) + ',' + km.toFixed(1));
+  });
+  var frota = window._frotaData || {};
+  var csv = linhas.join('\n');
+  var nome = 'frota_' + (frota.nome||'relatorio').replace(/\s+/g,'_') + '_' + mesAtual + '.csv';
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('Relatorio exportado!', 'success');
+}
+
+// ============================================================
+// FROTA MOTORISTA — entrar / sair
+// ============================================================
+function initFrotaMotorista(){
+  var sem = document.getElementById('frota-sem-vinculo');
+  var com = document.getElementById('frota-com-vinculo');
+  if(window._vinculoFrota && window._vinculoFrota.frotaId){
+    if(sem) sem.style.display = 'none';
+    if(com) com.style.display = 'block';
+    var elNome  = document.getElementById('frota-nome-vinculo');
+    var elGest  = document.getElementById('frota-gestor-email');
+    var elData  = document.getElementById('frota-entrada-em');
+    if(elNome) elNome.textContent = window._vinculoFrota.nomeFrota || '—';
+    if(elGest) elGest.textContent = 'Gestor: ' + (window._vinculoFrota.gestorEmail || '—');
+    if(elData && window._vinculoFrota.entradaEm){
+      var d = new Date(window._vinculoFrota.entradaEm);
+      elData.textContent = 'Desde ' + d.toLocaleDateString('pt-BR');
+    }
+  } else {
+    if(sem) sem.style.display = 'block';
+    if(com) com.style.display = 'none';
+  }
+}
+
+function entrarFrota(){
+  var input = document.getElementById('input-codigo-convite');
+  var codigo = input ? input.value.trim().toUpperCase() : '';
+  if(!codigo || codigo.length < 6){ showToast('Digite o codigo de convite.', 'error'); return; }
+  showToast('Verificando codigo...', 'info');
+  window._fbEntrarFrota(codigo).then(function(res){
+    if(!res.ok){ showToast('Erro: ' + res.msg, 'error'); return; }
+    showToast('Entrou na frota ' + res.nomeFrota + '!', 'success');
+    renderFrotaBadge();
+    initFrotaMotorista();
+  });
+}
+
+function confirmarSairFrota(){
+  confirmar('Sair da frota? Seus dados continuarao sendo seus, mas o gestor nao vai mais te ver.').then(function(ok){
+    if(!ok) return;
+    window._fbSairFrota().then(function(){
+      window._vinculoFrota = null;
+      showToast('Voce saiu da frota.', 'success');
+      renderFrotaBadge();
+      initFrotaMotorista();
+    });
+  });
+}
+
+// ============================================================
+// HOOK showPage — adiciona painel gestor, frota motorista, criar frota
+// ============================================================
+(function(){
+  var origShow = window.showPage;
+  window.showPage = function(p){
+    if(typeof origShow === 'function') origShow(p);
+    if(p === 'painel-gestor')    initPainelGestor();
+    if(p === 'frota-motorista')  initFrotaMotorista();
+    if(p === 'criar-frota')      initCriarFrota();
+  };
+})();
+
+// ============================================================
+// MENU — item Criar Frota (só aparece p/ plano empresa sem frota)
+// ============================================================
+(function(){
+  // Injeta item de menu dinamicamente
+  var menu = document.querySelector('#drawer-menu .menu-section');
+  if(menu){
+    var btn = document.createElement('button');
+    btn.className = 'menu-item';
+    btn.id = 'menu-item-criar-frota';
+    btn.style.display = 'none';
+    btn.innerHTML = '➕ &nbsp;Criar Frota';
+    btn.onclick = function(){ showPage('criar-frota'); };
+    // Insere após o item painel-gestor
+    var ref = document.getElementById('menu-item-painel-gestor');
+    if(ref && ref.parentNode) ref.parentNode.insertBefore(btn, ref.nextSibling);
+    else menu.appendChild(btn);
+  }
+})();
+
+// ============================================================
+// BADGE FROTA NO DASHBOARD — injeta após o cabeçalho do dashboard
+// ============================================================
+(function(){
+  var badge = document.getElementById('frota-badge-dashboard');
+  if(!badge){
+    badge = document.createElement('div');
+    badge.id = 'frota-badge-dashboard';
+    badge.style.cssText = 'display:none;background:rgba(155,89,182,0.12);border:1px solid rgba(155,89,182,0.3);border-radius:20px;padding:4px 12px;margin-bottom:10px;justify-content:center;font-size:0.78rem;color:#9b59b6;font-weight:600;cursor:pointer;';
+    badge.onclick = function(){
+      if(isGestor()) showPage('painel-gestor');
+      else showPage('frota-motorista');
+    };
+    // Insere no topo do dashboard
+    var dash = document.getElementById('page-dashboard');
+    if(dash){
+      var card = dash.querySelector('.card');
+      if(card) card.insertBefore(badge, card.firstChild);
+    }
+  }
+})();
+</script>
+
+<script>
+// ============================================================
+// PLATAFORMAS — seleção, análise, exportação  (ES5)
+// ============================================================
+
+var PLATAFORMAS = [
+  { id: 'ifood',      nome: 'iFood',      icon: '🍔', cor: '#ea1d2c' },
+  { id: 'uber',       nome: 'Uber Eats',  icon: '🚗', cor: '#1e1e1e' },
+  { id: 'rappi',      nome: 'Rappi',      icon: '🛵', cor: '#ff441f' },
+  { id: 'pedidos10',  nome: 'Pedidos10',  icon: '🛍️', cor: '#f7931e' },
+  { id: 'james',      nome: 'James',      icon: '🟣', cor: '#6c3fc5' },
+  { id: 'loggi',      nome: 'Loggi',      icon: '📦', cor: '#00b4d8' },
+  { id: 'outros',     nome: 'Outros',     icon: '📱', cor: '#888888' }
+];
+
+function platNome(id){
+  for(var i=0;i<PLATAFORMAS.length;i++){
+    if(PLATAFORMAS[i].id===id) return PLATAFORMAS[i].nome;
+  }
+  return id || '';
+}
+function platIcon(id){
+  for(var i=0;i<PLATAFORMAS.length;i++){
+    if(PLATAFORMAS[i].id===id) return PLATAFORMAS[i].icon;
+  }
+  return '📱';
+}
+function platCor(id){
+  for(var i=0;i<PLATAFORMAS.length;i++){
+    if(PLATAFORMAS[i].id===id) return PLATAFORMAS[i].cor;
+  }
+  return '#888';
+}
+
+// Seleciona/deseleciona botão de plataforma no formulário
+function selecionarPlataforma(id){
+  var el = document.getElementById('r-plataforma');
+  var atual = el ? el.value : '';
+  // Toggle: clica na mesma = desmarca
+  var nova = (atual === id) ? '' : id;
+  if(el) el.value = nova;
+  document.querySelectorAll('.btn-plataforma').forEach(function(b){ b.classList.remove('sel'); });
+  if(nova){
+    var btn = document.getElementById('plat-' + nova);
+    if(btn) btn.classList.add('sel');
+  }
+}
+
+// ── Página de análise ────────────────────────────────────────
+function initPlataformasPage(){
+  var sel = document.getElementById('plat-mes-sel');
+  if(!sel) return;
+  sel.innerHTML = '';
+  // Monta lista de meses com dados
+  var mesesSet = {};
+  rotas.forEach(function(r){ mesesSet[r.data.slice(0,7)] = true; });
+  var meses = Object.keys(mesesSet).sort().reverse();
+  if(meses.length === 0) meses = [hoje().slice(0,7)];
+  meses.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m;
+    var d = new Date(m + '-01');
+    opt.textContent = d.toLocaleString('pt-BR',{month:'long',year:'numeric'});
+    sel.appendChild(opt);
+  });
+  renderPlataformasPage();
+}
+
+function renderPlataformasPage(){
+  var sel = document.getElementById('plat-mes-sel');
+  var mes = sel ? sel.value : hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mes; });
+
+  // Agrupa por plataforma
+  var grupos = {};
+  rotasMes.forEach(function(r){
+    var p = r.plataforma || 'sem_plataforma';
+    if(!grupos[p]) grupos[p] = { total: 0, entregas: 0, km: 0, gorjeta: 0, rotas: [] };
+    grupos[p].total    += r.total;
+    grupos[p].entregas += r.entregas ? r.entregas.length : 1;
+    grupos[p].km       += r.km || 0;
+    grupos[p].gorjeta  += r.gorjeta || 0;
+    grupos[p].rotas.push(r);
+  });
+
+  var totalGeral   = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+  var entregasTotal = rotasMes.reduce(function(s,r){ return s+(r.entregas?r.entregas.length:1); },0);
+  var semPlat = grupos['sem_plataforma'];
+  var comPlat = totalGeral - (semPlat ? semPlat.total : 0);
+
+  // Resumo geral
+  var resumo = document.getElementById('plat-resumo-geral');
+  if(resumo){
+    var pctPlat = totalGeral > 0 ? Math.round((comPlat/totalGeral)*100) : 0;
+    resumo.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;">'
+      + '<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;">'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.3rem;font-weight:700;color:var(--green);">' + fmt(totalGeral) + '</div>'
+      + '<div style="font-size:0.68rem;color:var(--muted);">Total mês</div></div>'
+      + '<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;">'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.3rem;font-weight:700;color:var(--blue);">' + entregasTotal + '</div>'
+      + '<div style="font-size:0.68rem;color:var(--muted);">Entregas</div></div>'
+      + '<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;">'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.3rem;font-weight:700;color:var(--gold);">' + pctPlat + '%</div>'
+      + '<div style="font-size:0.68rem;color:var(--muted);">C/ plataforma</div></div>'
+      + '</div>';
+  }
+
+  // Cards por plataforma
+  var container = document.getElementById('plat-cards-container');
+  if(!container) return;
+
+  // Ordena plataformas por receita
+  var lista = [];
+  Object.keys(grupos).forEach(function(k){
+    if(k !== 'sem_plataforma') lista.push({ id: k, dados: grupos[k] });
+  });
+  lista.sort(function(a,b){ return b.dados.total - a.dados.total; });
+
+  if(lista.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">'
+      + '<div style="font-size:2rem;margin-bottom:8px;">📱</div>'
+      + 'Nenhuma entrega com plataforma registrada neste mês.<br>'
+      + '<span style="font-size:0.78rem;">Use o campo Plataforma ao salvar rotas.</span></div>';
+    return;
+  }
+
+  var html = '';
+
+  // Barra visual de distribuição
+  if(lista.length > 1 && totalGeral > 0){
+    html += '<div style="margin-bottom:16px;">'
+      + '<div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Distribuição de receita</div>'
+      + '<div style="display:flex;border-radius:8px;overflow:hidden;height:20px;">';
+    lista.forEach(function(item){
+      var pct = Math.round((item.dados.total / totalGeral) * 100);
+      if(pct < 1) pct = 1;
+      var cor = platCor(item.id);
+      html += '<div style="flex:' + pct + ';background:' + cor + ';opacity:0.85;" title="' + platNome(item.id) + ' ' + pct + '%"></div>';
+    });
+    html += '</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">';
+    lista.forEach(function(item){
+      var pct = Math.round((item.dados.total / totalGeral) * 100);
+      html += '<span style="font-size:0.7rem;color:var(--muted);">'
+        + '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + platCor(item.id) + ';margin-right:4px;"></span>'
+        + platIcon(item.id) + ' ' + platNome(item.id) + ' ' + pct + '%</span>';
+    });
+    html += '</div></div>';
+  }
+
+  // Card de cada plataforma
+  lista.forEach(function(item){
+    var d = item.dados;
+    var pct = totalGeral > 0 ? Math.round((d.total/totalGeral)*100) : 0;
+    var tmed = d.entregas > 0 ? d.total / d.entregas : 0;
+    var rpm  = d.km > 0 ? d.total / d.km : 0;
+    var cor  = platCor(item.id);
+
+    html += '<div style="border:1px solid var(--border);border-left:3px solid ' + cor + ';border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;">'
+      + '<span style="font-size:1.4rem;">' + platIcon(item.id) + '</span>'
+      + '<div>'
+      + '<div style="font-weight:700;font-size:0.95rem;">' + platNome(item.id) + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);">' + d.entregas + ' entrega' + (d.entregas!==1?'s':'') + ' · ' + pct + '% do mês</div>'
+      + '</div></div>'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.4rem;font-weight:700;color:var(--green);">' + fmt(d.total) + '</div>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'
+      + '<div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:0.9rem;font-weight:700;color:var(--blue);">' + fmt(tmed) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Média/entrega</div>'
+      + '</div>'
+      + '<div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:0.9rem;font-weight:700;">' + (rpm > 0 ? 'R$' + rpm.toFixed(2) + '/km' : '—') + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">R$/KM</div>'
+      + '</div>'
+      + '<div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:0.9rem;font-weight:700;color:var(--gold);">' + (d.gorjeta > 0 ? fmt(d.gorjeta) : '—') + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Gorjetas</div>'
+      + '</div>'
+      + '</div></div>';
+  });
+
+  // Sem plataforma
+  if(semPlat && semPlat.total > 0){
+    html += '<div style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;opacity:0.7;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+      + '<div style="font-size:0.85rem;color:var(--muted);">⬜ Sem plataforma</div>'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.1rem;font-weight:700;color:var(--muted);">' + fmt(semPlat.total) + '</div>'
+      + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">' + semPlat.entregas + ' entrega' + (semPlat.entregas!==1?'s':'') + ' sem plataforma definida</div>'
+      + '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+// ── Exportar CSV por plataforma ──────────────────────────────
+function exportarCSVPlataformas(){
+  var sel = document.getElementById('plat-mes-sel');
+  var mes = sel ? sel.value : hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mes; });
+  if(rotasMes.length === 0){ showToast('Sem dados para exportar.', 'warn'); return; }
+
+  var linhas = ['Data,Empresa,Plataforma,Valor,KM,Gorjeta,Entregas'];
+  rotasMes.forEach(function(r){
+    linhas.push([
+      r.data,
+      (r.empNome||'').replace(/,/g,' '),
+      platNome(r.plataforma||''),
+      (r.total||0).toFixed(2),
+      (r.km||0).toFixed(1),
+      (r.gorjeta||0).toFixed(2),
+      r.entregas ? r.entregas.length : 1
+    ].join(','));
+  });
+
+  var csv  = linhas.join('\n');
+  var nome = 'plataformas_' + mes + '.csv';
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('CSV exportado!', 'success');
+}
+
+// ── Hook showPage ────────────────────────────────────────────
+(function(){
+  var origShow = window.showPage;
+  window.showPage = function(p){
+    if(typeof origShow === 'function') origShow(p);
+    if(p === 'plataformas') initPlataformasPage();
+  };
+})();
+
+// ── Card no dashboard (Top plataforma do mês) ────────────────
+function renderCardPlataformasDash(){
+  var el = document.getElementById('dash-card-plataformas');
+  if(!el) return;
+  var mes = hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7)===mes && r.plataforma; });
+  if(rotasMes.length === 0){ el.style.display='none'; return; }
+
+  var grupos = {};
+  rotasMes.forEach(function(r){
+    var p = r.plataforma;
+    grupos[p] = (grupos[p]||0) + r.total;
+  });
+  var top = null; var topVal = 0;
+  Object.keys(grupos).forEach(function(k){ if(grupos[k]>topVal){ topVal=grupos[k]; top=k; } });
+
+  el.style.display = 'block';
+  el.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="showPage(\'plataformas\')">'
+    + '<div>'
+    + '<div style="font-size:0.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Top plataforma</div>'
+    + '<div style="font-size:0.9rem;font-weight:700;margin-top:2px;">' + platIcon(top) + ' ' + platNome(top) + '</div>'
+    + '<div style="font-size:0.75rem;color:var(--green);">' + fmt(topVal) + ' este mês</div>'
+    + '</div>'
+    + '<span style="color:var(--muted);font-size:1.1rem;">›</span>'
+    + '</div>';
+}
 </script>
