@@ -619,6 +619,33 @@ select option{background:var(--card);}
   font-size:2rem;margin:0 auto 20px;
 }
 
+
+/* ── GESTÃO DE MOTOS E MOTOBOYS ──────────────────────────────── */
+.moto-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
+.moto-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.moto-placa{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:2px;}
+.moto-badge{font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:20px;border:1px solid;}
+.moto-badge.livre{color:var(--green);border-color:var(--green);background:rgba(0,255,136,.1);}
+.moto-badge.alocada{color:var(--gold);border-color:var(--gold);background:rgba(255,215,0,.1);}
+.mot-tipo-badge{display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;
+  padding:3px 8px;border-radius:20px;}
+.mot-tipo-badge.proprio{background:rgba(88,166,255,.15);color:var(--blue);}
+.mot-tipo-badge.terceirizado{background:rgba(255,152,0,.15);color:var(--orange);}
+.frota-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;}
+.frota-tab{flex:1;padding:10px;font-size:0.82rem;font-weight:600;background:var(--bg);
+  border:none;color:var(--muted);cursor:pointer;transition:all .2s;}
+.frota-tab.ativo{background:var(--card2);color:var(--text);}
+.comissao-row{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;}
+.comissao-row:last-child{border-bottom:none;}
+
+
+/* ── MANUTENÇÃO DE MOTO ──────────────────────────────────────── */
+.manut-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.manut-item:last-child{border-bottom:none;}
+.manut-icon-box{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.manut-tipo-badge{font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:10px;border:1px solid;}
+
 </style>
 </head>
 <body>
@@ -1696,7 +1723,7 @@ select option{background:var(--card);}
     <div id="gestor-frota-info" style="background:rgba(155,89,182,0.08);border:1px solid rgba(155,89,182,0.3);border-radius:12px;padding:14px;margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <div>
-          <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Sua Frota</div>
+          <div style="display:flex;align-items:center;gap:8px;"><div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Sua Frota</div><span id="gestor-live-badge" style="font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:10px;background:rgba(0,255,136,0.1);color:var(--muted);border:1px solid var(--border);">AO VIVO</span></div>
           <div id="gestor-nome-frota" style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">—</div>
         </div>
         <div style="text-align:right;">
@@ -1727,11 +1754,130 @@ select option{background:var(--card);}
       <button class="btn btn-secondary" style="font-size:0.8rem;padding:10px;" onclick="exportarRelatorioFrota()">📊 Relatório CSV</button>
     </div>
 
-    <!-- Lista de motoristas -->
-    <div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Motoristas da Frota</div>
-    <div id="gestor-lista-motoristas">
-      <div style="text-align:center;padding:24px;color:var(--muted);">Carregando...</div>
+    <!-- Tabs -->
+    <div class="frota-tabs">
+      <button class="frota-tab ativo" id="ftab-motoristas" onclick="frotaTab('motoristas')">🏍️ Motoristas</button>
+      <button class="frota-tab" id="ftab-motos"      onclick="frotaTab('motos')">🔧 Motos</button>
+      <button class="frota-tab" id="ftab-comissoes"  onclick="frotaTab('comissoes')">💰 Comissões</button>
     </div>
+
+    <!-- TAB: Motoristas -->
+    <div id="ftab-body-motoristas">
+      <div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Motoristas da Frota</div>
+      <div id="gestor-lista-motoristas">
+        <div style="text-align:center;padding:24px;color:var(--muted);">Carregando...</div>
+      </div>
+    </div>
+
+    <!-- TAB: Motos -->
+    <div id="ftab-body-motos" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Frota de Motos</div>
+        <button class="btn btn-gold" style="font-size:0.78rem;padding:7px 12px;" onclick="abrirModalMoto()">+ Adicionar moto</button>
+      </div>
+      <div id="gestor-lista-motos">
+        <div style="text-align:center;padding:24px;color:var(--muted);">Carregando...</div>
+      </div>
+    </div>
+
+    <!-- TAB: Comissões -->
+    <div id="ftab-body-comissoes" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Comissões do Mês</div>
+        <select id="comissao-mes-sel" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-size:0.78rem;" onchange="renderComissoes()"></select>
+      </div>
+      <div id="gestor-lista-comissoes">
+        <div style="text-align:center;padding:24px;color:var(--muted);">Carregando...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Adicionar/Editar Moto -->
+<div id="modal-moto" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9500;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:360px;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">🔧 Cadastrar Moto</div>
+      <button onclick="fecharModalMoto()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <input type="hidden" id="moto-edit-id">
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Placa *</label>
+      <input id="moto-placa" type="text" placeholder="ABC-1234" maxlength="8"
+        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;font-family:monospace;text-transform:uppercase;box-sizing:border-box;"
+        oninput="this.value=this.value.toUpperCase()">
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Modelo</label>
+      <input id="moto-modelo" type="text" placeholder="Ex: Honda CG 160"
+        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Ano</label>
+        <input id="moto-ano" type="number" placeholder="2022" min="2000" max="2030"
+          style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">KM inicial</label>
+        <input id="moto-km-ini" type="number" placeholder="0" min="0"
+          style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Motorista alocado</label>
+      <select id="moto-motorista-sel" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+        <option value="">— Livre (sem motorista) —</option>
+      </select>
+    </div>
+    <button class="btn btn-gold" style="width:100%;" onclick="salvarMoto()">✅ Salvar Moto</button>
+  </div>
+</div>
+
+<!-- MODAL: Config do motorista (tipo + comissão + moto) -->
+<div id="modal-config-motorista" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9500;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:360px;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">⚙️ Config. Motorista</div>
+      <button onclick="fecharModalConfigMotorista()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <input type="hidden" id="cfg-mot-uid">
+    <div id="cfg-mot-email" style="font-size:0.85rem;color:var(--muted);margin-bottom:16px;"></div>
+
+    <div style="margin-bottom:14px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:8px;text-transform:uppercase;">Tipo de vínculo</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button type="button" id="cfg-tipo-proprio" onclick="setCfgTipo('proprio')"
+          class="btn btn-secondary" style="font-size:0.82rem;padding:10px;">🔵 Próprio</button>
+        <button type="button" id="cfg-tipo-terceirizado" onclick="setCfgTipo('terceirizado')"
+          class="btn btn-secondary" style="font-size:0.82rem;padding:10px;">🟠 Terceirizado</button>
+      </div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;" id="cfg-tipo-desc"></div>
+    </div>
+
+    <div id="cfg-comissao-area" style="margin-bottom:14px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:8px;text-transform:uppercase;">Modelo de comissão</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+        <button type="button" id="cfg-com-pct" onclick="setCfgComissao('percentual')"
+          class="btn btn-secondary" style="font-size:0.82rem;padding:8px;">% Percentual</button>
+        <button type="button" id="cfg-com-fixo" onclick="setCfgComissao('fixo')"
+          class="btn btn-secondary" style="font-size:0.82rem;padding:8px;">R$ Fixo/corrida</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input id="cfg-comissao-valor" type="number" min="0" step="0.01" placeholder="0"
+          style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;flex:1;font-size:0.95rem;">
+        <span id="cfg-comissao-sufixo" style="color:var(--muted);font-size:0.85rem;min-width:24px;">%</span>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Moto alocada</label>
+      <select id="cfg-moto-sel" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+        <option value="">— Moto própria do motorista —</option>
+      </select>
+    </div>
+
+    <button class="btn btn-gold" style="width:100%;" onclick="salvarConfigMotorista()">✅ Salvar configuração</button>
   </div>
 </div>
 
@@ -1767,10 +1913,34 @@ select option{background:var(--card);}
         <div id="frota-gestor-email" style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Gestor: —</div>
         <div id="frota-entrada-em" style="font-size:0.72rem;color:var(--muted);margin-top:2px;"></div>
       </div>
-      <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:0.8rem;color:var(--muted);">
+      <div style="background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:0.8rem;color:var(--muted);">
         ✅ Suas entregas são sincronizadas automaticamente com o gestor.<br>
         Seus dados são <strong style="color:var(--text);">privados</strong> — só o gestor da sua frota vê seus números.
       </div>
+
+      <!-- Card comissão e moto alocada -->
+      <div id="frota-config-card" style="display:none;margin-bottom:14px;">
+        <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Meu vínculo</div>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;">
+          <div class="comissao-row">
+            <span>Tipo</span>
+            <span id="frota-cfg-tipo">—</span>
+          </div>
+          <div class="comissao-row">
+            <span>Comissão</span>
+            <span id="frota-cfg-comissao">—</span>
+          </div>
+          <div class="comissao-row">
+            <span>Moto alocada</span>
+            <span id="frota-cfg-moto">Moto própria</span>
+          </div>
+          <div class="comissao-row" id="frota-cfg-a-receber-row" style="display:none;">
+            <span>A receber este mês</span>
+            <span id="frota-cfg-a-receber" style="color:var(--green);font-weight:700;">—</span>
+          </div>
+        </div>
+      </div>
+
       <button class="btn btn-secondary" style="width:100%;color:var(--red);border-color:var(--red);" onclick="confirmarSairFrota()">🚪 Sair da frota</button>
     </div>
   </div>
@@ -2405,13 +2575,140 @@ window._fbListarMotoristas = async function(){
     for(var i = 0; i < snap.docs.length; i++){
       var m = snap.docs[i].data();
       if(!m.ativo) continue;
-      // Carrega rotas do motorista
       var rotasSnap = await getDoc(doc(db, 'usuarios', m.uid, 'dados', 'dc_rotas'));
       m.rotas = rotasSnap.exists() ? (rotasSnap.data().valor || []) : [];
       lista.push(m);
     }
     return lista;
   }catch(e){ console.warn('Erro listar motoristas', e); return []; }
+};
+
+// ── FROTA: Listener tempo real (onSnapshot) ───────────────────
+window._frotaListenerAtivo = false;
+window._frotaUnsubscribes  = [];
+
+window._fbIniciarListenerFrota = function(){
+  if(!window._fbUser || !isGestor()) return;
+  if(window._frotaListenerAtivo) return;
+  window._frotaListenerAtivo = true;
+
+  var frotaId = window._fbUser.uid;
+
+  // Escuta mudanças nos motoristas da frota
+  var unsub = onSnapshot(
+    collection(db, 'frotas', frotaId, 'motoristas'),
+    function(snap){
+      // Recarrega lista completa ao detectar qualquer mudança
+      window._fbListarMotoristas().then(function(lista){
+        window._motoristasFrota = lista;
+        // Atualiza painel se estiver aberto
+        var painelAberto = document.getElementById('page-painel-gestor');
+        if(painelAberto && painelAberto.classList.contains('active')){
+          var hoje2    = hoje();
+          var mesAtual = hoje2.slice(0,7);
+          var totalHoje = 0, totalMes = 0;
+          lista.forEach(function(m){
+            var r = m.rotas || [];
+            totalHoje += r.filter(function(rt){ return rt.data === hoje2; }).length;
+            totalMes  += r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).reduce(function(s,rt){ return s+rt.total; },0);
+          });
+          var elM = document.getElementById('gestor-total-mot');
+          var elH = document.getElementById('gestor-total-hoje');
+          var elR = document.getElementById('gestor-total-mes');
+          if(elM) elM.textContent = lista.length;
+          if(elH) elH.textContent = totalHoje;
+          if(elR) elR.textContent = fmt(totalMes);
+          if(typeof renderListaMotoristas === 'function') renderListaMotoristas(lista);
+          // Atualiza badge de tempo real
+          var badge = document.getElementById('gestor-live-badge');
+          if(badge){ badge.textContent = 'AO VIVO'; badge.style.color = 'var(--green)'; }
+        }
+        // Notificações do gestor
+        if(typeof verificarNotificacoesGestor === 'function') verificarNotificacoesGestor(lista);
+      });
+    },
+    function(err){ console.warn('Listener frota erro', err); }
+  );
+  window._frotaUnsubscribes.push(unsub);
+};
+
+window._fbPararListenerFrota = function(){
+  window._frotaUnsubscribes.forEach(function(u){ try{ u(); }catch(e){} });
+  window._frotaUnsubscribes  = [];
+  window._frotaListenerAtivo = false;
+};
+
+// ── FROTA: Salvar moto ───────────────────────────────────────
+window._fbSalvarMoto = async function(motoData){
+  if(!window._fbUser) return { ok:false };
+  try{
+    var id = motoData.id || (Date.now() + '');
+    motoData.id = id;
+    await setDoc(doc(db, 'frotas', window._fbUser.uid, 'motos', id), motoData);
+    return { ok:true, id:id };
+  }catch(e){ return { ok:false, msg:e.message }; }
+};
+
+// ── FROTA: Listar motos ───────────────────────────────────────
+window._fbListarMotos = async function(){
+  if(!window._fbUser) return [];
+  try{
+    var snap = await getDocs(collection(db, 'frotas', window._fbUser.uid, 'motos'));
+    return snap.docs.map(function(d){ return d.data(); }).filter(function(m){ return m.ativo !== false; });
+  }catch(e){ return []; }
+};
+
+// ── FROTA: Remover moto ───────────────────────────────────────
+window._fbRemoverMoto = async function(motoId){
+  if(!window._fbUser) return;
+  try{
+    await setDoc(doc(db, 'frotas', window._fbUser.uid, 'motos', motoId), { ativo:false }, { merge:true });
+  }catch(e){ console.warn('Erro remover moto', e); }
+};
+
+// ── FROTA: Salvar manutenção da moto ─────────────────────────
+window._fbSalvarManutMoto = async function(motoId, manut){
+  if(!window._fbUser) return { ok:false };
+  try{
+    var id = manut.id || (Date.now() + '');
+    manut.id = id;
+    await setDoc(doc(db, 'frotas', window._fbUser.uid, 'motos', motoId, 'manutencoes', id), manut);
+    // Atualiza custo total na moto
+    var motosSnap = await getDoc(doc(db, 'frotas', window._fbUser.uid, 'motos', motoId));
+    var custoAtual = motosSnap.exists() ? (motosSnap.data().custoManutTotal || 0) : 0;
+    await setDoc(doc(db, 'frotas', window._fbUser.uid, 'motos', motoId),
+      { custoManutTotal: custoAtual + (manut.custo||0) }, { merge:true });
+    return { ok:true };
+  }catch(e){ return { ok:false, msg:e.message }; }
+};
+
+// ── FROTA: Listar manutenções da moto ────────────────────────
+window._fbListarManutMoto = async function(motoId){
+  if(!window._fbUser) return [];
+  try{
+    var snap = await getDocs(collection(db, 'frotas', window._fbUser.uid, 'motos', motoId, 'manutencoes'));
+    return snap.docs.map(function(d){ return d.data(); })
+      .sort(function(a,b){ return (b.data||'').localeCompare(a.data||''); });
+  }catch(e){ return []; }
+};
+
+// ── FROTA: Salvar config do motorista (tipo, comissão, moto) ──
+window._fbSalvarConfigMotorista = async function(motUid, config){
+  if(!window._fbUser) return;
+  try{
+    await setDoc(doc(db, 'frotas', window._fbUser.uid, 'motoristas', motUid), config, { merge:true });
+  }catch(e){ console.warn('Erro salvar config motorista', e); }
+};
+
+// ── FROTA: Carregar config do motorista (pelo proprio motorista) ──
+window._fbCarregarConfigMotorista = async function(){
+  if(!window._fbUser || !window._vinculoFrota) return null;
+  try{
+    var fId = window._vinculoFrota.frotaId;
+    var snap = await getDoc(doc(db, 'frotas', fId, 'motoristas', window._fbUser.uid));
+    if(snap.exists()) return snap.data();
+    return null;
+  }catch(e){ return null; }
 };
 
 // ── FROTA: Remover motorista (gestor) ────────────────────────
@@ -6672,6 +6969,102 @@ function fazerLogout(){
   </div>
 </div>
 
+
+<!-- MODAL: Manutenção de Moto -->
+<div id="modal-manut-moto" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9600;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:100%;margin:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">🔧 Manutenção</div>
+      <button onclick="fecharModalManutMoto()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="manut-moto-placa-label" style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;font-family:monospace;"></div>
+    <input type="hidden" id="manut-moto-id">
+
+    <!-- Formulário novo registro -->
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Registrar manutenção</div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Tipo *</label>
+        <select id="manut-tipo" style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+          <option value="oleo">🛢️ Troca de óleo</option>
+          <option value="pneu">🔘 Pneu</option>
+          <option value="freio">🔴 Freio</option>
+          <option value="corrente">⛓️ Corrente</option>
+          <option value="revisao">🔩 Revisão geral</option>
+          <option value="eletrica">⚡ Elétrica</option>
+          <option value="outro">🔧 Outro</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Custo (R$) *</label>
+          <input id="manut-custo" type="number" min="0" step="0.01" placeholder="0,00"
+            style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Data</label>
+          <input id="manut-data" type="date"
+            style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">KM no momento</label>
+        <input id="manut-km" type="number" min="0" placeholder="KM atual da moto"
+          style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Observação</label>
+        <input id="manut-obs" type="text" placeholder="Detalhe opcional..."
+          style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+      </div>
+      <button class="btn btn-gold" style="width:100%;" onclick="salvarManutMoto()">✅ Registrar</button>
+    </div>
+
+    <!-- Histórico -->
+    <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Histórico</div>
+    <div id="manut-moto-historico">
+      <div style="text-align:center;padding:16px;color:var(--muted);">Carregando...</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL: Baixa de comissão -->
+<div id="modal-baixa-comissao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9600;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:360px;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">💰 Registrar Pagamento</div>
+      <button onclick="fecharModalBaixaComissao()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="baixa-com-email" style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;"></div>
+    <input type="hidden" id="baixa-com-uid">
+    <input type="hidden" id="baixa-com-mes">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:0.68rem;color:var(--muted);">Total a pagar</div>
+        <div id="baixa-com-total" style="font-size:1rem;font-weight:700;color:var(--gold);font-family:'Rajdhani',sans-serif;">—</div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:0.68rem;color:var(--muted);">Saldo devedor</div>
+        <div id="baixa-com-saldo" style="font-size:1rem;font-weight:700;color:var(--red);font-family:'Rajdhani',sans-serif;">—</div>
+      </div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Valor pago agora (R$) *</label>
+      <input id="baixa-com-valor" type="number" min="0" step="0.01" placeholder="0,00"
+        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:12px;width:100%;font-size:1rem;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Observação</label>
+      <input id="baixa-com-obs" type="text" placeholder="Pix, dinheiro, etc."
+        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+    </div>
+    <!-- Histórico de pagamentos -->
+    <div id="baixa-com-historico" style="margin-bottom:16px;"></div>
+    <button class="btn btn-gold" style="width:100%;" onclick="salvarBaixaComissao()">✅ Confirmar pagamento</button>
+  </div>
+</div>
+
 </body>
 </html>
 
@@ -7911,5 +8304,720 @@ function obSalvarEmpresa(){
 function obSugerirEmpresa(nome){
   var el = document.getElementById('ob-emp-nome');
   if(el && !el.value) el.value = nome;
+}
+</script>
+
+<script>
+// ============================================================
+// GESTÃO DE MOTOS E TIPO DE MOTOBOY  (ES5 - sem backticks)
+// ============================================================
+
+var _frotaTabAtual = 'motoristas';
+var _cfgTipoAtual  = 'proprio';
+var _cfgComAtual   = 'percentual';
+var _motosList     = [];
+
+// ── Tabs do painel gestor ────────────────────────────────────
+function frotaTab(tab){
+  _frotaTabAtual = tab;
+  var tabs = ['motoristas','motos','comissoes'];
+  tabs.forEach(function(t){
+    var btn  = document.getElementById('ftab-' + t);
+    var body = document.getElementById('ftab-body-' + t);
+    if(btn)  btn.classList.toggle('ativo', t === tab);
+    if(body) body.style.display = t === tab ? 'block' : 'none';
+  });
+  if(tab === 'motos')     renderListaMotos();
+  if(tab === 'comissoes') initComissoesMes();
+}
+
+// ── MODAL: Adicionar moto ────────────────────────────────────
+function abrirModalMoto(motoId){
+  var modal = document.getElementById('modal-moto');
+  if(!modal) return;
+  // Limpa campos
+  document.getElementById('moto-edit-id').value  = motoId || '';
+  document.getElementById('moto-placa').value    = '';
+  document.getElementById('moto-modelo').value   = '';
+  document.getElementById('moto-ano').value      = '';
+  document.getElementById('moto-km-ini').value   = '';
+
+  // Preenche se editando
+  if(motoId){
+    var moto = _motosList.filter(function(m){ return m.id === motoId; })[0];
+    if(moto){
+      document.getElementById('moto-placa').value   = moto.placa  || '';
+      document.getElementById('moto-modelo').value  = moto.modelo || '';
+      document.getElementById('moto-ano').value     = moto.ano    || '';
+      document.getElementById('moto-km-ini').value  = moto.kmIni  || '';
+    }
+  }
+
+  // Popula select de motoristas
+  var sel = document.getElementById('moto-motorista-sel');
+  sel.innerHTML = '<option value="">— Livre (sem motorista) —</option>';
+  var lista = window._motoristasFrota || [];
+  lista.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m.uid;
+    opt.textContent = m.email || m.uid;
+    // Marca se essa moto já está vinculada a esse motorista
+    if(motoId && m.motoId === motoId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  modal.style.display = 'flex';
+}
+
+function fecharModalMoto(){
+  var modal = document.getElementById('modal-moto');
+  if(modal) modal.style.display = 'none';
+}
+
+function salvarMoto(){
+  var placa  = (document.getElementById('moto-placa').value  || '').trim().toUpperCase();
+  var modelo = (document.getElementById('moto-modelo').value || '').trim();
+  var ano    = parseInt(document.getElementById('moto-ano').value)    || 0;
+  var kmIni  = parseFloat(document.getElementById('moto-km-ini').value) || 0;
+  var motUid = document.getElementById('moto-motorista-sel').value;
+  var editId = document.getElementById('moto-edit-id').value;
+
+  if(!placa){ showToast('Informe a placa da moto.', 'error'); return; }
+
+  var motoData = {
+    id:        editId || (Date.now() + ''),
+    placa:     placa,
+    modelo:    modelo,
+    ano:       ano,
+    kmIni:     kmIni,
+    kmAcum:    0,
+    ativo:     true,
+    criadoEm:  new Date().toISOString()
+  };
+
+  showToast('Salvando...', 'info');
+  window._fbSalvarMoto(motoData).then(function(res){
+    if(!res.ok){ showToast('Erro ao salvar moto.', 'error'); return; }
+
+    // Vincula motorista à moto se selecionado
+    if(motUid){
+      var config = { motoId: motoData.id, motoPlaca: placa, motoModelo: modelo };
+      window._fbSalvarConfigMotorista(motUid, config);
+    }
+
+    fecharModalMoto();
+    showToast('Moto ' + placa + ' cadastrada!', 'success');
+    renderListaMotos();
+  });
+}
+
+// ── Renderiza lista de motos ─────────────────────────────────
+function renderListaMotos(){
+  var cont = document.getElementById('gestor-lista-motos');
+  if(!cont) return;
+  cont.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);">Carregando...</div>';
+
+  window._fbListarMotos().then(function(motos){
+    _motosList = motos;
+    if(motos.length === 0){
+      cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">'
+        + '<div style="font-size:2rem;margin-bottom:8px;">🏍️</div>'
+        + '<div>Nenhuma moto cadastrada.</div>'
+        + '<div style="font-size:0.78rem;margin-top:6px;">Clique em "+ Adicionar moto" para cadastrar.</div>'
+        + '</div>';
+      return;
+    }
+
+    var lista = window._motoristasFrota || [];
+    var html = '';
+    motos.forEach(function(m){
+      // Verifica se tem motorista alocado
+      var motAloc = null;
+      lista.forEach(function(mot){ if(mot.motoId === m.id) motAloc = mot; });
+      var livre = !motAloc;
+
+      html += '<div class="moto-card">'
+        + '<div class="moto-card-header">'
+        + '<div>'
+        + '<div class="moto-placa">' + (m.placa||'—') + '</div>'
+        + '<div style="font-size:0.78rem;color:var(--muted);margin-top:2px;">' + (m.modelo||'—') + (m.ano?' · '+m.ano:'') + '</div>'
+        + '</div>'
+        + '<span class="moto-badge ' + (livre?'livre':'alocada') + '">' + (livre?'🟢 Livre':'🟡 Alocada') + '</span>'
+        + '</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;">'
+        + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+        + '<div style="font-size:0.9rem;font-weight:700;">' + (m.kmIni||0).toFixed(0) + '</div>'
+        + '<div style="font-size:0.65rem;color:var(--muted);">KM inicial</div>'
+        + '</div>'
+        + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+        + '<div style="font-size:0.9rem;font-weight:700;color:var(--blue);">' + (m.kmAcum||0).toFixed(0) + '</div>'
+        + '<div style="font-size:0.65rem;color:var(--muted);">KM rodados</div>'
+        + '</div>'
+        + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+        + '<div style="font-size:0.9rem;font-weight:700;color:var(--green);">' + ((m.kmIni||0)+(m.kmAcum||0)).toFixed(0) + '</div>'
+        + '<div style="font-size:0.65rem;color:var(--muted);">KM total</div>'
+        + '</div>'
+        + '</div>'
+        + (motAloc ? '<div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;">👤 ' + (motAloc.email||motAloc.uid) + '</div>' : '')
+        + '<div style="display:flex;gap:8px;">'
+        + '<button class="btn btn-secondary" style="flex:1;font-size:0.78rem;padding:7px;" onclick="abrirModalMoto(\'' + m.id + '\')">✏️ Editar</button>'
+        + '<button class="btn btn-secondary" style="flex:1;font-size:0.78rem;padding:7px;" onclick="abrirModalManutMoto(\'' + m.id + '\',\'' + (m.placa||'') + '\')">🔧 Manutenção</button>'
+        + '<button class="btn btn-secondary" style="font-size:0.78rem;padding:7px;color:var(--red);" onclick="removerMoto(\'' + m.id + '\',\'' + (m.placa||'') + '\')">🗑️</button>'
+        + '</div>'
+        + '</div>';
+    });
+    cont.innerHTML = html;
+  });
+}
+
+function removerMoto(id, placa){
+  confirmar('Remover moto ' + placa + '?').then(function(ok){
+    if(!ok) return;
+    window._fbRemoverMoto(id).then(function(){
+      showToast('Moto removida.', 'success');
+      renderListaMotos();
+    });
+  });
+}
+
+// ── MODAL: Config do motorista ───────────────────────────────
+function abrirModalConfigMotorista(uid, email){
+  var modal = document.getElementById('modal-config-motorista');
+  if(!modal) return;
+
+  document.getElementById('cfg-mot-uid').value = uid;
+  document.getElementById('cfg-mot-email').textContent = email || uid;
+  document.getElementById('cfg-comissao-valor').value = '';
+
+  // Busca config atual do motorista
+  var lista = window._motoristasFrota || [];
+  var mot = null;
+  lista.forEach(function(m){ if(m.uid === uid) mot = m; });
+
+  var tipo = (mot && mot.tipo) || 'proprio';
+  var comTipo = (mot && mot.comissaoTipo) || 'percentual';
+  var comVal  = (mot && mot.comissaoValor) || 0;
+  var motoId  = (mot && mot.motoId) || '';
+
+  setCfgTipo(tipo);
+  setCfgComissao(comTipo);
+  document.getElementById('cfg-comissao-valor').value = comVal || '';
+
+  // Popula select de motos
+  var sel = document.getElementById('cfg-moto-sel');
+  sel.innerHTML = '<option value="">— Moto própria do motorista —</option>';
+  _motosList.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = (m.placa||'—') + (m.modelo?' — '+m.modelo:'');
+    if(m.id === motoId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  modal.style.display = 'flex';
+}
+
+function fecharModalConfigMotorista(){
+  var modal = document.getElementById('modal-config-motorista');
+  if(modal) modal.style.display = 'none';
+}
+
+function setCfgTipo(tipo){
+  _cfgTipoAtual = tipo;
+  var bp = document.getElementById('cfg-tipo-proprio');
+  var bt = document.getElementById('cfg-tipo-terceirizado');
+  var desc = document.getElementById('cfg-tipo-desc');
+  if(bp) bp.className = 'btn ' + (tipo==='proprio' ? 'btn-gold' : 'btn-secondary');
+  if(bt) bt.className = 'btn ' + (tipo==='terceirizado' ? 'btn-gold' : 'btn-secondary');
+  if(desc) desc.textContent = tipo==='proprio'
+    ? 'Usa moto da empresa. Manutenção paga pela frota. Recebe comissão.'
+    : 'Usa moto própria. Responsável pela própria manutenção. Recebe por corrida.';
+}
+
+function setCfgComissao(tipo){
+  _cfgComAtual = tipo;
+  var bp = document.getElementById('cfg-com-pct');
+  var bf = document.getElementById('cfg-com-fixo');
+  var sf = document.getElementById('cfg-comissao-sufixo');
+  var inp = document.getElementById('cfg-comissao-valor');
+  if(bp) bp.className = 'btn ' + (tipo==='percentual' ? 'btn-gold' : 'btn-secondary');
+  if(bf) bf.className = 'btn ' + (tipo==='fixo' ? 'btn-gold' : 'btn-secondary');
+  if(sf) sf.textContent = tipo==='percentual' ? '%' : 'R$';
+  if(inp) inp.placeholder = tipo==='percentual' ? 'Ex: 70' : 'Ex: 8.00';
+}
+
+function salvarConfigMotorista(){
+  var uid    = document.getElementById('cfg-mot-uid').value;
+  var comVal = parseFloat(document.getElementById('cfg-comissao-valor').value) || 0;
+  var motoId = document.getElementById('cfg-moto-sel').value;
+
+  // Busca placa/modelo da moto selecionada
+  var motoPlaca = ''; var motoModelo = '';
+  _motosList.forEach(function(m){
+    if(m.id === motoId){ motoPlaca = m.placa||''; motoModelo = m.modelo||''; }
+  });
+
+  var config = {
+    uid:           uid,
+    tipo:          _cfgTipoAtual,
+    comissaoTipo:  _cfgComAtual,
+    comissaoValor: comVal,
+    motoId:        motoId,
+    motoPlaca:     motoPlaca,
+    motoModelo:    motoModelo,
+    atualizadoEm:  new Date().toISOString()
+  };
+
+  window._fbSalvarConfigMotorista(uid, config).then(function(){
+    // Atualiza KM acumulado na moto se tiver moto alocada
+    if(motoId){
+      var lista = window._motoristasFrota || [];
+      lista.forEach(function(m){
+        if(m.uid === uid){
+          var mes = hoje().slice(0,7);
+          var kmAcum = (m.rotas||[])
+            .filter(function(r){ return r.data.slice(0,7)===mes; })
+            .reduce(function(s,r){ return s+(r.km||0); },0);
+          window._fbSalvarMoto({ id:motoId, kmAcum:kmAcum });
+        }
+      });
+    }
+    fecharModalConfigMotorista();
+    showToast('Configuração salva!', 'success');
+    // Atualiza lista de motoristas com a nova config
+    atualizarPainelGestor();
+  });
+}
+
+// ── COMISSÕES: Painel do gestor ──────────────────────────────
+function initComissoesMes(){
+  var sel = document.getElementById('comissao-mes-sel');
+  if(!sel) return;
+  sel.innerHTML = '';
+  var mesesSet = {};
+  // Pega meses de todos os motoristas
+  (window._motoristasFrota||[]).forEach(function(m){
+    (m.rotas||[]).forEach(function(r){ mesesSet[r.data.slice(0,7)] = true; });
+  });
+  var meses = Object.keys(mesesSet).sort().reverse();
+  if(meses.length === 0) meses = [hoje().slice(0,7)];
+  meses.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m;
+    var d = new Date(m + '-01');
+    opt.textContent = d.toLocaleString('pt-BR',{month:'long',year:'numeric'});
+    sel.appendChild(opt);
+  });
+  renderComissoes();
+}
+
+function renderComissoes(){
+  var cont = document.getElementById('gestor-lista-comissoes');
+  if(!cont) return;
+  var sel = document.getElementById('comissao-mes-sel');
+  var mes = sel ? sel.value : hoje().slice(0,7);
+
+  var lista = window._motoristasFrota || [];
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">Nenhum motorista na frota.</div>';
+    return;
+  }
+
+  var html = '';
+  var totalComissoes = 0;
+
+  lista.forEach(function(m){
+    var rotasMes = (m.rotas||[]).filter(function(r){ return r.data.slice(0,7)===mes; });
+    var receita  = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+    var kmMes    = rotasMes.reduce(function(s,r){ return s+(r.km||0); },0);
+
+    var tipo       = m.tipo         || 'terceirizado';
+    var comTipo    = m.comissaoTipo  || 'percentual';
+    var comVal     = m.comissaoValor || 0;
+    var motoPlaca  = m.motoPlaca     || '';
+
+    var comissao = 0;
+    if(comTipo === 'percentual') comissao = receita * (comVal/100);
+    else comissao = rotasMes.length * comVal;
+
+    // Carrega pagamentos já feitos para esse motorista/mês
+    var chaveComPaga = 'dc_compag_' + m.uid + '_' + mes;
+    var pagosData = localStorage.getItem(chaveComPaga);
+    var pagosLista = pagosData ? JSON.parse(pagosData) : [];
+    var comissaoPaga = pagosLista.reduce(function(s, p){ return s + (p.valor||0); }, 0);
+
+    totalComissoes += comissao;
+
+    var tipoBadge = tipo === 'proprio'
+      ? '<span class="mot-tipo-badge proprio">🔵 Próprio</span>'
+      : '<span class="mot-tipo-badge terceirizado">🟠 Terceirizado</span>';
+
+    var comissaoDesc = comTipo==='percentual'
+      ? comVal + '% sobre receita'
+      : 'R$ ' + comVal.toFixed(2) + '/corrida';
+
+    html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">'
+      + '<div>'
+      + '<div style="font-weight:600;font-size:0.88rem;">' + (m.email||'Motorista') + '</div>'
+      + '<div style="margin-top:4px;">' + tipoBadge + '</div>'
+      + '</div>'
+      + '<button onclick="abrirModalConfigMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" '
+      + 'style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:0.72rem;cursor:pointer;padding:4px 8px;">⚙️ Editar</button>'
+      + '</div>'
+      + '<div class="comissao-row"><span>Receita no mês</span><span style="color:var(--green);font-weight:700;">' + fmt(receita) + '</span></div>'
+      + '<div class="comissao-row"><span>Corridas</span><span>' + rotasMes.length + '</span></div>'
+      + '<div class="comissao-row"><span>KM rodados</span><span>' + kmMes.toFixed(0) + ' km</span></div>'
+      + (motoPlaca ? '<div class="comissao-row"><span>Moto</span><span style="font-family:monospace;">' + motoPlaca + '</span></div>' : '')
+      + '<div class="comissao-row"><span>Modelo comissão</span><span style="color:var(--muted);">' + comissaoDesc + '</span></div>'
+      + '<div class="comissao-row"><span style="font-weight:700;">A pagar</span><span style="font-weight:700;font-size:1rem;color:var(--gold);">' + fmt(comissao) + '</span></div>'
+      + '<div class="comissao-row"><span>Total pago no mês</span><span style="color:var(--green);">' + fmt(comissaoPaga) + '</span></div>'
+      + '<div class="comissao-row"><span style="font-weight:700;color:var(--red);">Saldo devedor</span><span style="font-weight:700;font-size:1.05rem;color:var(--red);">' + fmt(Math.max(0, comissao - comissaoPaga)) + '</span></div>'
+      + (comissao > comissaoPaga ? '<button class="btn btn-gold" style="width:100%;margin-top:8px;font-size:0.82rem;padding:9px;" onclick="abrirModalBaixaComissao(\'' + m.uid + '\',\'' + (m.email||'') + '\',' + comissao + ',' + comissaoPaga + ')">💰 Registrar pagamento</button>' : '<div style="text-align:center;padding:8px;font-size:0.78rem;color:var(--green);">✅ Comissões em dia</div>')
+      + '</div>';
+  });
+
+  // Totalizador
+  html += '<div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:12px;padding:14px;margin-top:4px;">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+    + '<div style="font-weight:700;">Total a pagar no mês</div>'
+    + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.4rem;font-weight:700;color:var(--gold);">' + fmt(totalComissoes) + '</div>'
+    + '</div></div>';
+
+  cont.innerHTML = html;
+}
+
+// ── Atualiza renderListaMotoristas para mostrar botão config ──
+// Sobrescreve a função original adicionando botão ⚙️
+var _origRenderListaMotoristas = window.renderListaMotoristas || function(){};
+function renderListaMotoristas(lista){
+  var cont = document.getElementById('gestor-lista-motoristas');
+  if(!cont) return;
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">'
+      + '<div style="font-size:2rem;margin-bottom:8px;">🏍️</div>'
+      + '<div>Nenhum motorista ainda.</div>'
+      + '<div style="font-size:0.78rem;margin-top:8px;">Compartilhe o codigo de convite para adicionar motoristas.</div>'
+      + '</div>';
+    return;
+  }
+  var hoje2    = hoje();
+  var mesAtual = hoje2.slice(0,7);
+  var html = '';
+  lista.forEach(function(m){
+    var r = m.rotas || [];
+    var entregasHoje = r.filter(function(rt){ return rt.data === hoje2; }).length;
+    var ganhoMes     = r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).reduce(function(s,rt){ return s+rt.total; },0);
+    var kmMes        = r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).reduce(function(s,rt){ return s+(rt.km||0); },0);
+    var status     = entregasHoje > 0 ? '🟢' : '🔴';
+    var statusTxt  = entregasHoje > 0 ? (entregasHoje + ' entrega' + (entregasHoje>1?'s':'') + ' hoje') : 'Sem entrega hoje';
+    var tipo       = m.tipo || '';
+    var tipoBadge  = tipo === 'proprio'
+      ? '<span class="mot-tipo-badge proprio" style="margin-left:6px;">🔵 Próprio</span>'
+      : (tipo === 'terceirizado' ? '<span class="mot-tipo-badge terceirizado" style="margin-left:6px;">🟠 Terceirizado</span>' : '');
+    var motoInfo   = m.motoPlaca ? ' · 🏍️ ' + m.motoPlaca : '';
+
+    html += '<div class="moto-card">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
+      + '<div>'
+      + '<div style="font-weight:600;font-size:0.9rem;">' + (m.email||'Motorista') + tipoBadge + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + status + ' ' + statusTxt + motoInfo + '</div>'
+      + '</div>'
+      + '<div style="display:flex;gap:6px;">'
+      + '<button onclick="abrirModalConfigMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" '
+      + 'style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:0.72rem;cursor:pointer;padding:4px 8px;">⚙️</button>'
+      + '<button onclick="confirmarRemoverMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" '
+      + 'style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:4px;">🗑️</button>'
+      + '</div>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--green);font-family:\'Rajdhani\',sans-serif;">' + fmt(ganhoMes) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Mês</div></div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--blue);font-family:\'Rajdhani\',sans-serif;">'
+      + r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).length + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Entregas</div></div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;font-family:\'Rajdhani\',sans-serif;">' + kmMes.toFixed(0) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">KM</div></div>'
+      + '</div></div>';
+  });
+  cont.innerHTML = html;
+}
+
+// ── Card comissão na tela do motoboy ─────────────────────────
+function initFrotaMotoristaComissao(){
+  var card = document.getElementById('frota-config-card');
+  if(!card || !window._vinculoFrota) return;
+
+  window._fbCarregarConfigMotorista().then(function(cfg){
+    if(!cfg){ card.style.display='none'; return; }
+
+    card.style.display = 'block';
+    var elTipo = document.getElementById('frota-cfg-tipo');
+    var elCom  = document.getElementById('frota-cfg-comissao');
+    var elMoto = document.getElementById('frota-cfg-moto');
+    var elRec  = document.getElementById('frota-cfg-a-receber');
+    var elRecRow = document.getElementById('frota-cfg-a-receber-row');
+
+    if(elTipo) elTipo.innerHTML = cfg.tipo==='proprio'
+      ? '<span class="mot-tipo-badge proprio">🔵 Próprio</span>'
+      : '<span class="mot-tipo-badge terceirizado">🟠 Terceirizado</span>';
+
+    var comDesc = '—';
+    if(cfg.comissaoValor > 0){
+      comDesc = cfg.comissaoTipo==='percentual'
+        ? cfg.comissaoValor + '%'
+        : 'R$ ' + (cfg.comissaoValor||0).toFixed(2) + '/corrida';
+    }
+    if(elCom) elCom.textContent = comDesc;
+    if(elMoto) elMoto.textContent = cfg.motoPlaca
+      ? (cfg.motoPlaca + (cfg.motoModelo?' — '+cfg.motoModelo:''))
+      : 'Moto própria';
+
+    // Calcula a receber este mês
+    if(cfg.comissaoValor > 0){
+      var mes = hoje().slice(0,7);
+      var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7)===mes; });
+      var receita  = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+      var comissao = cfg.comissaoTipo==='percentual'
+        ? receita * (cfg.comissaoValor/100)
+        : rotasMes.length * cfg.comissaoValor;
+      if(elRec)    elRec.textContent = fmt(comissao);
+      if(elRecRow) elRecRow.style.display = 'flex';
+    }
+  });
+}
+
+// ── Hook initFrotaMotorista para chamar comissão ─────────────
+var _origInitFrotaMotorista = window.initFrotaMotorista || function(){};
+function initFrotaMotorista(){
+  _origInitFrotaMotorista();
+  setTimeout(function(){
+    if(typeof initFrotaMotoristaComissao==='function') initFrotaMotoristaComissao();
+  }, 400);
+}
+
+// ── Hook initPainelGestor para carregar motos + listener ─────
+var _origInitPainelGestor = window.initPainelGestor || function(){};
+function initPainelGestor(){
+  _origInitPainelGestor();
+  window._fbListarMotos().then(function(motos){ _motosList = motos; });
+  if(typeof window._fbIniciarListenerFrota === 'function') window._fbIniciarListenerFrota();
+}
+</script>
+
+<script>
+// ============================================================
+// PONTOS 2-5: MANUTENÇÃO, BAIXA COMISSÃO, NOTIF GESTOR (ES5)
+// ============================================================
+
+// ── MANUTENÇÃO: abrir modal ──────────────────────────────────
+function abrirModalManutMoto(motoId, placa){
+  var modal = document.getElementById('modal-manut-moto');
+  if(!modal) return;
+  document.getElementById('manut-moto-id').value = motoId;
+  document.getElementById('manut-moto-placa-label').textContent = '🏍️ ' + (placa||motoId);
+  document.getElementById('manut-data').value  = hoje();
+  document.getElementById('manut-custo').value = '';
+  document.getElementById('manut-km').value    = '';
+  document.getElementById('manut-obs').value   = '';
+  modal.style.display = 'flex';
+  renderHistoricoManut(motoId);
+}
+
+function fecharModalManutMoto(){
+  var modal = document.getElementById('modal-manut-moto');
+  if(modal) modal.style.display = 'none';
+}
+
+function renderHistoricoManut(motoId){
+  var cont = document.getElementById('manut-moto-historico');
+  if(!cont) return;
+  cont.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:0.8rem;">Carregando...</div>';
+  window._fbListarManutMoto(motoId).then(function(lista){
+    if(lista.length === 0){
+      cont.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:0.8rem;">Nenhuma manutenção registrada.</div>';
+      return;
+    }
+    var tipoLabel = { oleo:'🛢️ Troca de óleo', pneu:'🔘 Pneu', freio:'🔴 Freio',
+      corrente:'⛓️ Corrente', revisao:'🔩 Revisão geral', eletrica:'⚡ Elétrica', outro:'🔧 Outro' };
+    var html = '';
+    lista.forEach(function(m){
+      html += '<div class="manut-item">'
+        + '<div class="manut-icon-box" style="background:rgba(255,152,0,0.1);">🔧</div>'
+        + '<div style="flex:1;">'
+        + '<div style="font-size:0.85rem;font-weight:600;">' + (tipoLabel[m.tipo]||m.tipo||'—') + '</div>'
+        + '<div style="font-size:0.75rem;color:var(--muted);">' + (m.data||'—') + (m.km?' · '+m.km+' km':'') + '</div>'
+        + (m.obs ? '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + m.obs + '</div>' : '')
+        + '</div>'
+        + '<div style="font-weight:700;color:var(--orange);font-size:0.9rem;">' + fmt(m.custo||0) + '</div>'
+        + '</div>';
+    });
+    cont.innerHTML = html;
+  });
+}
+
+function salvarManutMoto(){
+  var motoId = document.getElementById('manut-moto-id').value;
+  var tipo   = document.getElementById('manut-tipo').value;
+  var custo  = parseFloat(document.getElementById('manut-custo').value) || 0;
+  var data   = document.getElementById('manut-data').value || hoje();
+  var km     = parseInt(document.getElementById('manut-km').value)    || 0;
+  var obs    = (document.getElementById('manut-obs').value||'').trim();
+
+  if(custo <= 0){ showToast('Informe o custo da manutenção.', 'error'); return; }
+
+  var manut = { id: Date.now()+'', tipo:tipo, custo:custo, data:data, km:km, obs:obs, criadoEm:new Date().toISOString() };
+
+  showToast('Salvando...', 'info');
+  window._fbSalvarManutMoto(motoId, manut).then(function(res){
+    if(!res.ok){ showToast('Erro ao salvar.', 'error'); return; }
+    showToast('Manutenção registrada!', 'success');
+    document.getElementById('manut-custo').value = '';
+    document.getElementById('manut-km').value    = '';
+    document.getElementById('manut-obs').value   = '';
+    renderHistoricoManut(motoId);
+    renderListaMotos();
+  });
+}
+
+// ── BAIXA DE COMISSÃO: abrir modal ───────────────────────────
+function abrirModalBaixaComissao(uid, email, total, pago){
+  var modal = document.getElementById('modal-baixa-comissao');
+  if(!modal) return;
+  var mes = document.getElementById('comissao-mes-sel') ? document.getElementById('comissao-mes-sel').value : hoje().slice(0,7);
+  document.getElementById('baixa-com-uid').value = uid;
+  document.getElementById('baixa-com-mes').value = mes;
+  document.getElementById('baixa-com-email').textContent = email || uid;
+  var elTotal = document.getElementById('baixa-com-total');
+  var elSaldo = document.getElementById('baixa-com-saldo');
+  if(elTotal) elTotal.textContent = fmt(total||0);
+  if(elSaldo) elSaldo.textContent = fmt(Math.max(0,(total||0)-(pago||0)));
+  document.getElementById('baixa-com-valor').value = '';
+  document.getElementById('baixa-com-obs').value   = '';
+  renderHistoricoComPagos(uid, mes);
+  modal.style.display = 'flex';
+}
+
+function fecharModalBaixaComissao(){
+  var modal = document.getElementById('modal-baixa-comissao');
+  if(modal) modal.style.display = 'none';
+}
+
+function renderHistoricoComPagos(uid, mes){
+  var cont = document.getElementById('baixa-com-historico');
+  if(!cont) return;
+  var chave = 'dc_compag_' + uid + '_' + mes;
+  var pagosData = localStorage.getItem(chave);
+  var lista = pagosData ? JSON.parse(pagosData) : [];
+  if(lista.length === 0){ cont.innerHTML = ''; return; }
+  var html = '<div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Pagamentos registrados</div>';
+  lista.forEach(function(p){
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+      + '<div><div>' + (p.data||'—') + '</div>' + (p.obs ? '<div style="font-size:0.72rem;color:var(--muted);">' + p.obs + '</div>' : '') + '</div>'
+      + '<div style="font-weight:700;color:var(--green);">' + fmt(p.valor||0) + '</div>'
+      + '</div>';
+  });
+  cont.innerHTML = html;
+}
+
+function salvarBaixaComissao(){
+  var uid   = document.getElementById('baixa-com-uid').value;
+  var mes   = document.getElementById('baixa-com-mes').value;
+  var valor = parseFloat(document.getElementById('baixa-com-valor').value) || 0;
+  var obs   = (document.getElementById('baixa-com-obs').value||'').trim();
+
+  if(valor <= 0){ showToast('Informe o valor pago.', 'error'); return; }
+
+  var chave = 'dc_compag_' + uid + '_' + mes;
+  var pagosData = localStorage.getItem(chave);
+  var lista = pagosData ? JSON.parse(pagosData) : [];
+  lista.push({ id:Date.now()+'', valor:valor, data:hoje(), obs:obs });
+  localStorage.setItem(chave, JSON.stringify(lista));
+
+  // Também salva no Firestore para persistência
+  if(window._fbUser && typeof setDoc !== 'undefined'){
+    var docRef = doc(db, 'frotas', window._fbUser.uid, 'comissoes', uid + '_' + mes);
+    setDoc(docRef, { uid:uid, mes:mes, pagamentos:lista }, { merge:true }).catch(function(e){ console.warn('Erro salvar comissão', e); });
+  }
+
+  showToast('Pagamento registrado!', 'success');
+  fecharModalBaixaComissao();
+  renderComissoes();
+}
+
+// ── NOTIFICAÇÕES DO GESTOR ───────────────────────────────────
+function verificarNotificacoesGestor(lista){
+  if(!isGestor()) return;
+
+  var ultTs = localStorage.getItem('dc_notif_gestor_ts');
+  var now   = Date.now();
+  if(ultTs && (now - parseInt(ultTs)) < 4*60*60*1000) return;
+
+  var alertas = [];
+  var hoje2   = hoje();
+  var mesAtual = hoje2.slice(0,7);
+
+  // 1. Motoboy sem entrega por mais de 1 dia útil
+  lista.forEach(function(m){
+    var rotsM = (m.rotas||[]).filter(function(r){ return r.data.slice(0,7)===mesAtual; });
+    if(rotsM.length === 0) return;
+    var ultRota = rotsM.sort(function(a,b){ return b.data.localeCompare(a.data); })[0];
+    var diasSem = Math.floor((new Date() - new Date(ultRota.data)) / (1000*60*60*24));
+    if(diasSem >= 2){
+      alertas.push('🔴 ' + (m.email||'Motorista') + ' sem entrega ha ' + diasSem + ' dias.');
+    }
+  });
+
+  // 2. Comissões em atraso (mês anterior)
+  var mesAnt = new Date();
+  mesAnt.setMonth(mesAnt.getMonth() - 1);
+  var mesAntStr = mesAnt.getFullYear() + '-' + String(mesAnt.getMonth()+1).padStart(2,'0');
+  var temAtraso = false;
+  lista.forEach(function(m){
+    var comVal  = m.comissaoValor || 0;
+    if(comVal <= 0) return;
+    var rotasAnt = (m.rotas||[]).filter(function(r){ return r.data.slice(0,7)===mesAntStr; });
+    if(rotasAnt.length === 0) return;
+    var receita  = rotasAnt.reduce(function(s,r){ return s+r.total; },0);
+    var comissao = m.comissaoTipo==='percentual' ? receita*(comVal/100) : rotasAnt.length*comVal;
+    var chave    = 'dc_compag_' + m.uid + '_' + mesAntStr;
+    var pd = localStorage.getItem(chave);
+    var pago = pd ? JSON.parse(pd).reduce(function(s,p){ return s+(p.valor||0); },0) : 0;
+    if(comissao > pago + 1) temAtraso = true;
+  });
+  if(temAtraso) alertas.push('⚠️ Ha comissoes do mes anterior sem pagamento registrado.');
+
+  // 3. Moto com KM alto sem manutenção recente (>3000 km acumulados)
+  _motosList.forEach(function(m){
+    if((m.kmAcum||0) > 3000 && (m.custoManutTotal||0) === 0){
+      alertas.push('🔧 Moto ' + (m.placa||'—') + ' com ' + (m.kmAcum||0).toFixed(0) + ' km sem manutencao registrada.');
+    }
+  });
+
+  if(alertas.length === 0) return;
+  localStorage.setItem('dc_notif_gestor_ts', now + '');
+
+  var banner = document.getElementById('notif-banner');
+  if(!banner) return;
+  var itens = alertas.map(function(a){
+    return '<div style="padding:8px 0;border-bottom:1px solid rgba(255,152,0,0.2);font-size:0.8rem;">' + a + '</div>';
+  }).join('');
+  banner.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">'
+    + '<div style="font-weight:700;font-size:0.85rem;">⚡ Alertas da Frota</div>'
+    + '<button onclick="this.parentElement.parentElement.style.display=\'none\'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;">✕</button>'
+    + '</div>' + itens;
+  banner.style.display = 'block';
+}
+
+// ── Hook verificarNotificacoes para também chamar gestor ─────
+var _origVerifNotif = window.verificarNotificacoes || function(){};
+function verificarNotificacoes(){
+  _origVerifNotif();
+  if(isGestor() && window._motoristasFrota){
+    verificarNotificacoesGestor(window._motoristasFrota);
+  }
 }
 </script>
