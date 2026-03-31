@@ -696,6 +696,7 @@ select option{background:var(--card);}
       <button class="menu-item" onclick="showPage('retroativo')">🕐 &nbsp;Lançamento Retroativo</button>
       <button class="menu-item" onclick="showPage('empresas')">🏢 &nbsp;Empresas</button>
       <button class="menu-item" onclick="showPage('despesas')">📊 &nbsp;Despesas &amp; Meta</button>
+      <button class="menu-item" onclick="showPage('lucro-liquido')">📈 &nbsp;Lucro Líquido</button>
       <button class="menu-item" onclick="showPage('plano')">⭐ &nbsp;Plano</button>
       <button class="menu-item" onclick="showPage('backup')">☁️ &nbsp;Backup</button>
       <button class="menu-item" onclick="showPage('nota-servico')">📋 &nbsp;Nota de Serviço</button>
@@ -1376,6 +1377,99 @@ select option{background:var(--card);}
       <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:10px;">🗂️ Notas Emitidas</div>
       <div id="nota-historico-lista"></div>
     </div>
+  </div>
+</div>
+
+<!-- ==================== LUCRO LÍQUIDO ==================== -->
+<div id="page-lucro-liquido" class="page">
+  <div class="card">
+    <div class="painel-header" style="margin-bottom:14px;">
+      <div class="section-title">📈 Lucro Líquido</div>
+      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
+    </div>
+
+    <!-- SELETOR DIA / MÊS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+      <button id="ll-tab-dia" class="btn btn-gold" onclick="llSetTab('dia')">📅 Hoje</button>
+      <button id="ll-tab-mes" class="btn btn-secondary" onclick="llSetTab('mes')">📆 Mês</button>
+    </div>
+
+    <!-- PERÍODO SELECIONADO -->
+    <div id="ll-periodo" style="text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:14px;"></div>
+
+    <!-- CARD PRINCIPAL: LUCRO -->
+    <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.25);border-radius:12px;padding:18px;text-align:center;margin-bottom:14px;">
+      <div style="font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">📈 Lucro Líquido</div>
+      <div id="ll-lucro" style="font-family:'Rajdhani',sans-serif;font-size:2.2rem;font-weight:700;color:var(--green);">R$ 0,00</div>
+      <div id="ll-lucro-pct" style="font-size:0.78rem;color:var(--muted);margin-top:4px;">0% do bruto</div>
+    </div>
+
+    <!-- BREAKDOWN -->
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+
+      <!-- Ganho Bruto -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--card2);border-radius:10px;border-left:3px solid var(--green);">
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;">💰 Ganho Bruto</div>
+          <div id="ll-bruto-detalhe" style="font-size:0.68rem;color:var(--muted);margin-top:2px;"></div>
+        </div>
+        <div id="ll-bruto" style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--green);">R$ 0,00</div>
+      </div>
+
+      <!-- Combustível -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--card2);border-radius:10px;border-left:3px solid var(--red);">
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;">⛽ Combustível</div>
+          <div id="ll-gas-detalhe" style="font-size:0.68rem;color:var(--muted);margin-top:2px;"></div>
+        </div>
+        <div id="ll-gas" style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--red);">R$ 0,00</div>
+      </div>
+
+      <!-- Manutenção -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--card2);border-radius:10px;border-left:3px solid var(--orange);">
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;">🔧 Manutenção</div>
+          <div id="ll-manut-detalhe" style="font-size:0.68rem;color:var(--muted);margin-top:2px;"></div>
+        </div>
+        <div id="ll-manut" style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--orange);">R$ 0,00</div>
+      </div>
+
+      <!-- Despesas -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:var(--card2);border-radius:10px;border-left:3px solid #9b59b6;">
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;">📋 Despesas</div>
+          <div id="ll-desp-detalhe" style="font-size:0.68rem;color:var(--muted);margin-top:2px;"></div>
+        </div>
+        <div id="ll-desp" style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:#9b59b6;">R$ 0,00</div>
+      </div>
+
+    </div>
+
+    <!-- KM DO PERÍODO -->
+    <div style="background:rgba(88,166,255,0.07);border:1px solid rgba(88,166,255,0.2);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">📏 KM do Período</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:var(--blue);" id="ll-km">0</div>
+          <div style="font-size:0.65rem;color:var(--muted);">Total KM</div>
+        </div>
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:var(--blue);" id="ll-litros">0,0L</div>
+          <div style="font-size:0.65rem;color:var(--muted);">Litros est.</div>
+        </div>
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:var(--blue);" id="ll-rskm">R$ 0,00</div>
+          <div style="font-size:0.65rem;color:var(--muted);">R$/KM líquido</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVISO CONFIG -->
+    <div id="ll-aviso-cfg" style="display:none;background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.3);border-radius:8px;padding:10px;font-size:0.78rem;color:var(--orange);margin-bottom:12px;">
+      ⚠️ Configure consumo e preço do combustível em <strong>Despesas &amp; Meta → ⚙️ Configurações</strong> para cálculos precisos.
+    </div>
+
+    <button class="btn btn-secondary" style="width:100%;" onclick="showPage('despesas')">⚙️ Ajustar Configurações</button>
   </div>
 </div>
 
@@ -6410,6 +6504,118 @@ function deletarNota(id){
   save('dc_notas_emitidas', notas);
   renderNotaHistorico();
 }
+
+// ============================================================
+// LUCRO LÍQUIDO — tela separada com breakdown dia/mês (ES5)
+// ============================================================
+
+var _llTab = 'dia'; // 'dia' | 'mes'
+
+function llSetTab(tab){
+  _llTab = tab;
+  var btnDia = document.getElementById('ll-tab-dia');
+  var btnMes = document.getElementById('ll-tab-mes');
+  if(btnDia) btnDia.className = 'btn ' + (tab==='dia' ? 'btn-gold' : 'btn-secondary');
+  if(btnMes) btnMes.className = 'btn ' + (tab==='mes' ? 'btn-gold' : 'btn-secondary');
+  renderLucroLiquido();
+}
+
+function renderLucroLiquido(){
+  var cfg       = loadCfg();
+  var kml       = cfg.kml  || 35;
+  var precoGas  = cfg.gas  || 0;
+  var manutKm   = cfg.manut|| 0;
+  var semCfg    = (precoGas === 0 || kml === 0);
+
+  var aviso = document.getElementById('ll-aviso-cfg');
+  if(aviso) aviso.style.display = semCfg ? 'block' : 'none';
+
+  var hoje_     = hoje();
+  var mesAtual  = hoje_.slice(0,7);
+  var isDay     = _llTab === 'dia';
+
+  // Rotas do período
+  var rotasPeriodo = isDay
+    ? rotas.filter(function(r){ return r.data === hoje_; })
+    : rotas.filter(function(r){ return r.data.slice(0,7) === mesAtual; });
+
+  var bruto = rotasPeriodo.reduce(function(s,r){ return s + r.total; }, 0);
+  var nEntregas = rotasPeriodo.reduce(function(s,r){
+    return s + (r.multipla && r.entregas ? r.entregas.length : 1);
+  }, 0);
+
+  // KM do período
+  var kmRotas = rotasPeriodo.reduce(function(s,r){ return s + (r.km||0); }, 0);
+  var kmDiasData = loadKmDias();
+  var kmOdo = isDay
+    ? (kmDiasData[hoje_] ? (kmDiasData[hoje_].total || 0) : 0)
+    : Object.entries(kmDiasData).filter(function(e){ return e[0].startsWith(mesAtual); })
+        .reduce(function(s,e){ return s + (e[1].total||0); }, 0);
+  var km = kmOdo > 0 ? kmOdo : kmRotas;
+
+  // Combustível estimado
+  var litros   = kml > 0 ? km / kml : 0;
+  var gasCusto = litros * precoGas;
+
+  // Manutenção (depreciação por KM)
+  var manutCusto = km * manutKm;
+
+  // Despesas do período
+  var despCusto = isDay
+    ? despesas.filter(function(d){ return d.data === hoje_; }).reduce(function(s,d){ return s+d.valor; }, 0)
+    : despesas.filter(function(d){ return d.data && d.data.slice(0,7) === mesAtual; }).reduce(function(s,d){ return s+d.valor; }, 0);
+
+  // Lucro
+  var lucro    = bruto - gasCusto - manutCusto - despCusto;
+  var lucroPct = bruto > 0 ? (lucro / bruto * 100) : 0;
+  var rskm     = km > 0 ? lucro / km : 0;
+
+  // Período label
+  var periodoLabel = isDay
+    ? 'Hoje · ' + formatData(hoje_)
+    : 'Mês atual · ' + mesAtual.slice(0,4) + '/' + mesAtual.slice(5,7);
+
+  // DOM
+  var set = function(id, val){ var el=document.getElementById(id); if(el) el.textContent=val; };
+  var setC = function(id, val, cor){ var el=document.getElementById(id); if(el){ el.textContent=val; if(cor) el.style.color=cor; } };
+
+  set('ll-periodo', periodoLabel);
+
+  // Lucro principal
+  var lucroEl = document.getElementById('ll-lucro');
+  if(lucroEl){
+    lucroEl.textContent = fmt(lucro);
+    lucroEl.style.color = lucro >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+  set('ll-lucro-pct', lucroPct.toFixed(1) + '% do bruto');
+
+  // Breakdown
+  set('ll-bruto', fmt(bruto));
+  set('ll-bruto-detalhe', nEntregas + ' entrega' + (nEntregas!==1?'s':'') + ' · ' + km + ' km');
+
+  set('ll-gas', fmt(gasCusto));
+  set('ll-gas-detalhe', litros.toFixed(1) + 'L · R$' + (precoGas||0).toFixed(2) + '/L · ' + kml + 'km/L');
+
+  set('ll-manut', fmt(manutCusto));
+  set('ll-manut-detalhe', 'R$' + (manutKm||0).toFixed(2) + '/km × ' + km + 'km');
+
+  set('ll-desp', fmt(despCusto));
+  set('ll-desp-detalhe', isDay ? 'despesas de hoje' : 'despesas do mês');
+
+  // KM cards
+  set('ll-km', km + ' km');
+  set('ll-litros', litros.toFixed(1) + 'L');
+  set('ll-rskm', fmt(rskm) + '/km');
+}
+
+window.onShowPage('lucro-liquido', function(){
+  _llTab = 'dia';
+  var btnDia = document.getElementById('ll-tab-dia');
+  var btnMes = document.getElementById('ll-tab-mes');
+  if(btnDia) btnDia.className = 'btn btn-gold';
+  if(btnMes) btnMes.className = 'btn btn-secondary';
+  renderLucroLiquido();
+});
 
 function exportarPlanilhaGeral(){
   const rows=[['Data','Empresa','Tipo','Destino','KM','Valor','Gorjeta','Total','Retroativo']];
