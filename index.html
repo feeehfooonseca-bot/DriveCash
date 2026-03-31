@@ -3100,11 +3100,9 @@ console.log('🔥 Firebase inicializado');
 const load    = k => JSON.parse(localStorage.getItem(k) || '[]');
 const loadObj = k => JSON.parse(localStorage.getItem(k) || 'null');
 const save    = function(k,v) {
-  // Proteção: não salva null/undefined nem arrays/objetos corrompidos
   if(v === null || v === undefined) return;
   var serializado;
   try{ serializado = JSON.stringify(v); }catch(e){ console.warn('save(): valor invalido para '+k, e); return; }
-  // Proteção: não sobrescreve dado existente com vazio se havia dados antes
   var anterior = localStorage.getItem(k);
   if(anterior && anterior.length > 10 && serializado.length < 3){
     console.warn('save(): bloqueado para evitar apagar dados de '+k+' (novo='+serializado+')');
@@ -3112,7 +3110,45 @@ const save    = function(k,v) {
   }
   localStorage.setItem(k, serializado);
   if(window._fbSave) window._fbSave(k, v);
+  _dcRefreshAuto(k);
 };
+
+// ── ATUALIZAÇÃO EM TEMPO REAL ──────────────────────────────────
+var _DC_REFRESH_MAP = {
+  'dc_rotas':          ['dashboard','feed','historico','conquistas','desafios','lucro','comparador','calendario'],
+  'dc_despesas':       ['dashboard','lucro'],
+  'dc_pagamentos':     ['dashboard','financeiro'],
+  'dc_empresas':       ['dashboard','financeiro'],
+  'dc_custos':         ['dashboard','lucro'],
+  'dc_notas_emitidas': ['nota-hist'],
+};
+var _dcRefreshTimer = null;
+function _dcRefreshAuto(chave){
+  var alvos = _DC_REFRESH_MAP[chave];
+  if(!alvos) return;
+  clearTimeout(_dcRefreshTimer);
+  _dcRefreshTimer = setTimeout(function(){ _dcRefresh(alvos); }, 80);
+}
+function _dcRefresh(alvos){
+  var p = window._paginaAtual || 'dashboard';
+  alvos.forEach(function(alvo){
+    try{
+      if(alvo==='dashboard'  && typeof renderDashboard==='function')      renderDashboard();
+      if(alvo==='feed'       && typeof renderFeed==='function')           renderFeed();
+      if(alvo==='conquistas' && typeof renderConquistasDash==='function') renderConquistasDash();
+      if(alvo==='historico'  && p==='historico'  && typeof renderHistorico==='function')    renderHistorico();
+      if(alvo==='financeiro' && p==='financeiro' && typeof renderFinanceiro==='function')   renderFinanceiro();
+      if(alvo==='conquistas' && p==='conquistas' && typeof renderConquistas==='function')   renderConquistas();
+      if(alvo==='desafios'   && p==='desafios'   && typeof renderDesafios==='function')     renderDesafios();
+      if(alvo==='lucro'      && p==='lucro-liquido' && typeof renderLucroLiquido==='function') renderLucroLiquido();
+      if(alvo==='comparador' && p==='comparador-plataformas' && typeof renderComparador==='function') renderComparador();
+      if(alvo==='calendario' && p==='calendario-ganhos' && typeof renderCalendario==='function') renderCalendario();
+      if(alvo==='nota-hist'  && p==='nota-servico' && typeof renderNotaHistorico==='function')  renderNotaHistorico();
+    }catch(e){ console.warn('_dcRefresh erro:', alvo, e); }
+  });
+}
+
+
 
 let rotas    = load('dc_rotas');
 let empresas = load('dc_empresas');
@@ -3452,6 +3488,7 @@ window.onShowPage = function(pagina, fn){
 };
 
 function showPage(p){
+  window._paginaAtual = p;
   fecharMenu();
   document.querySelectorAll('.page').forEach(function(el){ el.classList.remove('active'); });
   var pageEl = document.getElementById('page-'+p);
@@ -3483,6 +3520,7 @@ function showPage(p){
   }
 }
 function voltarDashboard(){
+  window._paginaAtual = 'dashboard';
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-dashboard').classList.add('active');
   renderDashboard(); renderFeed();
@@ -3778,6 +3816,47 @@ function calcPreviewGlobal(){
 // ============================================================
 // SALVAR ROTA — salvarRota(), validação
 // ============================================================
+function validarCampoRota(id){
+  var el = document.getElementById(id);
+  var hint = document.getElementById('hint-' + id);
+  if(!el) return true;
+  var field = el.closest('.field');
+  var vazio = !el.value || el.value.trim() === '' || el.value === '0';
+  if(vazio){
+    if(field){ field.classList.add('field-error'); field.classList.remove('field-ok'); }
+    if(hint){ hint.textContent = 'Campo obrigatório'; hint.className = 'field-hint erro'; }
+    return false;
+  } else {
+    if(field){ field.classList.remove('field-error'); field.classList.add('field-ok'); }
+    if(hint){ hint.textContent = ''; hint.className = 'field-hint'; }
+    return true;
+  }
+}
+
+function validarESalvarRota(){
+  // Valida empresa (único campo obrigatório do nível global)
+  var empOk = validarCampoRota('r-empresa');
+  if(!empOk){
+    showToast('Selecione uma empresa antes de salvar.', 'error');
+    var el = document.getElementById('r-empresa');
+    if(el) el.focus();
+    return;
+  }
+  // Verifica se há ao menos um slot com valor preenchido
+  var slots = document.querySelectorAll('.entrega-slot');
+  var temValor = false;
+  slots.forEach(function(slot){
+    var n = slot.id.replace('slot-','');
+    var taxa = document.getElementById('slot-taxa-'+n) || document.getElementById('slot-taxa-v-'+n);
+    if(taxa && parseFloat(taxa.value) > 0) temValor = true;
+  });
+  if(!temValor){
+    showToast('Informe pelo menos um valor de entrega.', 'error');
+    return;
+  }
+  salvarRota();
+}
+
 function salvarRota(){
   // Verificar limites do plano
   const limCheck = checkPlanoLimits();
@@ -7470,621 +7549,4 @@ function renderGraficos(){
     document.getElementById('grafico-container').innerHTML='<canvas id="grafico-canvas"></canvas>';
     const ctx2=document.getElementById('grafico-canvas').getContext('2d');
     chartInstance=new Chart(ctx2,{type:'bar',data:{labels,datasets:[{label:'Ganhos R$',data,backgroundColor:'rgba(0,255,136,0.6)',borderColor:'#00ff88',borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(255,255,255,0.06)'},ticks:{callback:v=>'R$'+v.toFixed(0)}},x:{grid:{display:false}}}}});
-    document.getElementById('grafico-legenda').innerHTML='';
-
-  } else if(graficoAtual==='meta'){
-    // Meta vs Lucro — APENAS MÊS ATUAL
-    const rotasMes=rotas.filter(r=>r.data.slice(0,7)===mesAtual);
-    const totalBruto=rotasMes.reduce((s,r)=>s+r.total,0);
-    const kmDiasData=loadKmDias();
-    const kmOdoMes=Object.entries(kmDiasData).filter(([d])=>d.startsWith(mesAtual)).reduce((s,[,v])=>s+(v.total||0),0);
-    const kmRotasMes=rotasMes.reduce((s,r)=>s+(r.km||0),0);
-    const kmMes=kmOdoMes>0?kmOdoMes:kmRotasMes;
-    const gasCalc=cfg.kml>0?(kmMes/cfg.kml)*cfg.gas:0;
-    const manutCalc=kmMes*(cfg.manut||0);
-    const totalDesp=despesas.filter(d=>d.data&&d.data.slice(0,7)===mesAtual).reduce((s,d)=>s+d.valor,0);
-    const caixa=gasCalc+manutCalc+totalDesp;
-    const lucro=Math.max(totalBruto-caixa,0);
-    const meta=cfg.meta||1;
-    const falta=Math.max(meta-lucro,0);
-    document.getElementById('grafico-container').innerHTML='<canvas id="grafico-canvas"></canvas>';
-    const ctx2=document.getElementById('grafico-canvas').getContext('2d');
-    chartInstance=new Chart(ctx2,{type:'doughnut',data:{labels:['Lucro Atual','Faltando'],datasets:[{data:[Math.min(lucro,meta),falta],backgroundColor:[lucro>=meta?'#ffd700':'#00ff88','rgba(255,255,255,0.07)'],borderColor:['#161b22','#161b22'],borderWidth:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)}`}}}}});
-    document.getElementById('grafico-legenda').innerHTML=`
-      <div style="text-align:center;">
-        <div style="font-size:0.68rem;color:var(--muted);margin-bottom:4px;">Mês atual</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:${lucro>=meta?'var(--gold)':'var(--green)'};">${Math.min(lucro/meta*100,100).toFixed(0)}%</div>
-        <div style="font-size:0.78rem;color:var(--muted);">Lucro ${fmt(lucro)} de ${fmt(meta)} meta</div>
-        ${falta>0?`<div style="font-size:0.75rem;color:var(--muted);margin-top:2px;">Faltam ${fmt(falta)}</div>`:'<div style="font-size:0.8rem;color:var(--gold);font-weight:700;">META BATIDA! 🔥</div>'}
-      </div>`;
-  }
-}
-
-// ============================================================
-// ORÇAMENTO — gerarOrcamento(), campos
-// ============================================================
-let orcCampos = [];
-
-function renderOrcamento(){
-  const sel=document.getElementById('orc-empresa');
-  if(!sel) return;
-  sel.innerHTML='<option value="">Selecione a empresa...</option>'+
-    empresas.map(e=>`<option value="${e.id}">${e.nome}</option>`).join('');
-  // Carrega modelo salvo ou campos padrão
-  const modelo=loadObj('dc_orc_modelo');
-  if(modelo && modelo.length>0) orcCampos=[...modelo];
-  else if(orcCampos.length===0) orcCampos=[
-    {id:1,nome:'Endereço de coleta',tipo:'texto'},
-    {id:2,nome:'Endereço de entrega',tipo:'texto'},
-    {id:3,nome:'Valor R$',tipo:'moeda'},
-  ];
-  renderCamposOrc();
-}
-
-function renderCamposOrc(){
-  const container=document.getElementById('orc-campos');
-  if(!container) return;
-  container.innerHTML=orcCampos.map((c,i)=>`
-    <div style="display:flex;gap:8px;align-items:flex-end;">
-      <div class="field" style="flex:1;margin:0;">
-        <label style="display:flex;justify-content:space-between;align-items:center;">
-          <span>${c.nome}</span>
-          <span style="font-size:0.65rem;color:var(--muted);">${c.tipo==='moeda'?'R$':c.tipo==='numero'?'#':'txt'}</span>
-        </label>
-        <input type="${c.tipo==='texto'?'text':'number'}"
-          id="orc-campo-${c.id}"
-          ${c.tipo==='moeda'?'step="0.01" min="0"':''}
-          ${c.tipo==='numero'?'step="0.1" min="0"':''}
-          placeholder="${c.tipo==='moeda'?'0,00':c.tipo==='numero'?'0':c.nome}">
-      </div>
-      <button onclick="removerCampoOrc(${i})" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--red);cursor:pointer;padding:8px 10px;margin-bottom:1px;">✕</button>
-    </div>`).join('');
-}
-
-function adicionarCampoOrc(){
-  const nome=document.getElementById('orc-add-nome').value.trim();
-  const tipo=document.getElementById('orc-add-tipo').value;
-  if(!nome){ alert('Digite o nome do campo!'); return; }
-  orcCampos.push({id:Date.now(),nome,tipo});
-  document.getElementById('orc-add-nome').value='';
-  renderCamposOrc();
-}
-
-function removerCampoOrc(idx){
-  orcCampos.splice(idx,1);
-  renderCamposOrc();
-}
-
-function salvarModeloOrc(){
-  save('dc_orc_modelo',orcCampos);
-  alert('✅ Modelo salvo! Esses campos serão lembrados.');
-}
-
-function gerarOrcamento(){
-  const empId=document.getElementById('orc-empresa').value;
-  const emp=empresas.find(e=>e.id==empId);
-  const agora=new Date();
-  const dataFmt=agora.toLocaleDateString('pt-BR');
-  const horaFmt=agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-
-  let t=`📋 *ORÇAMENTO DE ENTREGA*\n`;
-  t+=`🚗 DriveCash — ${dataFmt} às ${horaFmt}\n`;
-  t+=`━━━━━━━━━━━━━━━━\n\n`;
-  if(emp){
-    t+=`🏢 *Empresa:* ${emp.nome}\n`;
-    if(emp.tel) t+=`📱 *Contato:* ${emp.tel}\n`;
-  }
-  t+=`\n`;
-
-  let temValor=false;
-  orcCampos.forEach(c=>{
-    const el=document.getElementById(`orc-campo-${c.id}`);
-    const val=el?el.value.trim():'';
-    if(!val) return;
-    if(c.tipo==='moeda'){
-      const n=parseFloat(val);
-      if(n>0){ t+=`💰 *${c.nome}:* R$ ${n.toFixed(2).replace('.',',')}\n`; temValor=true; }
-    } else if(c.tipo==='numero'){
-      t+=`📏 *${c.nome}:* ${val}\n`;
-    } else {
-      t+=`📍 *${c.nome}:* ${val}\n`;
-    }
-  });
-
-  t+=`\n━━━━━━━━━━━━━━━━\n`;
-  t+=`💳 *Chave PIX:* 47992030653\n`;
-  t+=`\nAguardo sua confirmação! 🤝`;
-
-  document.getElementById('orc-preview').textContent=t;
-  const cont=document.getElementById('orc-preview-container');
-  cont.style.display='block';
-  cont._txt=t;
-  cont._empId=empId;
-}
-
-function enviarOrcamentoWpp(){
-  const container=document.getElementById('orc-preview-container');
-  const empId=container._empId;
-  const txt=container._txt||'';
-  const emp=empresas.find(e=>e.id==empId);
-  if(!emp?.tel){ alert('Cadastre o telefone desta empresa para enviar pelo WhatsApp!'); return; }
-  window.open(`https://wa.me/55${emp.tel.replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`,'_blank');
-}
-
-function copiarOrcamento(){
-  const txt=document.getElementById('orc-preview-container')._txt||'';
-  navigator.clipboard.writeText(txt).then(()=>alert('✅ Orçamento copiado!'));
-}
-
-function limparOrcamento(){
-  orcCampos.forEach(c=>{ const el=document.getElementById(`orc-campo-${c.id}`); if(el) el.value=''; });
-  document.getElementById('orc-empresa').value='';
-  document.getElementById('orc-preview-container').style.display='none';
-}
-
-// ============================================================
-// BACKUP & RESTORE — exportar, importar
-// ============================================================
-function renderBackupInfo(){
-  const ultimo=loadObj('dc_backup_info');
-  const stats={rotas:rotas.length,empresas:empresas.length,despesas:despesas.length,pagamentos:pagamentos.length};
-  document.getElementById('backup-info').innerHTML=
-    `📦 Dados atuais: <strong>${stats.rotas}</strong> rotas · <strong>${stats.empresas}</strong> empresas · <strong>${stats.despesas}</strong> despesas · <strong>${stats.pagamentos}</strong> pagamentos`;
-  document.getElementById('backup-ultimo').innerHTML=ultimo
-    ?`<div style="font-size:0.85rem;">Último backup: <strong>${formatData(ultimo.data)}</strong> às ${ultimo.hora}<br><span style="color:var(--muted);font-size:0.78rem;">${ultimo.rotas} rotas · ${ultimo.empresas} empresas</span></div>`
-    :'<div style="font-size:0.85rem;color:var(--muted);">Nenhum backup realizado ainda</div>';
-}
-
-function exportarBackup(){
-  const dados={
-    versao:'1.0',
-    exportadoEm:new Date().toISOString(),
-    dc_rotas:rotas,
-    dc_empresas:empresas,
-    dc_custos:custos,
-    dc_despesas:despesas,
-    dc_pagamentos:pagamentos,
-    dc_cfg:loadObj('dc_cfg')
-  };
-  // Salva info do último backup
-  save('dc_backup_info',{data:hoje(),hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),rotas:rotas.length,empresas:empresas.length});
-  const blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`drivecash_backup_${hoje()}.json`;
-  a.click(); URL.revokeObjectURL(url);
-  renderBackupInfo();
-  document.getElementById('backup-import-status').innerHTML='<span style="color:var(--green)">✅ Backup exportado com sucesso!</span>';
-  setTimeout(()=>document.getElementById('backup-import-status').innerHTML='',3000);
-}
-
-function importarBackup(input){
-  const file=input.files[0];
-  if(!file) return;
-  const reader=new FileReader();
-  reader.onload=async e=>{
-    try{
-      const dados=JSON.parse(e.target.result);
-      if(!dados.dc_rotas||!dados.dc_empresas){
-        document.getElementById('backup-import-status').innerHTML='<span style="color:var(--red)">❌ Arquivo inválido!</span>';
-        return;
-      }
-      const ok=await confirmar(`Restaurar backup de ${formatData(dados.exportadoEm?.substring(0,10)||'')}? Todos os dados atuais serão substituídos.`);
-      if(!ok){input.value='';return;}
-      if(dados.dc_rotas)     { rotas=dados.dc_rotas;         save('dc_rotas',rotas); }
-      if(dados.dc_empresas)  { empresas=dados.dc_empresas;   save('dc_empresas',empresas); }
-      if(dados.dc_custos)    { custos=dados.dc_custos;        save('dc_custos',custos); }
-      if(dados.dc_despesas)  { despesas=dados.dc_despesas;    save('dc_despesas',despesas); }
-      if(dados.dc_pagamentos){ pagamentos=dados.dc_pagamentos;save('dc_pagamentos',pagamentos); }
-      if(dados.dc_cfg)       save('dc_cfg',dados.dc_cfg);
-      save('dc_backup_info',{data:hoje(),hora:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),rotas:rotas.length,empresas:empresas.length});
-      renderDashboard(); renderFeed(); renderBackupInfo(); populateEmpresaSelects();
-      document.getElementById('backup-import-status').innerHTML='<span style="color:var(--green)">✅ Backup restaurado com sucesso!</span>';
-      input.value='';
-    }catch{
-      document.getElementById('backup-import-status').innerHTML='<span style="color:var(--red)">❌ Erro ao ler arquivo!</span>';
-    }
-  };
-  reader.readAsText(file);
-}
-
-// ============================================================
-// ============================================================
-// LOGIN UI — fazerLogin(), fazerCadastro()
-// ============================================================
-const AUTH_KEY = 'dc_auth'; // mantido apenas para pré-preencher e-mail
-
-function initLogin(){
-  // Firebase onAuthStateChanged cuida do estado automaticamente.
-  // Se Firebase ainda não carregou, mostra tela de login defensivamente.
-  const loginEl = document.getElementById('login-screen');
-  const auth = loadObj(AUTH_KEY);
-  // Pré-preenche e-mail se já cadastrou antes
-  if(auth?.email) document.getElementById('login-email').value = auth.email;
-  loginEl.style.display = 'flex';
-  mostrarLogin();
-}
-
-function mostrarLogin(){
-  document.getElementById('form-login').style.display    = 'block';
-  document.getElementById('form-cadastro').style.display = 'none';
-  document.getElementById('form-trocar').style.display   = 'none';
-  document.getElementById('login-msg').textContent       = '';
-}
-
-function mostrarCadastro(){
-  document.getElementById('form-login').style.display    = 'none';
-  document.getElementById('form-cadastro').style.display = 'block';
-  document.getElementById('form-trocar').style.display   = 'none';
-  document.getElementById('cad-msg').textContent         = '';
-  setTimeout(()=>document.getElementById('cad-email').focus(), 100);
-}
-
-async function fazerLogin(){
-  const email = document.getElementById('login-email').value.trim().toLowerCase();
-  const senha = document.getElementById('login-senha').value;
-  const msg   = document.getElementById('login-msg');
-  const btn   = document.querySelector('#form-login .login-btn');
-
-  if(!email || !senha){ msg.textContent = 'Preencha e-mail e senha.'; return; }
-
-  btn.textContent = 'Entrando...'; btn.disabled = true;
-
-  if(window._fbLogin){
-    const res = await window._fbLogin(email, senha);
-    if(!res.ok){
-      msg.textContent = res.msg;
-      btn.textContent = 'ENTRAR'; btn.disabled = false;
-      return;
-    }
-    // Sucesso — onAuthStateChanged fecha a tela automaticamente
-    localStorage.setItem(AUTH_KEY, JSON.stringify({email}));
-    // Segurança: desbloqueia botão após 8s caso algo falhe silenciosamente
-    setTimeout(()=>{ btn.textContent = 'ENTRAR'; btn.disabled = false; }, 8000);
-  } else {
-    msg.textContent = 'Firebase não conectado. Verifique as credenciais no arquivo.';
-    btn.textContent = 'ENTRAR'; btn.disabled = false;
-  }
-}
-
-async function fazerCadastro(){
-  const email    = document.getElementById('cad-email').value.trim().toLowerCase();
-  const senha    = document.getElementById('cad-senha').value;
-  const confirma = document.getElementById('cad-confirma').value;
-  const msg      = document.getElementById('cad-msg');
-  const btn      = document.querySelector('#form-cadastro .login-btn');
-
-  if(!email || !senha){ msg.textContent = 'Preencha todos os campos.'; return; }
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ msg.textContent = 'E-mail inválido.'; return; }
-  if(senha.length < 6){ msg.textContent = 'Senha mínima de 6 caracteres.'; return; }
-  if(senha !== confirma){ msg.textContent = 'As senhas não coincidem.'; return; }
-
-  btn.textContent = 'Criando conta...'; btn.disabled = true;
-
-  if(window._fbCadastro){
-    const res = await window._fbCadastro(email, senha);
-    if(!res.ok){
-      msg.textContent = res.msg;
-      btn.textContent = 'CRIAR CONTA'; btn.disabled = false;
-      return;
-    }
-    localStorage.setItem(AUTH_KEY, JSON.stringify({email}));
-  } else {
-    msg.textContent = 'Firebase não conectado.';
-    btn.textContent = 'CRIAR CONTA'; btn.disabled = false;
-  }
-}
-
-function abrirTrocarSenha(){
-  const auth = loadObj(AUTH_KEY);
-  document.getElementById('trocar-email-label').textContent = window._fbUser?.email || auth?.email || '';
-  document.getElementById('form-login').style.display    = 'none';
-  document.getElementById('form-cadastro').style.display = 'none';
-  document.getElementById('form-trocar').style.display   = 'block';
-  document.getElementById('trocar-msg').textContent      = '';
-  document.getElementById('login-screen').style.display  = 'flex';
-  ['trocar-atual','trocar-nova','trocar-confirma'].forEach(id=>document.getElementById(id).value='');
-  setTimeout(()=>document.getElementById('trocar-atual').focus(), 100);
-}
-
-async function trocarSenha(){
-  const atual    = document.getElementById('trocar-atual').value;
-  const nova     = document.getElementById('trocar-nova').value;
-  const confirma = document.getElementById('trocar-confirma').value;
-  const msg      = document.getElementById('trocar-msg');
-  const btn      = document.querySelector('#form-trocar .login-btn');
-
-  if(!atual || !nova || !confirma){ msg.textContent = 'Preencha todos os campos.'; return; }
-  if(nova.length < 6){ msg.textContent = 'Nova senha mínima de 6 caracteres.'; return; }
-  if(nova !== confirma){ msg.textContent = 'As senhas não coincidem.'; return; }
-
-  btn.textContent = 'Salvando...'; btn.disabled = true;
-
-  if(window._fbTrocarSenha){
-    const res = await window._fbTrocarSenha(atual, nova);
-    if(!res.ok){
-      msg.textContent = res.msg;
-      btn.textContent = 'SALVAR NOVA SENHA'; btn.disabled = false;
-      return;
-    }
-    btn.textContent = 'SALVAR NOVA SENHA'; btn.disabled = false;
-    document.getElementById('login-screen').style.display = 'none';
-    alert('✅ Senha alterada com sucesso!');
-  }
-}
-
-function fecharTrocarSenha(){
-  document.getElementById('login-screen').style.display = 'none';
-}
-
-function toggleSenha(inputId, btn){
-  const inp = document.getElementById(inputId);
-  if(inp.type === 'password'){ inp.type='text'; btn.textContent='🙈'; }
-  else { inp.type='password'; btn.textContent='👁️'; }
-}
-
-// Logout — adiciona botão no menu
-function fazerLogout(){
-  if(window._fbLogout){
-    window._fbLogout();
-    // Limpa cache local
-    ['dc_rotas','dc_empresas','dc_custos','dc_despesas','dc_pagamentos'].forEach(k=>localStorage.removeItem(k));
-    rotas=[]; empresas=[]; custos=[]; despesas=[]; pagamentos=[];
-    renderDashboard(); renderFeed();
-  }
-}
-</script>
-<!-- MODAL EDITAR PAGAMENTO -->
-<div id="modal-edit-pag" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;width:100%;max-width:400px;">
-    <div style="font-size:0.85rem;font-weight:700;color:var(--text);margin-bottom:14px;">✏️ Editar Pagamento</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div class="field"><label>Valor R$</label>
-        <input type="number" id="modal-pag-valor" min="0" step="0.01"></div>
-      <div class="field"><label>Data</label>
-        <input type="date" id="modal-pag-data"></div>
-      <div class="field"><label>Observação</label>
-        <input type="text" id="modal-pag-obs" placeholder="Pix, dinheiro..."></div>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <button class="btn btn-primary" style="flex:1;" onclick="confirmarEdicaoPagamento()">💾 Salvar</button>
-      <button class="btn btn-secondary" onclick="fecharModalPag()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL ROTA RÁPIDA -->
-<div id="modal-rota-rapida" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9000;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--card);border:1px solid var(--green);border-radius:14px;padding:20px;width:100%;max-width:400px;">
-    <div style="font-size:0.85rem;font-weight:700;color:var(--green);margin-bottom:14px;">⚡ Rota Rápida</div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div class="field"><label>Empresa</label><select id="rr-empresa"></select></div>
-      <div class="field"><label>Bairro / Destino</label><input type="text" id="rr-bairro" placeholder="Ex: Centro"></div>
-      <div class="field"><label>Valor R$</label><input type="number" id="rr-valor" placeholder="0,00" min="0" step="0.01"></div>
-      <div class="field"><label>Gorjeta R$ <span style="color:var(--muted);font-size:0.7rem;">(opcional)</span></label><input type="number" id="rr-gorjeta" placeholder="0,00" min="0" step="0.01"></div>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:14px;">
-      <button class="btn btn-primary" style="flex:1;" onclick="salvarRotaRapida()">✅ Salvar</button>
-      <button class="btn btn-secondary" onclick="fecharRotaRapida()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL VOZ -->
-<div id="modal-voz" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9001;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--card);border:1px solid var(--red);border-radius:14px;padding:24px;width:100%;max-width:400px;text-align:center;">
-    <div id="voz-icone" style="font-size:3rem;margin-bottom:10px;">🎙️</div>
-    <div style="font-size:0.9rem;font-weight:700;color:var(--red);margin-bottom:8px;" id="voz-status">Ouvindo...</div>
-    <div style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;" id="voz-texto">Fale: empresa, bairro e valor</div>
-    <div style="font-size:0.7rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:10px;margin-bottom:16px;text-align:left;">
-      💡 Exemplos:<br>"iFood, Centro, quinze reais"<br>"Rappi, Kobrasol, vinte e dois"
-    </div>
-    <button class="btn btn-secondary" onclick="pararVoz()">✕ Cancelar</button>
-  </div>
-</div>
-
-<!-- MODAL CONTESTAÇÃO -->
-<div id="modal-contestacao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9000;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--card);border:1px solid var(--red);border-radius:14px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;">
-    <div style="font-size:0.85rem;font-weight:700;color:var(--red);margin-bottom:4px;">⚠️ Contestação de Pagamento</div>
-    <div id="contestacao-emp-nome" style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;"></div>
-    <pre id="contestacao-txt" style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:12px;font-size:0.72rem;white-space:pre-wrap;color:var(--text);max-height:320px;overflow-y:auto;margin-bottom:12px;font-family:'Courier New',monospace;line-height:1.5;"></pre>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-whatsapp" style="flex:1;" onclick="enviarContestacaoWpp()">📱 Enviar WhatsApp</button>
-      <button class="btn btn-secondary" onclick="fecharContestacao()">Fechar</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL: Manutenção de Moto -->
-<div id="modal-manut-moto" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9600;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;">
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:100%;margin:auto;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">🔧 Manutenção</div>
-      <button onclick="fecharModalManutMoto()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
-    </div>
-    <div id="manut-moto-placa-label" style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;font-family:monospace;"></div>
-    <input type="hidden" id="manut-moto-id">
-
-    <!-- Formulário novo registro -->
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;">
-      <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Registrar manutenção</div>
-      <div style="margin-bottom:10px;">
-        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Tipo *</label>
-        <select id="manut-tipo" style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
-          <option value="oleo">🛢️ Troca de óleo</option>
-          <option value="pneu">🔘 Pneu</option>
-          <option value="freio">🔴 Freio</option>
-          <option value="corrente">⛓️ Corrente</option>
-          <option value="revisao">🔩 Revisão geral</option>
-          <option value="eletrica">⚡ Elétrica</option>
-          <option value="outro">🔧 Outro</option>
-        </select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <div>
-          <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Custo (R$) *</label>
-          <input id="manut-custo" type="number" min="0" step="0.01" placeholder="0,00"
-            style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
-        </div>
-        <div>
-          <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Data</label>
-          <input id="manut-data" type="date"
-            style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
-        </div>
-      </div>
-      <div style="margin-bottom:10px;">
-        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">KM no momento</label>
-        <input id="manut-km" type="number" min="0" placeholder="KM atual da moto"
-          style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
-      </div>
-      <div style="margin-bottom:12px;">
-        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Observação</label>
-        <input id="manut-obs" type="text" placeholder="Detalhe opcional..."
-          style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
-      </div>
-      <button class="btn btn-gold" style="width:100%;" onclick="salvarManutMoto()">✅ Registrar</button>
-    </div>
-
-    <!-- Histórico -->
-    <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Histórico</div>
-    <div id="manut-moto-historico">
-      <div style="text-align:center;padding:16px;color:var(--muted);">Carregando...</div>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL: Baixa de comissão -->
-<div id="modal-baixa-comissao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9600;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:360px;width:100%;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">💰 Registrar Pagamento</div>
-      <button onclick="fecharModalBaixaComissao()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
-    </div>
-    <div id="baixa-com-email" style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;"></div>
-    <input type="hidden" id="baixa-com-uid">
-    <input type="hidden" id="baixa-com-mes">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:0.68rem;color:var(--muted);">Total a pagar</div>
-        <div id="baixa-com-total" style="font-size:1rem;font-weight:700;color:var(--gold);font-family:'Rajdhani',sans-serif;">—</div>
-      </div>
-      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
-        <div style="font-size:0.68rem;color:var(--muted);">Saldo devedor</div>
-        <div id="baixa-com-saldo" style="font-size:1rem;font-weight:700;color:var(--red);font-family:'Rajdhani',sans-serif;">—</div>
-      </div>
-    </div>
-    <div style="margin-bottom:12px;">
-      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Valor pago agora (R$) *</label>
-      <input id="baixa-com-valor" type="number" min="0" step="0.01" placeholder="0,00"
-        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:12px;width:100%;font-size:1rem;box-sizing:border-box;">
-    </div>
-    <div style="margin-bottom:16px;">
-      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Observação</label>
-      <input id="baixa-com-obs" type="text" placeholder="Pix, dinheiro, etc."
-        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
-    </div>
-    <!-- Histórico de pagamentos -->
-    <div id="baixa-com-historico" style="margin-bottom:16px;"></div>
-    <button class="btn btn-gold" style="width:100%;" onclick="salvarBaixaComissao()">✅ Confirmar pagamento</button>
-  </div>
-</div>
-
-</body>
-</html>
-
-<script>
-// ============================================================
-// CHECKOUT — iniciarCheckout(), modal PIX
-// ============================================================
-var _checkoutTipo = null;
-
-function alertProFeature(nome){
-  showToast('Recurso ' + nome + ' disponivel no Plano Pro. Acesse o menu Plano.', 'warn');
-}
-
-function iniciarCheckout(tipo){
-  _checkoutTipo = tipo;
-  var modal = document.getElementById('modal-checkout');
-  var resumo = document.getElementById('checkout-resumo');
-  var labels = {
-    'basico':              'Plano Basico — R$ 14,90/mes',
-    'pro_trial':           'Plano Pro — 7 dias gratis, depois R$ 29,90/mes',
-    'pro':                 'Plano Pro — R$ 29,90/mes',
-    'empresa':             'Plano Empresa Starter — R$ 89,90/mes',
-    'empresa_starter':     'Plano Empresa Starter — R$ 89,90/mes (ate 10 motoristas)',
-    'empresa_growth':      'Plano Empresa Growth — R$ 149,90/mes (ate 20 motoristas)',
-    'empresa_enterprise':  'Plano Empresa Enterprise — R$ 199,90/mes (motoristas ilimitados)'
-  };
-  resumo.innerHTML = '<strong>' + (labels[tipo] || tipo) + '</strong><br><span style="font-size:0.75rem;color:var(--muted);">Renova mensalmente. Cancele quando quiser.</span>';
-  document.getElementById('checkout-pix-area').style.display = 'none';
-  document.getElementById('checkout-cartao-area').style.display = 'none';
-  document.getElementById('checkout-btn-confirmar').style.display = 'none';
-  document.getElementById('pay-pix').className = 'btn btn-secondary';
-  document.getElementById('pay-cartao').className = 'btn btn-secondary';
-  modal.style.display = 'flex';
-}
-
-function fecharCheckout(){
-  document.getElementById('modal-checkout').style.display = 'none';
-}
-
-function selecionarPagamento(tipo){
-  document.getElementById('pay-pix').className = 'btn ' + (tipo === 'pix' ? 'btn-gold' : 'btn-secondary');
-  document.getElementById('pay-cartao').className = 'btn ' + (tipo === 'cartao' ? 'btn-gold' : 'btn-secondary');
-  if(tipo === 'pix'){
-    var cfg = loadObj('dc_cfg') || {};
-    var pixKey = cfg.pixKey || '47992030653';
-    document.getElementById('checkout-pix-key').textContent = pixKey;
-    document.getElementById('checkout-pix-area').style.display = 'block';
-    document.getElementById('checkout-cartao-area').style.display = 'none';
-    document.getElementById('checkout-btn-confirmar').style.display = 'block';
-  } else {
-    document.getElementById('checkout-cartao-area').style.display = 'block';
-    document.getElementById('checkout-pix-area').style.display = 'none';
-    document.getElementById('checkout-btn-confirmar').style.display = 'none';
-  }
-}
-
-function confirmarCheckout(){
-  if(!_checkoutTipo) return;
-  var labels = {
-    'basico':    'Plano Basico — R$ 14,90/mes',
-    'pro_trial': 'Plano Pro (trial 7 dias)',
-    'pro':       'Plano Pro — R$ 29,90/mes',
-    'empresa':   'Plano Empresa — R$ 89,90/mes'
-  };
-  var msg = 'Ola! Quero assinar o DriveCash.\n\n';
-  msg += 'Plano: ' + (labels[_checkoutTipo] || _checkoutTipo) + '\n';
-  msg += 'Pagamento: PIX\n';
-  if(window._fbUser) msg += 'E-mail: ' + window._fbUser.email + '\n';
-  msg += '\nSegue o comprovante em anexo.';
-  fecharCheckout();
-  window.open('https://wa.me/5547992030653?text=' + encodeURIComponent(msg), '_blank');
-}
-
-function abrirSuporteWpp(){
-  window.open('https://wa.me/5547992030653?text=' + encodeURIComponent('Ola! Preciso de ajuda com o DriveCash.'), '_blank');
-}
-
-// ============================================================
-// INSIGHTS — renderInsights(), preview
-// ============================================================
-function renderInsights(){
-  var container = document.getElementById('insights-container');
-  if(!container) return;
-
-  var mesAtual = hoje().slice(0, 7);
-  var d = new Date();
-  d.setMonth(d.getMonth() - 1);
-  var mesAnterior = d.toISOString().slice(0, 7);
-
-  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mesAtual; });
-  var rotasAnt = rotas.filter(function(r){ return r.data.slice(0,7) === mesAnterior; });
-
-  var totalMes = rotasMes.reduce(function(s,r){ return s + r.total; }, 0);
-  var totalAnt = rotasAnt.reduce(function(s,r){ return s + r.total; }, 0);
-  var kmMes    = rotasMes.reduce(function(s,r){ return s + (r.km||0); }, 0);
-  var kmAnt    = rotasAnt.reduce(function(s,r){ return s + (r.km||0); 
+    document.getElementById('grafico-legenda').inner
