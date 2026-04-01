@@ -666,65 +666,6 @@ select option{background:var(--card);}
 .field-hint.ok{ color:var(--green);display:block; }
 .field-ok input, .field-ok select{ border-color:var(--green) !important; }
 
-
-/* ── ACCORDION FORMULÁRIO ───────────────────────────────────── */
-.form-accordion{border:1px solid var(--border);border-radius:10px;margin-top:10px;overflow:hidden;}
-.form-accordion-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--card2);border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;text-align:left;transition:background .2s;}
-.form-accordion-btn:active{background:var(--border);}
-.acc-badge{font-size:0.62rem;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.3);display:none;margin-left:6px;}
-.acc-badge.visivel{display:inline;}
-.form-accordion-chevron{font-size:0.75rem;color:var(--muted);transition:transform .25s;flex-shrink:0;}
-.form-accordion-chevron.aberto{transform:rotate(180deg);}
-.form-accordion-body{display:none;padding:14px;border-top:1px solid var(--border);animation:accFadeIn .18s ease;}
-.form-accordion-body.aberto{display:block;}
-@keyframes accFadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-/* ── CONQUISTAS ─────────────────────────────────────────────── */
-.conquista-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.conquista-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;transition:all .2s;position:relative;}
-.conquista-card.facil.desbloqueada{border-color:rgba(0,200,100,.5);background:rgba(0,200,100,.06);}
-.conquista-card.medio.desbloqueada{border-color:rgba(88,166,255,.5);background:rgba(88,166,255,.06);}
-.conquista-card.hard.desbloqueada{border-color:rgba(255,170,0,.5);background:rgba(255,170,0,.06);}
-.conquista-card.lendario.desbloqueada{border-color:rgba(255,68,68,.5);background:rgba(255,68,68,.06);}
-.conquista-icon{font-size:1.8rem;margin-bottom:4px;display:block;}
-.conquista-card:not(.desbloqueada) .conquista-icon{filter:grayscale(1);opacity:.3;}
-.conquista-nome{font-size:0.75rem;font-weight:700;margin-bottom:2px;}
-.conquista-desc{font-size:0.62rem;color:var(--muted);}
-.conquista-nivel{font-size:0.55rem;font-weight:700;padding:1px 6px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px;display:inline-block;margin-bottom:4px;}
-.conquista-nivel.facil{background:rgba(0,200,100,.15);color:#00c864;}
-.conquista-nivel.medio{background:rgba(88,166,255,.15);color:var(--blue);}
-.conquista-nivel.hard{background:rgba(255,170,0,.15);color:var(--orange);}
-.conquista-nivel.lendario{background:rgba(255,68,68,.15);color:var(--red);}
-.conquista-prog{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden;}
-.conquista-prog-fill{height:100%;border-radius:2px;transition:width .4s;}
-/* ── CALENDÁRIO ─────────────────────────────────────────────── */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-.cal-day{aspect-ratio:1;border-radius:3px;cursor:pointer;position:relative;}
-.cal-day.vazio{pointer-events:none;}
-.cal-day.sem-rota{background:var(--card2);}
-.cal-day.nivel-1{background:rgba(0,255,136,.2);}
-.cal-day.nivel-2{background:rgba(0,255,136,.45);}
-.cal-day.nivel-3{background:rgba(0,255,136,.7);}
-.cal-day.nivel-4{background:rgba(0,255,136,.95);}
-.cal-day.hoje-cal{outline:2px solid var(--blue);outline-offset:1px;}
-.cal-label-dow{font-size:0.56rem;color:var(--muted);text-align:center;}
-.cal-mes-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.cal-tooltip{position:fixed;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:0.72rem;z-index:9999;pointer-events:none;display:none;box-shadow:0 4px 14px rgba(0,0,0,.35);}
-/* ── DESAFIOS ────────────────────────────────────────────────── */
-.desafio-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
-.desafio-card.concluido{border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.04);}
-.desafio-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-.desafio-prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
-.desafio-prog-fill{height:100%;border-radius:3px;transition:width .4s;}
-/* ── COMPARADOR ─────────────────────────────────────────────── */
-.comp-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
-.comp-row:last-child{border-bottom:none;}
-.comp-bar-wrap{flex:1;background:var(--card2);border-radius:4px;height:7px;overflow:hidden;}
-.comp-bar{height:100%;border-radius:4px;transition:width .5s;}
-/* ── RANKING ─────────────────────────────────────────────────── */
-.rank-card{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-.rank-card:last-child{border-bottom:none;}
-.rank-pos{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;width:28px;text-align:center;}
-
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.4/dexie.min.js"></script>
 </head>
@@ -755,13 +696,6 @@ select option{background:var(--card);}
       <button class="menu-item" onclick="showPage('retroativo')">🕐 &nbsp;Lançamento Retroativo</button>
       <button class="menu-item" onclick="showPage('empresas')">🏢 &nbsp;Empresas</button>
       <button class="menu-item" onclick="showPage('despesas')">📊 &nbsp;Despesas &amp; Meta</button>
-      <button class="menu-item" onclick="showPage('lucro-liquido')">📈 &nbsp;Lucro Líquido</button>
-      <button class="menu-item" onclick="showPage('conquistas')">🏅 &nbsp;Conquistas</button>
-      <button class="menu-item" onclick="showPage('ranking-conquistas')">🏆 &nbsp;Ranking de Conquistas</button>
-      <button class="menu-item" onclick="showPage('calendario-ganhos')">📆 &nbsp;Calendário de Ganhos</button>
-      <button class="menu-item" onclick="isPro()?showPage('desafios'):alertProFeature('Desafios')">🎯 &nbsp;Desafios Semanais</button>
-      <button class="menu-item" onclick="showPage('comparador-plataformas')">📊 &nbsp;Comparador de Plataformas</button>
-      <button class="menu-item" onclick="isPro()?gerarRelatorioPDFMensal():alertProFeature('Relatório PDF')">📄 &nbsp;Relatório PDF Mensal</button>
       <button class="menu-item" onclick="showPage('plano')">⭐ &nbsp;Plano</button>
       <button class="menu-item" onclick="showPage('backup')">☁️ &nbsp;Backup</button>
       <button class="menu-item" onclick="showPage('nota-servico')">📋 &nbsp;Nota de Serviço</button>
@@ -943,50 +877,49 @@ select option{background:var(--card);}
     <div id="slots-container"></div>
     <button class="btn-add-slot" onclick="addSlot()">➕ Adicionar outra entrega</button>
 
-    <div class="preview-box" id="preview-calc" style="margin-top:10px;">💡 Preencha os campos para ver o cálculo</div>
-
-    <!-- ACCORDION: Detalhes Opcionais -->
-    <div class="form-accordion">
-      <button type="button" class="form-accordion-btn" onclick="toggleAccordion('acc-det')">
-        <span>📝 Detalhes Opcionais <span class="acc-badge" id="acc-det-badge">preenchido</span></span>
-        <span class="form-accordion-chevron" id="acc-det-chev">▼</span>
-      </button>
-      <div class="form-accordion-body" id="acc-det">
-        <div class="form-row">
-          <div class="field"><label>Endereço</label>
-            <input type="text" id="r-endereco" placeholder="Rua das Flores, 123" oninput="atualizarBadgeAcc('acc-det-badge',['r-endereco','r-empresa-dest','r-paradas','r-gorjeta'])">
-          </div>
-          <div class="field"><label>Empresa destinatária</label>
-            <input type="text" id="r-empresa-dest" placeholder="Ex: Drogasil" oninput="atualizarBadgeAcc('acc-det-badge',['r-endereco','r-empresa-dest','r-paradas','r-gorjeta'])">
-          </div>
+    <!-- CAMPOS OPCIONAIS GLOBAIS -->
+    <div style="margin-top:8px;">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;">📝 Detalhes Opcionais</div>
+      <div class="form-row">
+        <div class="field"><label>Endereço completo (rua/nº)</label>
+          <input type="text" id="r-endereco" placeholder="Ex: Rua das Flores, 123">
         </div>
-        <div class="extras-row" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-          <div class="field"><label>Paradas</label>
-            <input type="number" id="r-paradas" placeholder="0" min="0" value="0" oninput="calcPreviewGlobal();atualizarBadgeAcc('acc-det-badge',['r-endereco','r-empresa-dest','r-paradas','r-gorjeta'])">
-          </div>
-          <div class="field"><label>R$/Parada</label>
-            <input type="number" id="r-val-parada" placeholder="0,00" min="0" step="0.01" oninput="calcPreviewGlobal()">
-          </div>
-          <div class="field"><label>Gorjeta R$</label>
-            <input type="number" id="r-gorjeta" placeholder="0,00" min="0" step="0.01" oninput="calcPreviewGlobal();atualizarBadgeAcc('acc-det-badge',['r-endereco','r-empresa-dest','r-paradas','r-gorjeta'])">
-          </div>
+        <div class="field"><label>Empresa destinatária</label>
+          <input type="text" id="r-empresa-dest" placeholder="Ex: Drogasil, iFood...">
         </div>
       </div>
     </div>
 
-    <!-- ACCORDION: Plataforma (mostra apenas as selecionadas em Despesas & Meta) -->
-    <div class="form-accordion">
-      <button type="button" class="form-accordion-btn" onclick="toggleAccordion('acc-plat')">
-        <span>📱 Plataforma <span class="acc-badge" id="acc-plat-badge">selecionada</span></span>
-        <span class="form-accordion-chevron" id="acc-plat-chev">▼</span>
-      </button>
-      <div class="form-accordion-body" id="acc-plat">
-        <div id="plat-grid-formulario" class="plataforma-grid"></div>
-        <input type="hidden" id="r-plataforma" value="">
-        <div id="plat-vazio-hint" style="font-size:0.75rem;color:var(--muted);display:none;">
-          Nenhuma plataforma selecionada. Configure em <strong>Despesas &amp; Meta</strong>.
-        </div>
+    <!-- EXTRAS GLOBAIS -->
+    <div class="extras-row">
+      <div class="field">
+        <label>Paradas totais</label>
+        <input type="number" id="r-paradas" placeholder="0" min="0" value="0" oninput="calcPreviewGlobal()">
       </div>
+      <div class="field">
+        <label>Valor/Parada R$</label>
+        <input type="number" id="r-val-parada" placeholder="0,00" min="0" step="0.01" oninput="calcPreviewGlobal()">
+      </div>
+      <div class="field">
+        <label>Gorjeta R$</label>
+        <input type="number" id="r-gorjeta" placeholder="0,00" min="0" step="0.01" oninput="calcPreviewGlobal()">
+      </div>
+    </div>
+
+    <div class="preview-box" id="preview-calc">💡 Preencha os campos para ver o cálculo</div>
+
+    <!-- PLATAFORMA -->
+    <div style="margin:10px 0 4px;">
+      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;">📱 Plataforma <span style="font-weight:400;font-style:italic;">(opcional)</span></div>
+      <div class="plataforma-grid">
+        <button type="button" class="btn-plataforma plat-ifood"    id="plat-ifood"    onclick="selecionarPlataforma('ifood')">   <span class="plat-icon">🍔</span>iFood</button>
+        <button type="button" class="btn-plataforma plat-uber"     id="plat-uber"     onclick="selecionarPlataforma('uber')">    <span class="plat-icon">🚗</span>Uber Eats</button>
+        <button type="button" class="btn-plataforma plat-rappi"    id="plat-rappi"    onclick="selecionarPlataforma('rappi')">   <span class="plat-icon">🛵</span>Rappi</button>
+        <button type="button" class="btn-plataforma plat-pedidos10" id="plat-pedidos10" onclick="selecionarPlataforma('pedidos10')"><span class="plat-icon">🛍️</span>Pedidos10</button>
+        <button type="button" class="btn-plataforma plat-james"    id="plat-james"    onclick="selecionarPlataforma('james')">   <span class="plat-icon">🟣</span>James</button>
+        <button type="button" class="btn-plataforma plat-loggi"    id="plat-loggi"    onclick="selecionarPlataforma('loggi')">   <span class="plat-icon">📦</span>Loggi</button>
+      </div>
+      <input type="hidden" id="r-plataforma" value="">
     </div>
 
     <div class="btn-row">
@@ -995,33 +928,13 @@ select option{background:var(--card);}
     </div>
   </div>
 
-  <!-- ===== DIAS COM META BATIDA ===== -->
-  <div class="dash-km-card" id="dash-meta-card" style="border-color:rgba(255,200,0,.35);">
-    <div class="dash-km-title" style="color:var(--orange);">🎯 Desempenho do Mês</div>
+  <!-- ===== KM MENSAL ===== -->
+  <div class="dash-km-card" id="dash-km-card">
+    <div class="dash-km-title">📏 KM Rodados — Mês Atual</div>
     <div class="dash-km-row" id="dash-km-row">
-      <div class="dash-km-box">
-        <div class="dash-km-label">Meta Batida</div>
-        <div class="dash-km-val" id="dash-dias-meta" style="color:var(--orange);">0 dias</div>
-      </div>
-      <div class="dash-km-box">
-        <div class="dash-km-label">KM Rodados</div>
-        <div class="dash-km-val" id="dash-km-rotas" style="color:var(--blue);">0</div>
-      </div>
-      <div class="dash-km-box">
-        <div class="dash-km-label">Dias Trabalhados</div>
-        <div class="dash-km-val" id="dash-dias-trab">0</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== CARD CONQUISTAS ===== -->
-  <div id="dash-conquistas-card" style="background:rgba(255,200,0,.05);border:1px solid rgba(255,200,0,.2);border-radius:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer;" onclick="showPage('conquistas')">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div style="font-size:0.68rem;color:#ffc800;font-weight:700;text-transform:uppercase;letter-spacing:1px;">🏅 Conquistas</div>
-      <span style="font-size:0.7rem;color:var(--muted);">ver todas →</span>
-    </div>
-    <div id="dash-cq-badges" style="display:flex;gap:6px;flex-wrap:wrap;min-height:22px;align-items:center;">
-      <span style="font-size:0.72rem;color:var(--muted);">Carregando...</span>
+      <div class="dash-km-box"><div class="dash-km-label">KM Rotas</div><div class="dash-km-val" id="dash-km-rotas">0</div></div>
+      <div class="dash-km-box"><div class="dash-km-label">KM Hodômetro</div><div class="dash-km-val" id="dash-km-odometro">0</div></div>
+      <div class="dash-km-box"><div class="dash-km-label">Dias c/ KM</div><div class="dash-km-val" id="dash-km-dias">0</div></div>
     </div>
   </div>
 
@@ -1037,153 +950,6 @@ select option{background:var(--card);}
   </div>
 
 </div><!-- /dashboard -->
-
-<!-- ==================== LUCRO LÍQUIDO ==================== -->
-<div id="page-lucro-liquido" class="page">
-  <div class="card">
-    <div class="painel-header" style="margin-bottom:14px;">
-      <div class="section-title">📈 Lucro Líquido</div>
-      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-      <button id="ll-tab-dia" class="btn btn-gold" onclick="llSetTab('dia')">📅 Hoje</button>
-      <button id="ll-tab-mes" class="btn btn-secondary" onclick="llSetTab('mes')">📆 Mês</button>
-    </div>
-    <div id="ll-periodo" style="text-align:center;font-size:0.78rem;color:var(--muted);margin-bottom:12px;"></div>
-    <div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:16px;text-align:center;margin-bottom:12px;">
-      <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">📈 Lucro Líquido</div>
-      <div id="ll-lucro" style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--green);">R$ 0,00</div>
-      <div id="ll-lucro-pct" style="font-size:0.75rem;color:var(--muted);margin-top:3px;">0% do bruto</div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--card2);border-radius:10px;border-left:3px solid var(--green);">
-        <div><div style="font-size:0.82rem;font-weight:600;">💰 Ganho Bruto</div><div id="ll-bruto-det" style="font-size:0.67rem;color:var(--muted);margin-top:2px;"></div></div>
-        <div id="ll-bruto" style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--green);">R$ 0,00</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--card2);border-radius:10px;border-left:3px solid var(--red);">
-        <div><div style="font-size:0.82rem;font-weight:600;">⛽ Combustível</div><div id="ll-gas-det" style="font-size:0.67rem;color:var(--muted);margin-top:2px;"></div></div>
-        <div id="ll-gas" style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--red);">R$ 0,00</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--card2);border-radius:10px;border-left:3px solid var(--orange);">
-        <div><div style="font-size:0.82rem;font-weight:600;">🔧 Manutenção</div><div id="ll-manut-det" style="font-size:0.67rem;color:var(--muted);margin-top:2px;"></div></div>
-        <div id="ll-manut" style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:var(--orange);">R$ 0,00</div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--card2);border-radius:10px;border-left:3px solid #9b59b6;">
-        <div><div style="font-size:0.82rem;font-weight:600;">📋 Despesas</div><div id="ll-desp-det" style="font-size:0.67rem;color:var(--muted);margin-top:2px;"></div></div>
-        <div id="ll-desp" style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;color:#9b59b6;">R$ 0,00</div>
-      </div>
-    </div>
-    <div style="background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.2);border-radius:10px;padding:12px;margin-bottom:12px;">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-        <div><div id="ll-km" style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--blue);">0km</div><div style="font-size:0.62rem;color:var(--muted);">KM total</div></div>
-        <div><div id="ll-litros" style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--blue);">0L</div><div style="font-size:0.62rem;color:var(--muted);">Litros est.</div></div>
-        <div><div id="ll-rskm" style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--blue);">R$0/km</div><div style="font-size:0.62rem;color:var(--muted);">R$/KM líquido</div></div>
-      </div>
-    </div>
-    <button class="btn btn-secondary" style="width:100%;" onclick="showPage('despesas')">⚙️ Ajustar Configurações</button>
-  </div>
-</div>
-
-<!-- ==================== CONQUISTAS ==================== -->
-<div id="page-conquistas" class="page">
-  <div class="card">
-    <div class="painel-header" style="margin-bottom:14px;">
-      <div class="section-title">🏅 Conquistas</div>
-      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;">
-      <button class="btn btn-secondary" style="font-size:0.72rem;padding:7px;" onclick="cqFiltrar('todas')" id="cq-f-todas">Todas</button>
-      <button class="btn btn-secondary" style="font-size:0.72rem;padding:7px;" onclick="cqFiltrar('desbloqueadas')" id="cq-f-des">Desbloqueadas</button>
-      <button class="btn btn-secondary" style="font-size:0.72rem;padding:7px;" onclick="cqFiltrar('bloqueadas')" id="cq-f-blo">Bloqueadas</button>
-    </div>
-    <div id="cq-resumo" style="display:flex;gap:8px;margin-bottom:14px;"></div>
-    <div id="conquistas-lista" class="conquista-grid"></div>
-  </div>
-</div>
-
-<!-- ==================== RANKING CONQUISTAS ==================== -->
-<div id="page-ranking-conquistas" class="page">
-  <div class="card">
-    <div class="painel-header" style="margin-bottom:14px;">
-      <div class="section-title">🏆 Ranking de Conquistas</div>
-      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-      <button id="rank-tab-global" class="btn btn-gold" onclick="rankSetTab('global')" style="font-size:0.8rem;">🌍 Global</button>
-      <button id="rank-tab-frota"  class="btn btn-secondary" onclick="rankSetTab('frota')" style="font-size:0.8rem;">🏍️ Minha Frota</button>
-    </div>
-    <div id="rank-lista" style="min-height:120px;"></div>
-    <div style="font-size:0.68rem;color:var(--muted);margin-top:10px;text-align:center;">Ranking atualizado a cada hora. Só usuários com conta aparecem.</div>
-  </div>
-</div>
-
-<!-- ==================== CALENDÁRIO DE GANHOS ==================== -->
-<div id="page-calendario-ganhos" class="page">
-  <div class="card">
-    <div class="painel-header" style="margin-bottom:10px;">
-      <div class="section-title">📆 Calendário de Ganhos</div>
-      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
-    </div>
-    <div class="cal-mes-nav">
-      <button onclick="calNavMes(-1)" style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 12px;color:var(--text);cursor:pointer;">‹</button>
-      <span id="cal-mes-label" style="font-size:0.9rem;font-weight:700;"></span>
-      <button onclick="calNavMes(1)" style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 12px;color:var(--text);cursor:pointer;">›</button>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;">
-      <div class="cal-label-dow">D</div><div class="cal-label-dow">S</div><div class="cal-label-dow">T</div>
-      <div class="cal-label-dow">Q</div><div class="cal-label-dow">Q</div><div class="cal-label-dow">S</div><div class="cal-label-dow">S</div>
-    </div>
-    <div id="cal-grid" class="cal-grid"></div>
-    <div id="cal-tooltip" class="cal-tooltip"></div>
-    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
-        <div style="background:var(--card2);border-radius:8px;padding:10px;"><div id="cal-total-mes" style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--green);">R$ 0</div><div style="font-size:0.62rem;color:var(--muted);">Total</div></div>
-        <div style="background:var(--card2);border-radius:8px;padding:10px;"><div id="cal-dias-trab" style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--blue);">0</div><div style="font-size:0.62rem;color:var(--muted);">Dias trab.</div></div>
-        <div style="background:var(--card2);border-radius:8px;padding:10px;"><div id="cal-media-dia" style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--orange);">R$ 0</div><div style="font-size:0.62rem;color:var(--muted);">Média/dia</div></div>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:5px;margin-top:10px;">
-      <span style="font-size:0.62rem;color:var(--muted);">Menos</span>
-      <div style="width:11px;height:11px;border-radius:2px;background:var(--card2);border:1px solid var(--border);"></div>
-      <div style="width:11px;height:11px;border-radius:2px;background:rgba(0,255,136,.2);"></div>
-      <div style="width:11px;height:11px;border-radius:2px;background:rgba(0,255,136,.45);"></div>
-      <div style="width:11px;height:11px;border-radius:2px;background:rgba(0,255,136,.7);"></div>
-      <div style="width:11px;height:11px;border-radius:2px;background:rgba(0,255,136,.95);"></div>
-      <span style="font-size:0.62rem;color:var(--muted);">Mais</span>
-    </div>
-  </div>
-</div>
-
-<!-- ==================== DESAFIOS (PRO) ==================== -->
-<div id="page-desafios" class="page">
-  <div class="card">
-    <div class="painel-header" style="margin-bottom:14px;">
-      <div class="section-title">🎯 Desafios Semanais</div>
-      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
-    </div>
-    <div style="background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.2);border-radius:8px;padding:10px;font-size:0.78rem;color:var(--blue);margin-bottom:14px;">
-      💡 Desafios renovam toda semana. Complete para acumular pontos de conquista!
-    </div>
-    <div id="desafios-lista"></div>
-  </div>
-</div>
-
-<!-- ==================== COMPARADOR ==================== -->
-<div id="page-comparador-plataformas" class="page">
-  <div class="card">
-    <div class="painel-header" style="margin-bottom:14px;">
-      <div class="section-title">📊 Comparador</div>
-      <button class="btn-fechar" onclick="voltarDashboard()">✕</button>
-    </div>
-    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">Baseado nas suas corridas. Qual plataforma paga mais por KM.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-      <button id="comp-tab-rskm"  class="btn btn-gold"      onclick="compSetTab('rskm')"  style="font-size:0.8rem;padding:8px;">💰 R$/KM</button>
-      <button id="comp-tab-total" class="btn btn-secondary" onclick="compSetTab('total')" style="font-size:0.8rem;padding:8px;">📦 Total ganho</button>
-    </div>
-    <div id="comp-lista"></div>
-    <div style="margin-top:12px;font-size:0.68rem;color:var(--muted);">⚠️ Só plataformas com KM registrado entram no R$/KM.</div>
-  </div>
-</div>
 
 <!-- ==================== RESUMOS ==================== -->
 <div id="page-resumos" class="page">
@@ -1657,21 +1423,6 @@ select option{background:var(--card);}
       </div>
       <div class="form-row single">
         <div class="field"><label>Manutenção (R$/KM)</label><input type="number" id="cfg-manut" step="0.01" placeholder="0.20" oninput="saveCfg()"></div>
-      </div>
-      <!-- Seleção de plataformas que o usuário trabalha -->
-      <div style="margin-top:12px;">
-        <div style="font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:8px;">📱 Plataformas que trabalho</div>
-        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;">Selecione as plataformas que você usa. Elas aparecerão no formulário de rota.</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;" id="cfg-plat-grid">
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;"><input type="checkbox" id="cfg-plat-ifood"     onchange="salvarPlataformasCfg()"> 🍔 iFood</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;"><input type="checkbox" id="cfg-plat-uber"      onchange="salvarPlataformasCfg()"> 🚗 Uber Eats</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;"><input type="checkbox" id="cfg-plat-rappi"     onchange="salvarPlataformasCfg()"> 🛵 Rappi</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;"><input type="checkbox" id="cfg-plat-pedidos10" onchange="salvarPlataformasCfg()"> 🛍️ Pedidos10</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;"><input type="checkbox" id="cfg-plat-james"     onchange="salvarPlataformasCfg()"> 🟣 James</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:0.8rem;cursor:pointer;"><input type="checkbox" id="cfg-plat-loggi"     onchange="salvarPlataformasCfg()"> 📦 Loggi</label>
-        </div>
-      </div>
-      <div style="display:none;"><!-- fecha form-row -->
       </div>
     </div>
 
@@ -2757,8 +2508,6 @@ window._fbCarregarDados = async function(uid){
     window.populateEmpresaSelects();
     window.renderDashboard();
     window.renderFeed();
-    window._appPronto = true;
-    window._paginaAtual = 'dashboard';
     setTimeout(function(){
       if(typeof verificarNotificacoes==='function') verificarNotificacoes();
       if(typeof atualizarInsightsPreview==='function') atualizarInsightsPreview();
@@ -3108,48 +2857,12 @@ console.log('🔥 Firebase inicializado');
 // ============================================================
 const load    = k => JSON.parse(localStorage.getItem(k) || '[]');
 const loadObj = k => JSON.parse(localStorage.getItem(k) || 'null');
-// ── SISTEMA DE ATUALIZAÇÃO EM TEMPO REAL ─────────────────────
-var _DC_REFRESH_MAP = {
-  'dc_rotas':          ['dashboard','feed','historico','conquistas','desafios','lucro','comparador','calendario'],
-  'dc_despesas':       ['dashboard','lucro'],
-  'dc_pagamentos':     ['dashboard','financeiro'],
-  'dc_empresas':       ['dashboard','financeiro'],
-  'dc_custos':         ['dashboard','lucro'],
-  'dc_notas_emitidas': ['nota-hist'],
-  'dc_cfg':            ['dashboard'],
-};
-var _dcRefreshTimer = null;
-function _dcRefreshAuto(chave){
-  if(!window._appPronto) return;
-  var alvos = _DC_REFRESH_MAP[chave];
-  if(!alvos) return;
-  clearTimeout(_dcRefreshTimer);
-  _dcRefreshTimer = setTimeout(function(){ _dcRefresh(alvos); }, 150);
-}
-function _dcRefresh(alvos){
-  if(!window._appPronto) return;
-  var p = window._paginaAtual || 'dashboard';
-  alvos.forEach(function(alvo){
-    try{
-      if(alvo==='dashboard'  && typeof renderDashboard==='function')       renderDashboard();
-      if(alvo==='feed'       && typeof renderFeed==='function')            renderFeed();
-      if(alvo==='conquistas' && typeof renderConquistasDash==='function')  renderConquistasDash();
-      if(alvo==='historico'  && p==='historico'  && typeof renderHistorico==='function')      renderHistorico();
-      if(alvo==='financeiro' && p==='financeiro' && typeof renderFinanceiro==='function')     renderFinanceiro();
-      if(alvo==='conquistas' && p==='conquistas' && typeof renderConquistas==='function')     renderConquistas();
-      if(alvo==='desafios'   && p==='desafios'   && typeof renderDesafios==='function')       renderDesafios();
-      if(alvo==='lucro'      && p==='lucro-liquido'          && typeof renderLucroLiquido==='function')  renderLucroLiquido();
-      if(alvo==='comparador' && p==='comparador-plataformas' && typeof renderComparador==='function')    renderComparador();
-      if(alvo==='calendario' && p==='calendario-ganhos'      && typeof renderCalendario==='function')    renderCalendario();
-      if(alvo==='nota-hist'  && p==='nota-servico'           && typeof renderNotaHistorico==='function') renderNotaHistorico();
-    }catch(e){ console.warn('_dcRefresh erro:', alvo, e); }
-  });
-}
-
 const save    = function(k,v) {
+  // Proteção: não salva null/undefined nem arrays/objetos corrompidos
   if(v === null || v === undefined) return;
   var serializado;
   try{ serializado = JSON.stringify(v); }catch(e){ console.warn('save(): valor invalido para '+k, e); return; }
+  // Proteção: não sobrescreve dado existente com vazio se havia dados antes
   var anterior = localStorage.getItem(k);
   if(anterior && anterior.length > 10 && serializado.length < 3){
     console.warn('save(): bloqueado para evitar apagar dados de '+k+' (novo='+serializado+')');
@@ -3157,7 +2870,6 @@ const save    = function(k,v) {
   }
   localStorage.setItem(k, serializado);
   if(window._fbSave) window._fbSave(k, v);
-  _dcRefreshAuto(k);
 };
 
 let rotas    = load('dc_rotas');
@@ -3498,7 +3210,6 @@ window.onShowPage = function(pagina, fn){
 };
 
 function showPage(p){
-  window._paginaAtual = p;
   fecharMenu();
   document.querySelectorAll('.page').forEach(function(el){ el.classList.remove('active'); });
   var pageEl = document.getElementById('page-'+p);
@@ -3530,7 +3241,6 @@ function showPage(p){
   }
 }
 function voltarDashboard(){
-  window._paginaAtual = 'dashboard';
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-dashboard').classList.add('active');
   renderDashboard(); renderFeed();
@@ -4027,25 +3737,13 @@ function renderDashboard(){
   const lucroEl=document.getElementById('m-lucro');
   if(lucroEl) lucroEl.textContent=fmt(lucroMes);
 
-  // ── Card Desempenho do Mês (substituiu KM card) ──────────
+  // ── KM Mensal card ──────────────────────────────────────
   const elKmRotas = document.getElementById('dash-km-rotas');
+  const elKmOdo   = document.getElementById('dash-km-odometro');
+  const elKmDias  = document.getElementById('dash-km-dias');
   if(elKmRotas) elKmRotas.textContent = kmRotasMes + ' km';
-
-  // Dias com meta diária batida no mês
-  var diasMetaBatida = 0;
-  var diasTrabMes = new Set(rotasMes.map(function(r){ return r.data; }));
-  var metaDiaCalc = calcMetaDiaAuto();
-  diasTrabMes.forEach(function(dia){
-    var ganhosDia = rotas.filter(function(r){ return r.data===dia; }).reduce(function(s,r){ return s+r.total; },0);
-    if(metaDiaCalc>0 && ganhosDia>=metaDiaCalc) diasMetaBatida++;
-  });
-  var elDiasMeta = document.getElementById('dash-dias-meta');
-  if(elDiasMeta) elDiasMeta.textContent = diasMetaBatida + (diasMetaBatida===1?' dia':' dias');
-  var elDiasTrab = document.getElementById('dash-dias-trab');
-  if(elDiasTrab) elDiasTrab.textContent = diasTrabMes.size;
-
-  // Conquistas no dashboard
-  if(typeof renderConquistasDash==='function') renderConquistasDash();
+  if(elKmOdo)   elKmOdo.textContent   = kmOdoMes > 0 ? kmOdoMes + ' km' : '—';
+  if(elKmDias)  elKmDias.textContent  = diasComKm;
 
   // Label caixa segundo veículo
   const caixaLabel=document.querySelector('#m-caixa')?.closest('.metric-box')?.querySelector('.metric-label');
@@ -7352,4 +7050,2464 @@ function fazerLogout(){
     <div id="voz-icone" style="font-size:3rem;margin-bottom:10px;">🎙️</div>
     <div style="font-size:0.9rem;font-weight:700;color:var(--red);margin-bottom:8px;" id="voz-status">Ouvindo...</div>
     <div style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;" id="voz-texto">Fale: empresa, bairro e valor</div>
-    <div style="font-
+    <div style="font-size:0.7rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:10px;margin-bottom:16px;text-align:left;">
+      💡 Exemplos:<br>"iFood, Centro, quinze reais"<br>"Rappi, Kobrasol, vinte e dois"
+    </div>
+    <button class="btn btn-secondary" onclick="pararVoz()">✕ Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL CONTESTAÇÃO -->
+<div id="modal-contestacao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--red);border-radius:14px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;">
+    <div style="font-size:0.85rem;font-weight:700;color:var(--red);margin-bottom:4px;">⚠️ Contestação de Pagamento</div>
+    <div id="contestacao-emp-nome" style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;"></div>
+    <pre id="contestacao-txt" style="background:rgba(255,68,68,0.06);border:1px solid rgba(255,68,68,0.2);border-radius:8px;padding:12px;font-size:0.72rem;white-space:pre-wrap;color:var(--text);max-height:320px;overflow-y:auto;margin-bottom:12px;font-family:'Courier New',monospace;line-height:1.5;"></pre>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-whatsapp" style="flex:1;" onclick="enviarContestacaoWpp()">📱 Enviar WhatsApp</button>
+      <button class="btn btn-secondary" onclick="fecharContestacao()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL: Manutenção de Moto -->
+<div id="modal-manut-moto" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9600;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:380px;width:100%;margin:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">🔧 Manutenção</div>
+      <button onclick="fecharModalManutMoto()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="manut-moto-placa-label" style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;font-family:monospace;"></div>
+    <input type="hidden" id="manut-moto-id">
+
+    <!-- Formulário novo registro -->
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Registrar manutenção</div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Tipo *</label>
+        <select id="manut-tipo" style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+          <option value="oleo">🛢️ Troca de óleo</option>
+          <option value="pneu">🔘 Pneu</option>
+          <option value="freio">🔴 Freio</option>
+          <option value="corrente">⛓️ Corrente</option>
+          <option value="revisao">🔩 Revisão geral</option>
+          <option value="eletrica">⚡ Elétrica</option>
+          <option value="outro">🔧 Outro</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Custo (R$) *</label>
+          <input id="manut-custo" type="number" min="0" step="0.01" placeholder="0,00"
+            style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Data</label>
+          <input id="manut-data" type="date"
+            style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">KM no momento</label>
+        <input id="manut-km" type="number" min="0" placeholder="KM atual da moto"
+          style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.95rem;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Observação</label>
+        <input id="manut-obs" type="text" placeholder="Detalhe opcional..."
+          style="background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+      </div>
+      <button class="btn btn-gold" style="width:100%;" onclick="salvarManutMoto()">✅ Registrar</button>
+    </div>
+
+    <!-- Histórico -->
+    <div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Histórico</div>
+    <div id="manut-moto-historico">
+      <div style="text-align:center;padding:16px;color:var(--muted);">Carregando...</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL: Baixa de comissão -->
+<div id="modal-baixa-comissao" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9600;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:360px;width:100%;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;">💰 Registrar Pagamento</div>
+      <button onclick="fecharModalBaixaComissao()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="baixa-com-email" style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;"></div>
+    <input type="hidden" id="baixa-com-uid">
+    <input type="hidden" id="baixa-com-mes">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:0.68rem;color:var(--muted);">Total a pagar</div>
+        <div id="baixa-com-total" style="font-size:1rem;font-weight:700;color:var(--gold);font-family:'Rajdhani',sans-serif;">—</div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:0.68rem;color:var(--muted);">Saldo devedor</div>
+        <div id="baixa-com-saldo" style="font-size:1rem;font-weight:700;color:var(--red);font-family:'Rajdhani',sans-serif;">—</div>
+      </div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Valor pago agora (R$) *</label>
+      <input id="baixa-com-valor" type="number" min="0" step="0.01" placeholder="0,00"
+        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:12px;width:100%;font-size:1rem;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:0.72rem;color:var(--muted);font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;">Observação</label>
+      <input id="baixa-com-obs" type="text" placeholder="Pix, dinheiro, etc."
+        style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px;width:100%;font-size:0.88rem;box-sizing:border-box;">
+    </div>
+    <!-- Histórico de pagamentos -->
+    <div id="baixa-com-historico" style="margin-bottom:16px;"></div>
+    <button class="btn btn-gold" style="width:100%;" onclick="salvarBaixaComissao()">✅ Confirmar pagamento</button>
+  </div>
+</div>
+
+</body>
+</html>
+
+<script>
+// ============================================================
+// CHECKOUT — iniciarCheckout(), modal PIX
+// ============================================================
+var _checkoutTipo = null;
+
+function alertProFeature(nome){
+  showToast('Recurso ' + nome + ' disponivel no Plano Pro. Acesse o menu Plano.', 'warn');
+}
+
+function iniciarCheckout(tipo){
+  _checkoutTipo = tipo;
+  var modal = document.getElementById('modal-checkout');
+  var resumo = document.getElementById('checkout-resumo');
+  var labels = {
+    'basico':              'Plano Basico — R$ 14,90/mes',
+    'pro_trial':           'Plano Pro — 7 dias gratis, depois R$ 29,90/mes',
+    'pro':                 'Plano Pro — R$ 29,90/mes',
+    'empresa':             'Plano Empresa Starter — R$ 89,90/mes',
+    'empresa_starter':     'Plano Empresa Starter — R$ 89,90/mes (ate 10 motoristas)',
+    'empresa_growth':      'Plano Empresa Growth — R$ 149,90/mes (ate 20 motoristas)',
+    'empresa_enterprise':  'Plano Empresa Enterprise — R$ 199,90/mes (motoristas ilimitados)'
+  };
+  resumo.innerHTML = '<strong>' + (labels[tipo] || tipo) + '</strong><br><span style="font-size:0.75rem;color:var(--muted);">Renova mensalmente. Cancele quando quiser.</span>';
+  document.getElementById('checkout-pix-area').style.display = 'none';
+  document.getElementById('checkout-cartao-area').style.display = 'none';
+  document.getElementById('checkout-btn-confirmar').style.display = 'none';
+  document.getElementById('pay-pix').className = 'btn btn-secondary';
+  document.getElementById('pay-cartao').className = 'btn btn-secondary';
+  modal.style.display = 'flex';
+}
+
+function fecharCheckout(){
+  document.getElementById('modal-checkout').style.display = 'none';
+}
+
+function selecionarPagamento(tipo){
+  document.getElementById('pay-pix').className = 'btn ' + (tipo === 'pix' ? 'btn-gold' : 'btn-secondary');
+  document.getElementById('pay-cartao').className = 'btn ' + (tipo === 'cartao' ? 'btn-gold' : 'btn-secondary');
+  if(tipo === 'pix'){
+    var cfg = loadObj('dc_cfg') || {};
+    var pixKey = cfg.pixKey || '47992030653';
+    document.getElementById('checkout-pix-key').textContent = pixKey;
+    document.getElementById('checkout-pix-area').style.display = 'block';
+    document.getElementById('checkout-cartao-area').style.display = 'none';
+    document.getElementById('checkout-btn-confirmar').style.display = 'block';
+  } else {
+    document.getElementById('checkout-cartao-area').style.display = 'block';
+    document.getElementById('checkout-pix-area').style.display = 'none';
+    document.getElementById('checkout-btn-confirmar').style.display = 'none';
+  }
+}
+
+function confirmarCheckout(){
+  if(!_checkoutTipo) return;
+  var labels = {
+    'basico':    'Plano Basico — R$ 14,90/mes',
+    'pro_trial': 'Plano Pro (trial 7 dias)',
+    'pro':       'Plano Pro — R$ 29,90/mes',
+    'empresa':   'Plano Empresa — R$ 89,90/mes'
+  };
+  var msg = 'Ola! Quero assinar o DriveCash.\n\n';
+  msg += 'Plano: ' + (labels[_checkoutTipo] || _checkoutTipo) + '\n';
+  msg += 'Pagamento: PIX\n';
+  if(window._fbUser) msg += 'E-mail: ' + window._fbUser.email + '\n';
+  msg += '\nSegue o comprovante em anexo.';
+  fecharCheckout();
+  window.open('https://wa.me/5547992030653?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function abrirSuporteWpp(){
+  window.open('https://wa.me/5547992030653?text=' + encodeURIComponent('Ola! Preciso de ajuda com o DriveCash.'), '_blank');
+}
+
+// ============================================================
+// INSIGHTS — renderInsights(), preview
+// ============================================================
+function renderInsights(){
+  var container = document.getElementById('insights-container');
+  if(!container) return;
+
+  var mesAtual = hoje().slice(0, 7);
+  var d = new Date();
+  d.setMonth(d.getMonth() - 1);
+  var mesAnterior = d.toISOString().slice(0, 7);
+
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mesAtual; });
+  var rotasAnt = rotas.filter(function(r){ return r.data.slice(0,7) === mesAnterior; });
+
+  var totalMes = rotasMes.reduce(function(s,r){ return s + r.total; }, 0);
+  var totalAnt = rotasAnt.reduce(function(s,r){ return s + r.total; }, 0);
+  var kmMes    = rotasMes.reduce(function(s,r){ return s + (r.km||0); }, 0);
+  var kmAnt    = rotasAnt.reduce(function(s,r){ return s + (r.km||0); }, 0);
+  var rpmMes   = kmMes > 0 ? totalMes / kmMes : 0;
+  var rpmAnt   = kmAnt > 0 ? totalAnt / kmAnt : 0;
+
+  var diasObj = {};
+  rotasMes.forEach(function(r){ diasObj[r.data] = (diasObj[r.data]||0) + r.total; });
+  var diasAtivos = Object.keys(diasObj).length;
+  var mediaDia   = diasAtivos > 0 ? totalMes / diasAtivos : 0;
+
+  var porEmp = {};
+  rotasMes.forEach(function(r){
+    porEmp[r.empNome] = (porEmp[r.empNome] || 0) + r.total;
+  });
+  var empTopNome = null; var empTopVal = 0;
+  Object.keys(porEmp).forEach(function(n){
+    if(porEmp[n] > empTopVal){ empTopVal = porEmp[n]; empTopNome = n; }
+  });
+
+  var empKmVal = {}; var empKmKm = {};
+  rotasMes.forEach(function(r){
+    if(r.km > 0){
+      empKmVal[r.empNome] = (empKmVal[r.empNome]||0) + r.total;
+      empKmKm[r.empNome]  = (empKmKm[r.empNome]||0) + r.km;
+    }
+  });
+  var empPiorNome = null; var piorRpm = 99999;
+  Object.keys(empKmKm).forEach(function(n){
+    var rpm = empKmKm[n] > 0 ? empKmVal[n] / empKmKm[n] : 0;
+    if(rpm > 0 && rpm < piorRpm){ piorRpm = rpm; empPiorNome = n; }
+  });
+
+  var varPct  = totalAnt > 0 ? Math.round(((totalMes - totalAnt) / totalAnt) * 100) : null;
+  var varRpm  = rpmAnt   > 0 ? Math.round(((rpmMes  - rpmAnt)  / rpmAnt)  * 100) : null;
+
+  function card(icon, titulo, valor, detalhe, cor){
+    return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'
+      + '<span style="font-size:1.2rem;">' + icon + '</span>'
+      + '<span style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">' + titulo + '</span>'
+      + '</div>'
+      + '<div style="font-size:1.3rem;font-weight:700;color:' + cor + ';font-family:\'Rajdhani\',sans-serif;">' + valor + '</div>'
+      + '<div style="font-size:0.75rem;color:var(--muted);margin-top:3px;">' + detalhe + '</div>'
+      + '</div>';
+  }
+
+  function alerta(icon, msg){
+    return '<div style="background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.3);border-radius:10px;padding:12px;margin-bottom:10px;font-size:0.82rem;display:flex;gap:10px;">'
+      + '<span>' + icon + '</span><span>' + msg + '</span></div>';
+  }
+
+  if(rotasMes.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">Nenhuma entrega registrada este mes.</div>';
+    return;
+  }
+
+  var html = '<div style="font-size:0.75rem;color:var(--muted);margin-bottom:14px;text-align:center;">Dados de ' + new Date().toLocaleString('pt-BR',{month:'long',year:'numeric'}) + '</div>';
+
+  var varTxt = varPct !== null ? ((varPct >= 0 ? '+' : '') + varPct + '% vs mes anterior (' + fmt(totalAnt) + ')') : (diasAtivos + ' dias trabalhados');
+  html += card('💰', 'Ganho bruto este mes', fmt(totalMes), varTxt, varPct !== null && varPct >= 0 ? 'var(--green)' : 'var(--red)');
+
+  var rpmTxt = rpmMes > 0 ? 'R$ ' + rpmMes.toFixed(2) + '/km' : 'Sem KM registrado';
+  var rpmDetalhe = varRpm !== null ? ((varRpm >= 0 ? '+' : '') + varRpm + '% vs mes anterior') : 'Registre KM nas rotas para calcular';
+  html += card('📏', 'R$/KM medio este mes', rpmTxt, rpmDetalhe, rpmMes >= (rpmAnt||rpmMes) ? 'var(--green)' : 'var(--orange)');
+
+  html += card('☀️', 'Media por dia trabalhado', fmt(mediaDia), diasAtivos + ' dias ativos · ' + rotasMes.length + ' entregas no mes', 'var(--blue)');
+
+  if(empTopNome){
+    html += card('🏆', 'Empresa mais lucrativa', empTopNome, fmt(empTopVal) + ' · ' + Math.round((empTopVal/totalMes)*100) + '% do total', 'var(--gold)');
+  }
+
+  if(empPiorNome && piorRpm < rpmMes * 0.7){
+    html += alerta('⚠️', '<strong>' + empPiorNome + '</strong> tem R$/KM baixo (R$ ' + piorRpm.toFixed(2) + '/km). Considere renegociar a tabela com essa empresa.');
+  }
+
+  if(varPct !== null && varPct < -15){
+    html += alerta('📉', 'Seus ganhos cairam ' + Math.abs(varPct) + '% em relacao ao mes passado.');
+  }
+
+  var cfg = loadObj('dc_cfg') || {};
+  var metaMes = cfg.meta || 0;
+  if(metaMes > 0 && totalMes < metaMes){
+    var diasNoMes = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+    var diasRestantes = diasNoMes - new Date().getDate();
+    var falta = metaMes - totalMes;
+    var porDia = diasRestantes > 0 ? falta / diasRestantes : falta;
+    html += alerta('🎯', 'Faltam <strong>' + fmt(falta) + '</strong> para bater sua meta. Voce precisa de <strong>' + fmt(porDia) + '</strong>/dia nos proximos ' + diasRestantes + ' dias.');
+  }
+
+  var desp = (loadObj('dc_despesas') || []).filter(function(d){ return d.data && d.data.slice(0,7) === mesAtual; });
+  var totalDesp = desp.reduce(function(s,d){ return s + (d.valor||0); }, 0);
+  if(totalDesp > 0){
+    var lucro = totalMes - totalDesp;
+    html += card('📊', 'Lucro liquido estimado', fmt(lucro), 'Receita ' + fmt(totalMes) + ' menos Despesas ' + fmt(totalDesp), lucro >= 0 ? 'var(--green)' : 'var(--red)');
+  }
+
+  container.innerHTML = html;
+}
+
+function atualizarInsightsPreview(){
+  var card = document.getElementById('insights-preview-card');
+  var txt  = document.getElementById('insights-preview-txt');
+  if(!card || !txt || !isPro()){ if(card) card.style.display='none'; return; }
+
+  var mesAtual = hoje().slice(0,7);
+  var d2 = new Date(); d2.setMonth(d2.getMonth()-1);
+  var mesAnt = d2.toISOString().slice(0,7);
+
+  var total = rotas.filter(function(r){ return r.data.slice(0,7)===mesAtual; }).reduce(function(s,r){ return s+r.total; },0);
+  var ant   = rotas.filter(function(r){ return r.data.slice(0,7)===mesAnt; }).reduce(function(s,r){ return s+r.total; },0);
+  if(total === 0){ card.style.display='none'; return; }
+
+  var varP = ant > 0 ? Math.round(((total-ant)/ant)*100) : null;
+  var msg  = fmt(total) + ' este mes';
+  if(varP !== null) msg += ' · ' + (varP >= 0 ? '+' : '') + varP + '% vs mes passado';
+  txt.textContent = msg;
+  card.style.display = 'block';
+}
+
+// ============================================================
+// RELATÓRIO IR — initRelatorioIR()
+// ============================================================
+function initRelatorioIR(){
+  var sel = document.getElementById('ir-ano');
+  if(!sel) return;
+  sel.innerHTML = '';
+  var anoAtual = new Date().getFullYear();
+  for(var a = anoAtual; a >= anoAtual - 3; a--){
+    var opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    sel.appendChild(opt);
+  }
+  renderRelatorioIR();
+}
+
+function renderRelatorioIR(){
+  var container = document.getElementById('ir-container');
+  if(!container) return;
+  var sel = document.getElementById('ir-ano');
+  var ano = sel ? sel.value : String(new Date().getFullYear());
+
+  var rotasAno = rotas.filter(function(r){ return r.data.slice(0,4) === ano; });
+  var desp     = (loadObj('dc_despesas')||[]).filter(function(d){ return d.data && d.data.slice(0,4) === ano; });
+
+  if(rotasAno.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">Nenhuma entrega em ' + ano + '.</div>';
+    return;
+  }
+
+  var bruto  = rotasAno.reduce(function(s,r){ return s+r.total; },0);
+  var despT  = desp.reduce(function(s,d){ return s+(d.valor||0); },0);
+  var km     = rotasAno.reduce(function(s,r){ return s+(r.km||0); },0);
+  var gorj   = rotasAno.reduce(function(s,r){ return s+(r.gorjeta||0); },0);
+  var meses  = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var porMes = [0,0,0,0,0,0,0,0,0,0,0,0];
+  rotasAno.forEach(function(r){ porMes[parseInt(r.data.slice(5,7))-1] += r.total; });
+
+  var html = '<div style="background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);border-radius:12px;padding:16px;margin-bottom:14px;">'
+    + '<div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Resumo ' + ano + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem;">'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">Receita bruta</div><div style="font-weight:700;color:var(--green);">' + fmt(bruto) + '</div></div>'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">Despesas</div><div style="font-weight:700;color:var(--red);">' + fmt(despT) + '</div></div>'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">Lucro liquido est.</div><div style="font-weight:700;color:var(--blue);">' + fmt(bruto-despT) + '</div></div>'
+    + '<div><div style="color:var(--muted);font-size:0.7rem;">KM rodados</div><div style="font-weight:700;">' + km.toFixed(0) + ' km</div></div>'
+    + (gorj > 0 ? '<div><div style="color:var(--muted);font-size:0.7rem;">Gorjetas</div><div style="font-weight:700;color:var(--gold);">' + fmt(gorj) + '</div></div>' : '')
+    + '</div></div>';
+
+  html += '<div style="background:rgba(88,166,255,0.07);border:1px solid rgba(88,166,255,0.2);border-radius:12px;padding:14px;margin-bottom:14px;">'
+    + '<div style="font-size:0.75rem;color:var(--blue);font-weight:600;margin-bottom:8px;">Para declaracao de IR</div>'
+    + '<div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">'
+    + 'Como autonomo sem CNPJ, declare seus rendimentos como <strong style="color:var(--text);">Rendimentos Tributaveis de Pessoa Fisica</strong>.<br><br>'
+    + '• Informe a receita total em <strong style="color:var(--text);">Rendimentos Recebidos de PF</strong><br>'
+    + '• Despesas com moto (combustivel, manutencao) podem ser deduzidas como despesa de obtencao de renda<br>'
+    + '• Guarde notas e recibos de todas as despesas<br><br>'
+    + '<span style="color:var(--orange);">Consulte um contador para sua declaracao oficial.</span>'
+    + '</div></div>';
+
+  html += '<div style="font-size:0.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Receita por mes</div>'
+    + '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.8rem;">'
+    + '<thead><tr style="border-bottom:1px solid var(--border);">'
+    + '<th style="text-align:left;padding:6px 4px;color:var(--muted);">Mes</th>'
+    + '<th style="text-align:right;padding:6px 4px;color:var(--muted);">Receita</th>'
+    + '<th style="text-align:right;padding:6px 4px;color:var(--muted);">% do ano</th>'
+    + '</tr></thead><tbody>';
+  for(var m = 0; m < 12; m++){
+    if(porMes[m] > 0){
+      html += '<tr style="border-bottom:1px solid var(--border);">'
+        + '<td style="padding:6px 4px;">' + meses[m] + '/' + ano + '</td>'
+        + '<td style="text-align:right;padding:6px 4px;color:var(--green);font-weight:600;">' + fmt(porMes[m]) + '</td>'
+        + '<td style="text-align:right;padding:6px 4px;color:var(--muted);">' + Math.round((porMes[m]/bruto)*100) + '%</td>'
+        + '</tr>';
+    }
+  }
+  html += '</tbody></table></div>';
+  html += '<button class="btn btn-secondary" style="width:100%;margin-top:14px;" onclick="compartilharIR(\'' + ano + '\',' + bruto + ',' + despT + ',' + km + ')">📱 Compartilhar com contador</button>';
+
+  container.innerHTML = html;
+}
+
+function compartilharIR(ano, bruto, desp, km){
+  var msg = 'DriveCash — Relatorio IR ' + ano + '\n\n';
+  msg += 'Receita bruta: ' + fmt(bruto) + '\n';
+  msg += 'Despesas: ' + fmt(desp) + '\n';
+  msg += 'Lucro liquido estimado: ' + fmt(bruto - desp) + '\n';
+  msg += 'KM rodados: ' + km.toFixed(0) + ' km\n\nGerado pelo DriveCash';
+  if(navigator.share){
+    navigator.share({ title: 'Relatorio IR ' + ano, text: msg }).catch(function(){});
+  } else {
+    navigator.clipboard.writeText(msg).then(function(){
+      showToast('Copiado para area de transferencia!', 'success');
+    }).catch(function(){
+      var w = window.open('','_blank');
+      if(w) w.document.write('<pre>' + msg + '</pre>');
+    });
+  }
+}
+
+// ============================================================
+// IMPORTAR CSV — processarCSV()
+// ============================================================
+var _csvDados = null;
+
+function processarCSV(input){
+  var file = input.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var text  = e.target.result;
+    var linhas = text.trim().split(/\r?\n/);
+    if(linhas.length < 2){ showToast('CSV vazio ou sem dados', 'error'); return; }
+    var header = linhas[0].split(',').map(function(h){ return h.trim().toLowerCase(); });
+    var dados = []; var erros = 0;
+    for(var i = 1; i < linhas.length; i++){
+      var cols = linhas[i].split(',').map(function(c){ return c.trim(); });
+      if(cols.length < 3){ erros++; continue; }
+      var row = {};
+      header.forEach(function(h, idx){ row[h] = cols[idx] || ''; });
+      var data    = row['data'] || row['date'] || '';
+      var empresa = row['empresa'] || row['company'] || '';
+      var destino = row['destino'] || row['bairro'] || row['cidade'] || '';
+      var km      = parseFloat(row['km']) || 0;
+      var valor   = parseFloat((row['valor'] || row['value'] || '0').replace(',','.'));
+      var gorjeta = parseFloat((row['gorjeta'] || '0').replace(',','.'));
+      var obs     = row['obs'] || row['observacao'] || '';
+      if(!data || !empresa || !valor){ erros++; continue; }
+      dados.push({ data:data, empresa:empresa, destino:destino, km:km, valor:valor, gorjeta:gorjeta, obs:obs });
+    }
+    if(dados.length === 0){ showToast('Nenhuma linha valida. Verifique o formato.', 'error'); return; }
+    _csvDados = dados;
+    renderCSVPreview(dados, erros);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function renderCSVPreview(dados, erros){
+  document.getElementById('csv-preview').style.display = 'block';
+  var info = dados.length + ' linhas validas';
+  if(erros > 0) info += ' · ' + erros + ' ignoradas';
+  document.getElementById('csv-preview-info').textContent = info;
+  var amostra = dados.slice(0, 5);
+  var table = '<table style="width:100%;border-collapse:collapse;">'
+    + '<thead><tr style="border-bottom:1px solid var(--border);">'
+    + '<th style="padding:4px;text-align:left;color:var(--muted);">Data</th>'
+    + '<th style="padding:4px;text-align:left;color:var(--muted);">Empresa</th>'
+    + '<th style="padding:4px;text-align:right;color:var(--muted);">Valor</th>'
+    + '</tr></thead><tbody>';
+  amostra.forEach(function(r){
+    table += '<tr style="border-bottom:1px solid var(--border);">'
+      + '<td style="padding:4px;">' + r.data + '</td>'
+      + '<td style="padding:4px;">' + r.empresa + '</td>'
+      + '<td style="padding:4px;text-align:right;color:var(--green);">' + fmt(r.valor) + '</td>'
+      + '</tr>';
+  });
+  if(dados.length > 5) table += '<tr><td colspan="3" style="padding:4px;color:var(--muted);font-size:0.72rem;text-align:center;">...e mais ' + (dados.length-5) + ' linhas</td></tr>';
+  table += '</tbody></table>';
+  document.getElementById('csv-preview-table').innerHTML = table;
+}
+
+function cancelarCSV(){
+  _csvDados = null;
+  document.getElementById('csv-preview').style.display = 'none';
+  document.getElementById('csv-file-input').value = '';
+}
+
+function importarCSVConfirmar(){
+  if(!_csvDados || _csvDados.length === 0) return;
+  var importadas = 0;
+  _csvDados.forEach(function(row){
+    var emp = null;
+    for(var i = 0; i < empresas.length; i++){
+      if(empresas[i].nome.toLowerCase() === row.empresa.toLowerCase()){ emp = empresas[i]; break; }
+    }
+    var empId   = emp ? emp.id   : Date.now() + Math.random();
+    var empNome = emp ? emp.nome : row.empresa;
+    var novaRota = {
+      id: Date.now() + Math.random(),
+      data: row.data,
+      tipo: row.km > 0 ? 'viagem' : 'urbano',
+      empId: empId, empNome: empNome,
+      km: row.km,
+      total: row.valor + row.gorjeta,
+      gorjeta: row.gorjeta,
+      multipla: false,
+      entregas: [{ bairro: row.destino, km: row.km, valorUnit: row.valor, tipo: row.km>0?'viagem':'urbano', obs: row.obs }],
+      obs: row.obs,
+      importadoCSV: true
+    };
+    rotas.push(novaRota);
+    importadas++;
+  });
+  save('dc_rotas', rotas);
+  renderDashboard();
+  renderFeed();
+  cancelarCSV();
+  voltarDashboard();
+  showToast(importadas + ' rotas importadas!', 'success');
+}
+
+// ============================================================
+// NOTIFICAÇÕES — verificarNotificacoes()
+// ============================================================
+function verificarNotificacoes(){
+  if(!isPro()) return;
+  var mesAtual = hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mesAtual; });
+  var totalMes = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+  var cfg      = loadObj('dc_cfg') || {};
+  var alertas  = [];
+
+  // 1. Meta em risco
+  if(cfg.meta > 0 && totalMes < cfg.meta){
+    var diasNoMes     = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+    var diaHoje       = new Date().getDate();
+    var pctMes        = Math.round((diaHoje / diasNoMes) * 100);
+    var pctMeta       = Math.round((totalMes / cfg.meta) * 100);
+    if(pctMes > pctMeta + 20){
+      var diasRest = diasNoMes - diaHoje;
+      var porDia   = diasRest > 0 ? (cfg.meta - totalMes) / diasRest : 0;
+      alertas.push('🎯 Voce esta abaixo do ritmo para bater a meta. Precisa de ' + fmt(porDia) + '/dia nos proximos ' + diasRest + ' dias.');
+    }
+  }
+
+  // 2. Empresa devedora ha mais de 15 dias
+  var pags = loadObj('dc_pagamentos') || [];
+  var agora = new Date();
+  for(var i = 0; i < empresas.length; i++){
+    var emp = empresas[i];
+    var rotasEmp  = rotas.filter(function(r){ return r.empId === emp.id; });
+    var faturado  = rotasEmp.reduce(function(s,r){ return s+r.total; },0);
+    var pago      = pags.filter(function(p){ return p.empId === emp.id; }).reduce(function(s,p){ return s+(p.valor||0); },0);
+    var saldo     = faturado - pago;
+    if(saldo > 0 && rotasEmp.length > 0){
+      var ult  = rotasEmp.slice().sort(function(a,b){ return b.data.localeCompare(a.data); })[0];
+      var dias = Math.floor((agora - new Date(ult.data)) / (1000*60*60*24));
+      if(dias >= 15){
+        alertas.push('⚠️ ' + emp.nome + ' tem ' + fmt(saldo) + ' em aberto ha ' + dias + ' dias.');
+      }
+    }
+  }
+
+  // 3. Nenhuma entrega hoje (entre 14h e 21h)
+  var hora = new Date().getHours();
+  if(hora >= 14 && hora <= 21){
+    var entregasHoje = rotas.filter(function(r){ return r.data === hoje(); });
+    if(entregasHoje.length === 0){
+      alertas.push('💤 Nenhuma entrega registrada hoje. Nao esqueca de registrar suas rotas!');
+    }
+  }
+
+  if(alertas.length === 0) return;
+
+  // Limita frequencia: max 1x a cada 4h
+  var ultTs = loadObj('dc_notif_ts');
+  var now   = Date.now();
+  if(ultTs && (now - ultTs) < 4*60*60*1000) return;
+  save('dc_notif_ts', now);
+
+  var banner = document.getElementById('notif-banner');
+  if(!banner) return;
+  var itens = alertas.map(function(a){
+    return '<div style="padding:8px 0;border-bottom:1px solid rgba(255,152,0,0.2);font-size:0.8rem;">' + a + '</div>';
+  }).join('');
+  banner.innerHTML = '<div style="background:rgba(255,152,0,0.1);border:1px solid rgba(255,152,0,0.3);border-radius:10px;padding:12px;margin-bottom:12px;">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+    + '<span style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">🔔 Alertas</span>'
+    + '<span style="cursor:pointer;color:var(--muted);font-size:1rem;" onclick="document.getElementById(\'notif-banner\').innerHTML=\'\'">✕</span>'
+    + '</div>' + itens + '</div>';
+}
+
+// ============================================================
+// HOOK showPage — intercepta para novas páginas
+// ============================================================
+// Registra handlers via novo sistema de eventos
+window.onShowPage('insights',     function(){ if(typeof renderInsights==='function') renderInsights(); });
+window.onShowPage('relatorio-ir', function(){ if(typeof initRelatorioIR==='function') initRelatorioIR(); });
+</script>
+
+<script>
+// ============================================================
+// PLANO EMPRESA — isGestor(), isEmpresa(), funções de frota
+// ============================================================
+
+function isEmpresa(){
+  var p = loadPlano();
+  return p.tipo === 'empresa_starter' || p.tipo === 'empresa_growth' || p.tipo === 'empresa_enterprise' || p.tipo === 'empresa';
+}
+
+function isGestor(){
+  return isEmpresa() && !!window._frotaData;
+}
+
+function limiteMotoristas(){
+  var p = loadPlano();
+  if(p.tipo === 'empresa_enterprise') return 999;
+  if(p.tipo === 'empresa_growth')     return 20;
+  return 10; // starter ou legado
+}
+
+// Badge da frota no dashboard
+function renderFrotaBadge(){
+  var badge = document.getElementById('frota-badge-dashboard');
+  // Motorista vinculado
+  if(window._vinculoFrota && window._vinculoFrota.frotaId){
+    var mi = document.getElementById('menu-item-frota-motorista');
+    if(mi) mi.style.display = 'block';
+    if(badge){
+      badge.style.display = 'flex';
+      badge.innerHTML = '<span style="font-size:0.75rem;">🏢 ' + (window._vinculoFrota.nomeFrota||'Frota') + '</span>';
+    }
+  }
+  // Gestor com frota criada
+  if(isGestor()){
+    var mg = document.getElementById('menu-item-painel-gestor');
+    if(mg) mg.style.display = 'block';
+    var mc = document.getElementById('menu-item-criar-frota');
+    if(mc) mc.style.display = 'none';
+    if(badge){
+      badge.style.display = 'flex';
+      badge.innerHTML = '<span style="font-size:0.75rem;">🏢 Gestor · ' + (window._frotaData.nome||'Frota') + '</span>';
+    }
+  }
+  // Empresa sem frota ainda
+  if(isEmpresa() && !isGestor()){
+    var mc2 = document.getElementById('menu-item-criar-frota');
+    if(mc2) mc2.style.display = 'block';
+  }
+  // isPro() atualiza badge do menu
+  if(typeof renderPlanoBadgeMenu === 'function') renderPlanoBadgeMenu();
+}
+
+// ============================================================
+// CRIAR FROTA (gestor)
+// ============================================================
+function initCriarFrota(){
+  var info = document.getElementById('criar-frota-plano-info');
+  var form = document.getElementById('criar-frota-form');
+  var exist = document.getElementById('criar-frota-existente');
+  if(!isEmpresa()){
+    if(form) form.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Disponivel apenas nos planos Empresa.<br><button class="btn btn-gold" style="margin-top:14px;" onclick="showPage(\'plano\')">Ver planos</button></div>';
+    return;
+  }
+  if(window._frotaData){
+    if(exist) exist.style.display = 'block';
+    if(form)  form.style.display  = 'none';
+    return;
+  }
+  if(exist) exist.style.display = 'none';
+  if(form)  form.style.display  = 'block';
+  var p = loadPlano();
+  var nomes = { 'empresa_starter':'Starter — ate 10 motoristas', 'empresa_growth':'Growth — ate 20 motoristas', 'empresa_enterprise':'Enterprise — ilimitado', 'empresa':'Starter — ate 10 motoristas' };
+  if(info) info.textContent = nomes[p.tipo] || p.tipo;
+}
+
+function criarFrota(){
+  var nome = (document.getElementById('input-nome-frota')||{}).value || '';
+  nome = nome.trim();
+  if(!nome){ showToast('Digite um nome para a frota.', 'error'); return; }
+  if(!isEmpresa()){ showToast('Disponivel apenas nos planos Empresa.', 'error'); return; }
+  var planoTipo = (loadPlano().tipo || 'empresa_starter');
+  showToast('Criando frota...', 'info');
+  window._fbCriarFrota(nome, planoTipo).then(function(res){
+    if(!res.ok){ showToast('Erro: ' + res.msg, 'error'); return; }
+    window._frotaData = res.frota;
+    window._frotaId   = window._fbUser ? window._fbUser.uid : null;
+    showToast('Frota criada! Codigo: ' + res.codigo, 'success');
+    renderFrotaBadge();
+    showPage('painel-gestor');
+  });
+}
+
+// ============================================================
+// PAINEL GESTOR
+// ============================================================
+function initPainelGestor(){
+  if(!isGestor()){
+    var cont = document.getElementById('gestor-lista-motoristas');
+    if(cont) cont.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Disponivel apenas para gestores com plano Empresa.</div>';
+    return;
+  }
+  var frota = window._frotaData || {};
+  var el = document.getElementById('gestor-nome-frota');
+  var elc = document.getElementById('gestor-codigo-convite');
+  if(el)  el.textContent  = frota.nome || '—';
+  if(elc) elc.textContent = frota.codigoConvite || '—';
+  atualizarPainelGestor();
+}
+
+function atualizarPainelGestor(){
+  var cont = document.getElementById('gestor-lista-motoristas');
+  if(cont) cont.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">Carregando motoristas...</div>';
+  window._fbListarMotoristas().then(function(lista){
+    window._motoristasFrota = lista;
+    var hoje2 = hoje();
+    var mesAtual = hoje2.slice(0,7);
+    var totalHoje = 0;
+    var totalMes  = 0;
+    lista.forEach(function(m){
+      var r = m.rotas || [];
+      totalHoje += r.filter(function(rt){ return rt.data === hoje2; }).length;
+      totalMes  += r.filter(function(rt){ return rt.data.slice(0,7) === mesAtual; }).reduce(function(s,rt){ return s + rt.total; }, 0);
+    });
+    var elH = document.getElementById('gestor-total-hoje');
+    var elM = document.getElementById('gestor-total-mot');
+    var elR = document.getElementById('gestor-total-mes');
+    if(elM) elM.textContent = lista.length;
+    if(elH) elH.textContent = totalHoje;
+    if(elR) elR.textContent = fmt(totalMes);
+    renderListaMotoristas(lista);
+  });
+}
+
+function renderListaMotoristas(lista){
+  var cont = document.getElementById('gestor-lista-motoristas');
+  if(!cont) return;
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">'
+      + '<div style="font-size:2rem;margin-bottom:8px;">🏍️</div>'
+      + '<div>Nenhum motorista ainda.</div>'
+      + '<div style="font-size:0.78rem;margin-top:8px;">Compartilhe o codigo de convite para adicionar motoristas.</div>'
+      + '</div>';
+    return;
+  }
+  var hoje2   = hoje();
+  var mesAtual = hoje2.slice(0,7);
+  var html = '';
+  lista.forEach(function(m){
+    var r = m.rotas || [];
+    var entregasHoje = r.filter(function(rt){ return rt.data === hoje2; }).length;
+    var ganhoMes     = r.filter(function(rt){ return rt.data.slice(0,7) === mesAtual; }).reduce(function(s,rt){ return s+rt.total; },0);
+    var kmMes        = r.filter(function(rt){ return rt.data.slice(0,7) === mesAtual; }).reduce(function(s,rt){ return s+(rt.km||0); },0);
+    var status = entregasHoje > 0 ? '🟢' : '🔴';
+    var statusTxt = entregasHoje > 0 ? (entregasHoje + ' entrega' + (entregasHoje>1?'s':'') + ' hoje') : 'Sem entrega hoje';
+    html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
+      + '<div>'
+      + '<div style="font-weight:600;font-size:0.9rem;">' + (m.email || 'Motorista') + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + status + ' ' + statusTxt + '</div>'
+      + '</div>'
+      + '<button onclick="confirmarRemoverMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:4px;" title="Remover">🗑️</button>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--green);font-family:\'Rajdhani\',sans-serif;">' + fmt(ganhoMes) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Mês</div>'
+      + '</div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--blue);font-family:\'Rajdhani\',sans-serif;">' + r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).length + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Entregas</div>'
+      + '</div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;font-family:\'Rajdhani\',sans-serif;">' + kmMes.toFixed(0) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">KM</div>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+  });
+  cont.innerHTML = html;
+}
+
+function confirmarRemoverMotorista(uid, email){
+  confirmar('Remover ' + email + ' da frota?').then(function(ok){
+    if(!ok) return;
+    window._fbRemoverMotorista(uid).then(function(){
+      showToast('Motorista removido.', 'success');
+      atualizarPainelGestor();
+    });
+  });
+}
+
+function copiarCodigoConvite(){
+  var frota = window._frotaData || {};
+  var cod = frota.codigoConvite || '';
+  if(!cod) return;
+  var msg = 'Entre na frota ' + (frota.nome||'') + ' no DriveCash!\nCodigo de convite: ' + cod + '\nApp: https://feeehfooonseca-bot.github.io/DriveCash';
+  if(navigator.share){
+    navigator.share({ title: 'DriveCash — Convite de Frota', text: msg }).catch(function(){});
+  } else {
+    navigator.clipboard.writeText(msg).then(function(){
+      showToast('Codigo copiado!', 'success');
+    }).catch(function(){
+      showToast(cod, 'success');
+    });
+  }
+}
+
+function exportarRelatorioFrota(){
+  var lista = window._motoristasFrota || [];
+  if(lista.length === 0){ showToast('Carregue os dados primeiro.', 'warn'); return; }
+  var mesAtual = hoje().slice(0,7);
+  var linhas = ['Motorista,Entregas mes,Receita mes,KM mes'];
+  lista.forEach(function(m){
+    var r = m.rotas || [];
+    var ents = r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; });
+    var receita = ents.reduce(function(s,rt){ return s+rt.total; },0);
+    var km      = ents.reduce(function(s,rt){ return s+(rt.km||0); },0);
+    linhas.push((m.email||'') + ',' + ents.length + ',' + receita.toFixed(2) + ',' + km.toFixed(1));
+  });
+  var frota = window._frotaData || {};
+  var csv = linhas.join('\n');
+  var nome = 'frota_' + (frota.nome||'relatorio').replace(/\s+/g,'_') + '_' + mesAtual + '.csv';
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('Relatorio exportado!', 'success');
+}
+
+// ============================================================
+// FROTA MOTORISTA — entrar / sair
+// ============================================================
+function initFrotaMotorista(){
+  var sem = document.getElementById('frota-sem-vinculo');
+  var com = document.getElementById('frota-com-vinculo');
+  if(window._vinculoFrota && window._vinculoFrota.frotaId){
+    if(sem) sem.style.display = 'none';
+    if(com) com.style.display = 'block';
+    var elNome  = document.getElementById('frota-nome-vinculo');
+    var elGest  = document.getElementById('frota-gestor-email');
+    var elData  = document.getElementById('frota-entrada-em');
+    if(elNome) elNome.textContent = window._vinculoFrota.nomeFrota || '—';
+    if(elGest) elGest.textContent = 'Gestor: ' + (window._vinculoFrota.gestorEmail || '—');
+    if(elData && window._vinculoFrota.entradaEm){
+      var d = new Date(window._vinculoFrota.entradaEm);
+      elData.textContent = 'Desde ' + d.toLocaleDateString('pt-BR');
+    }
+  } else {
+    if(sem) sem.style.display = 'block';
+    if(com) com.style.display = 'none';
+  }
+}
+
+function entrarFrota(){
+  var input = document.getElementById('input-codigo-convite');
+  var codigo = input ? input.value.trim().toUpperCase() : '';
+  if(!codigo || codigo.length < 6){ showToast('Digite o codigo de convite.', 'error'); return; }
+  showToast('Verificando codigo...', 'info');
+  window._fbEntrarFrota(codigo).then(function(res){
+    if(!res.ok){ showToast('Erro: ' + res.msg, 'error'); return; }
+    showToast('Entrou na frota ' + res.nomeFrota + '!', 'success');
+    renderFrotaBadge();
+    initFrotaMotorista();
+  });
+}
+
+function confirmarSairFrota(){
+  confirmar('Sair da frota? Seus dados continuarao sendo seus, mas o gestor nao vai mais te ver.').then(function(ok){
+    if(!ok) return;
+    window._fbSairFrota().then(function(){
+      window._vinculoFrota = null;
+      showToast('Voce saiu da frota.', 'success');
+      renderFrotaBadge();
+      initFrotaMotorista();
+    });
+  });
+}
+
+// ============================================================
+// HOOK showPage — adiciona painel gestor, frota motorista, criar frota
+// ============================================================
+window.onShowPage('painel-gestor',   function(){ if(typeof initPainelGestor==='function') initPainelGestor(); });
+window.onShowPage('frota-motorista', function(){ if(typeof initFrotaMotorista==='function') initFrotaMotorista(); });
+window.onShowPage('criar-frota',     function(){ if(typeof initCriarFrota==='function') initCriarFrota(); });
+
+// ============================================================
+// MENU — item Criar Frota (só aparece p/ plano empresa sem frota)
+// ============================================================
+(function(){
+  // Injeta item de menu dinamicamente
+  var menu = document.querySelector('#drawer-menu .menu-section');
+  if(menu){
+    var btn = document.createElement('button');
+    btn.className = 'menu-item';
+    btn.id = 'menu-item-criar-frota';
+    btn.style.display = 'none';
+    btn.innerHTML = '➕ &nbsp;Criar Frota';
+    btn.onclick = function(){ showPage('criar-frota'); };
+    // Insere após o item painel-gestor
+    var ref = document.getElementById('menu-item-painel-gestor');
+    if(ref && ref.parentNode) ref.parentNode.insertBefore(btn, ref.nextSibling);
+    else menu.appendChild(btn);
+  }
+})();
+
+// ============================================================
+// BADGE FROTA NO DASHBOARD — injeta após o cabeçalho do dashboard
+// ============================================================
+(function(){
+  var badge = document.getElementById('frota-badge-dashboard');
+  if(!badge){
+    badge = document.createElement('div');
+    badge.id = 'frota-badge-dashboard';
+    badge.style.cssText = 'display:none;background:rgba(155,89,182,0.12);border:1px solid rgba(155,89,182,0.3);border-radius:20px;padding:4px 12px;margin-bottom:10px;justify-content:center;font-size:0.78rem;color:#9b59b6;font-weight:600;cursor:pointer;';
+    badge.onclick = function(){
+      if(isGestor()) showPage('painel-gestor');
+      else showPage('frota-motorista');
+    };
+    // Insere no topo do dashboard
+    var dash = document.getElementById('page-dashboard');
+    if(dash){
+      var card = dash.querySelector('.card');
+      if(card) card.insertBefore(badge, card.firstChild);
+    }
+  }
+})();
+</script>
+
+<script>
+// ============================================================
+// PLATAFORMAS — seleção, análise, exportação  (ES5)
+// ============================================================
+
+var PLATAFORMAS = [
+  { id: 'ifood',      nome: 'iFood',      icon: '🍔', cor: '#ea1d2c' },
+  { id: 'uber',       nome: 'Uber Eats',  icon: '🚗', cor: '#1e1e1e' },
+  { id: 'rappi',      nome: 'Rappi',      icon: '🛵', cor: '#ff441f' },
+  { id: 'pedidos10',  nome: 'Pedidos10',  icon: '🛍️', cor: '#f7931e' },
+  { id: 'james',      nome: 'James',      icon: '🟣', cor: '#6c3fc5' },
+  { id: 'loggi',      nome: 'Loggi',      icon: '📦', cor: '#00b4d8' },
+  { id: 'outros',     nome: 'Outros',     icon: '📱', cor: '#888888' }
+];
+
+function platNome(id){
+  for(var i=0;i<PLATAFORMAS.length;i++){
+    if(PLATAFORMAS[i].id===id) return PLATAFORMAS[i].nome;
+  }
+  return id || '';
+}
+function platIcon(id){
+  for(var i=0;i<PLATAFORMAS.length;i++){
+    if(PLATAFORMAS[i].id===id) return PLATAFORMAS[i].icon;
+  }
+  return '📱';
+}
+function platCor(id){
+  for(var i=0;i<PLATAFORMAS.length;i++){
+    if(PLATAFORMAS[i].id===id) return PLATAFORMAS[i].cor;
+  }
+  return '#888';
+}
+
+// Seleciona/deseleciona botão de plataforma no formulário
+function selecionarPlataforma(id){
+  var el = document.getElementById('r-plataforma');
+  var atual = el ? el.value : '';
+  // Toggle: clica na mesma = desmarca
+  var nova = (atual === id) ? '' : id;
+  if(el) el.value = nova;
+  document.querySelectorAll('.btn-plataforma').forEach(function(b){ b.classList.remove('sel'); });
+  if(nova){
+    var btn = document.getElementById('plat-' + nova);
+    if(btn) btn.classList.add('sel');
+  }
+}
+
+// ── Página de análise ────────────────────────────────────────
+function initPlataformasPage(){
+  var sel = document.getElementById('plat-mes-sel');
+  if(!sel) return;
+  sel.innerHTML = '';
+  // Monta lista de meses com dados
+  var mesesSet = {};
+  rotas.forEach(function(r){ mesesSet[r.data.slice(0,7)] = true; });
+  var meses = Object.keys(mesesSet).sort().reverse();
+  if(meses.length === 0) meses = [hoje().slice(0,7)];
+  meses.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m;
+    var d = new Date(m + '-01');
+    opt.textContent = d.toLocaleString('pt-BR',{month:'long',year:'numeric'});
+    sel.appendChild(opt);
+  });
+  renderPlataformasPage();
+}
+
+function renderPlataformasPage(){
+  var sel = document.getElementById('plat-mes-sel');
+  var mes = sel ? sel.value : hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mes; });
+
+  // Agrupa por plataforma
+  var grupos = {};
+  rotasMes.forEach(function(r){
+    var p = r.plataforma || 'sem_plataforma';
+    if(!grupos[p]) grupos[p] = { total: 0, entregas: 0, km: 0, gorjeta: 0, rotas: [] };
+    grupos[p].total    += r.total;
+    grupos[p].entregas += r.entregas ? r.entregas.length : 1;
+    grupos[p].km       += r.km || 0;
+    grupos[p].gorjeta  += r.gorjeta || 0;
+    grupos[p].rotas.push(r);
+  });
+
+  var totalGeral   = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+  var entregasTotal = rotasMes.reduce(function(s,r){ return s+(r.entregas?r.entregas.length:1); },0);
+  var semPlat = grupos['sem_plataforma'];
+  var comPlat = totalGeral - (semPlat ? semPlat.total : 0);
+
+  // Resumo geral
+  var resumo = document.getElementById('plat-resumo-geral');
+  if(resumo){
+    var pctPlat = totalGeral > 0 ? Math.round((comPlat/totalGeral)*100) : 0;
+    resumo.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;">'
+      + '<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;">'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.3rem;font-weight:700;color:var(--green);">' + fmt(totalGeral) + '</div>'
+      + '<div style="font-size:0.68rem;color:var(--muted);">Total mês</div></div>'
+      + '<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;">'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.3rem;font-weight:700;color:var(--blue);">' + entregasTotal + '</div>'
+      + '<div style="font-size:0.68rem;color:var(--muted);">Entregas</div></div>'
+      + '<div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;">'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.3rem;font-weight:700;color:var(--gold);">' + pctPlat + '%</div>'
+      + '<div style="font-size:0.68rem;color:var(--muted);">C/ plataforma</div></div>'
+      + '</div>';
+  }
+
+  // Cards por plataforma
+  var container = document.getElementById('plat-cards-container');
+  if(!container) return;
+
+  // Ordena plataformas por receita
+  var lista = [];
+  Object.keys(grupos).forEach(function(k){
+    if(k !== 'sem_plataforma') lista.push({ id: k, dados: grupos[k] });
+  });
+  lista.sort(function(a,b){ return b.dados.total - a.dados.total; });
+
+  if(lista.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">'
+      + '<div style="font-size:2rem;margin-bottom:8px;">📱</div>'
+      + 'Nenhuma entrega com plataforma registrada neste mês.<br>'
+      + '<span style="font-size:0.78rem;">Use o campo Plataforma ao salvar rotas.</span></div>';
+    return;
+  }
+
+  var html = '';
+
+  // Barra visual de distribuição
+  if(lista.length > 1 && totalGeral > 0){
+    html += '<div style="margin-bottom:16px;">'
+      + '<div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Distribuição de receita</div>'
+      + '<div style="display:flex;border-radius:8px;overflow:hidden;height:20px;">';
+    lista.forEach(function(item){
+      var pct = Math.round((item.dados.total / totalGeral) * 100);
+      if(pct < 1) pct = 1;
+      var cor = platCor(item.id);
+      html += '<div style="flex:' + pct + ';background:' + cor + ';opacity:0.85;" title="' + platNome(item.id) + ' ' + pct + '%"></div>';
+    });
+    html += '</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">';
+    lista.forEach(function(item){
+      var pct = Math.round((item.dados.total / totalGeral) * 100);
+      html += '<span style="font-size:0.7rem;color:var(--muted);">'
+        + '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + platCor(item.id) + ';margin-right:4px;"></span>'
+        + platIcon(item.id) + ' ' + platNome(item.id) + ' ' + pct + '%</span>';
+    });
+    html += '</div></div>';
+  }
+
+  // Card de cada plataforma
+  lista.forEach(function(item){
+    var d = item.dados;
+    var pct = totalGeral > 0 ? Math.round((d.total/totalGeral)*100) : 0;
+    var tmed = d.entregas > 0 ? d.total / d.entregas : 0;
+    var rpm  = d.km > 0 ? d.total / d.km : 0;
+    var cor  = platCor(item.id);
+
+    html += '<div style="border:1px solid var(--border);border-left:3px solid ' + cor + ';border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;">'
+      + '<span style="font-size:1.4rem;">' + platIcon(item.id) + '</span>'
+      + '<div>'
+      + '<div style="font-weight:700;font-size:0.95rem;">' + platNome(item.id) + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);">' + d.entregas + ' entrega' + (d.entregas!==1?'s':'') + ' · ' + pct + '% do mês</div>'
+      + '</div></div>'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.4rem;font-weight:700;color:var(--green);">' + fmt(d.total) + '</div>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'
+      + '<div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:0.9rem;font-weight:700;color:var(--blue);">' + fmt(tmed) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Média/entrega</div>'
+      + '</div>'
+      + '<div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:0.9rem;font-weight:700;">' + (rpm > 0 ? 'R$' + rpm.toFixed(2) + '/km' : '—') + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">R$/KM</div>'
+      + '</div>'
+      + '<div style="background:var(--bg);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:0.9rem;font-weight:700;color:var(--gold);">' + (d.gorjeta > 0 ? fmt(d.gorjeta) : '—') + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Gorjetas</div>'
+      + '</div>'
+      + '</div></div>';
+  });
+
+  // Sem plataforma
+  if(semPlat && semPlat.total > 0){
+    html += '<div style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px;opacity:0.7;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+      + '<div style="font-size:0.85rem;color:var(--muted);">⬜ Sem plataforma</div>'
+      + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.1rem;font-weight:700;color:var(--muted);">' + fmt(semPlat.total) + '</div>'
+      + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">' + semPlat.entregas + ' entrega' + (semPlat.entregas!==1?'s':'') + ' sem plataforma definida</div>'
+      + '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+// ── Exportar CSV por plataforma ──────────────────────────────
+function exportarCSVPlataformas(){
+  var sel = document.getElementById('plat-mes-sel');
+  var mes = sel ? sel.value : hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7) === mes; });
+  if(rotasMes.length === 0){ showToast('Sem dados para exportar.', 'warn'); return; }
+
+  var linhas = ['Data,Empresa,Plataforma,Valor,KM,Gorjeta,Entregas'];
+  rotasMes.forEach(function(r){
+    linhas.push([
+      r.data,
+      (r.empNome||'').replace(/,/g,' '),
+      platNome(r.plataforma||''),
+      (r.total||0).toFixed(2),
+      (r.km||0).toFixed(1),
+      (r.gorjeta||0).toFixed(2),
+      r.entregas ? r.entregas.length : 1
+    ].join(','));
+  });
+
+  var csv  = linhas.join('\n');
+  var nome = 'plataformas_' + mes + '.csv';
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('CSV exportado!', 'success');
+}
+
+window.onShowPage('plataformas', function(){ if(typeof initPlataformasPage==='function') initPlataformasPage(); });
+
+// ── Card no dashboard (Top plataforma do mês) ────────────────
+function renderCardPlataformasDash(){
+  var el = document.getElementById('dash-card-plataformas');
+  if(!el) return;
+  var mes = hoje().slice(0,7);
+  var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7)===mes && r.plataforma; });
+  if(rotasMes.length === 0){ el.style.display='none'; return; }
+
+  var grupos = {};
+  rotasMes.forEach(function(r){
+    var p = r.plataforma;
+    grupos[p] = (grupos[p]||0) + r.total;
+  });
+  var top = null; var topVal = 0;
+  Object.keys(grupos).forEach(function(k){ if(grupos[k]>topVal){ topVal=grupos[k]; top=k; } });
+
+  el.style.display = 'block';
+  el.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="showPage(\'plataformas\')">'
+    + '<div>'
+    + '<div style="font-size:0.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Top plataforma</div>'
+    + '<div style="font-size:0.9rem;font-weight:700;margin-top:2px;">' + platIcon(top) + ' ' + platNome(top) + '</div>'
+    + '<div style="font-size:0.75rem;color:var(--green);">' + fmt(topVal) + ' este mês</div>'
+    + '</div>'
+    + '<span style="color:var(--muted);font-size:1.1rem;">›</span>'
+    + '</div>';
+}
+</script>
+
+<script>
+// ============================================================
+// ONBOARDING — fluxo de boas-vindas  (ES5 - sem backticks)
+// ============================================================
+
+var _obTelaAtual = 0;
+var _obTotalTelas = 4;
+
+var OB_TEXTOS_BTN = ['Começar →', 'Salvar e continuar →', 'Entendi →', '🚀 Ir para o app'];
+var OB_TEXTOS_PULAR = ['Pular configuração', 'Pular por agora', '', ''];
+
+function verificarOnboarding(){
+  var concluido = localStorage.getItem('dc_onboarding_ok');
+  if(!concluido){
+    obAbrir();
+  }
+}
+
+function obAbrir(){
+  _obTelaAtual = 0;
+  obIrParaTela(0);
+  document.getElementById('onboarding-overlay').classList.add('ativo');
+  // Fecha menu se estiver aberto
+  var menu = document.getElementById('drawer-menu');
+  if(menu) menu.classList.remove('open');
+}
+
+function obReiniciar(){
+  obAbrir();
+  // Fecha menu
+  var menu = document.getElementById('drawer-menu');
+  if(menu) menu.classList.remove('open');
+  var overlay = document.getElementById('menu-overlay');
+  if(overlay) overlay.style.display = 'none';
+}
+
+function obFechar(){
+  document.getElementById('onboarding-overlay').classList.remove('ativo');
+  localStorage.setItem('dc_onboarding_ok', '1');
+}
+
+function obIrParaTela(n){
+  // Esconde todas as telas
+  for(var i = 0; i < _obTotalTelas; i++){
+    var t = document.getElementById('ob-tela-' + i);
+    var d = document.getElementById('ob-dot-' + i);
+    if(t) t.classList.remove('ativo');
+    if(d){ d.classList.remove('ativo','feito'); if(i < n) d.classList.add('feito'); }
+  }
+  // Mostra tela atual
+  var tela = document.getElementById('ob-tela-' + n);
+  var dot  = document.getElementById('ob-dot-' + n);
+  if(tela) tela.classList.add('ativo');
+  if(dot)  dot.classList.add('ativo');
+
+  // Atualiza botões
+  var btnAv   = document.getElementById('ob-btn-avancar');
+  var btnPular = document.getElementById('ob-btn-pular');
+  if(btnAv)    btnAv.textContent    = OB_TEXTOS_BTN[n]   || 'Avançar →';
+  if(btnPular){ 
+    btnPular.textContent = OB_TEXTOS_PULAR[n] || '';
+    btnPular.style.visibility = OB_TEXTOS_PULAR[n] ? 'visible' : 'hidden';
+  }
+
+  // Na última tela esconde o pular
+  if(n === _obTotalTelas - 1 && btnPular) btnPular.style.visibility = 'hidden';
+
+  _obTelaAtual = n;
+}
+
+function obAvancar(){
+  if(_obTelaAtual === 1){
+    // Tela 1: salva empresa se preenchida
+    obSalvarEmpresa();
+    return;
+  }
+  if(_obTelaAtual === _obTotalTelas - 1){
+    // Última tela: fecha
+    obFechar();
+    return;
+  }
+  obIrParaTela(_obTelaAtual + 1);
+}
+
+function obPular(){
+  // Pular a tela de empresa: vai direto para tela 2
+  if(_obTelaAtual === 1){
+    obIrParaTela(2);
+    return;
+  }
+  obFechar();
+}
+
+function obSalvarEmpresa(){
+  var nomeEl = document.getElementById('ob-emp-nome');
+  var vkmEl  = document.getElementById('ob-emp-vkm');
+  var telEl  = document.getElementById('ob-emp-tel');
+
+  var nome = nomeEl ? nomeEl.value.trim() : '';
+  if(!nome){
+    // Campo vazio: destaca e avisa
+    if(nomeEl){
+      nomeEl.style.borderColor = 'var(--red)';
+      nomeEl.focus();
+      setTimeout(function(){ nomeEl.style.borderColor = 'var(--border)'; }, 2000);
+    }
+    showToast('Digite o nome da empresa para continuar.', 'error');
+    return;
+  }
+
+  var vkm = parseFloat((vkmEl ? vkmEl.value : '0').replace(',','.')) || 0;
+  var tel  = telEl ? telEl.value.trim() : '';
+
+  // Verifica se já existe
+  var jaExiste = false;
+  for(var i=0;i<empresas.length;i++){
+    if(empresas[i].nome.toLowerCase() === nome.toLowerCase()){ jaExiste = true; break; }
+  }
+
+  if(!jaExiste){
+    var novaEmp = {
+      id:       Date.now(),
+      nome:     nome,
+      tel:      tel,
+      valorKm:  vkm,
+      bairros:  []
+    };
+    empresas.push(novaEmp);
+    save('dc_empresas', empresas);
+    if(typeof populateEmpresaSelects === 'function') populateEmpresaSelects();
+    showToast('Empresa "' + nome + '" cadastrada!', 'success');
+  }
+
+  obIrParaTela(2);
+}
+
+// Preenche nome da empresa sugerido pelo plataforma selecionada
+// (chamado quando usuário clica num btn-plataforma no onboarding)
+function obSugerirEmpresa(nome){
+  var el = document.getElementById('ob-emp-nome');
+  if(el && !el.value) el.value = nome;
+}
+</script>
+
+<script>
+// ============================================================
+// GESTÃO DE MOTOS E TIPO DE MOTOBOY  (ES5 - sem backticks)
+// ============================================================
+
+var _frotaTabAtual = 'motoristas';
+var _cfgTipoAtual  = 'proprio';
+var _cfgComAtual   = 'percentual';
+var _motosList     = [];
+
+// ── Tabs do painel gestor ────────────────────────────────────
+function frotaTab(tab){
+  _frotaTabAtual = tab;
+  var tabs = ['motoristas','motos','comissoes'];
+  tabs.forEach(function(t){
+    var btn  = document.getElementById('ftab-' + t);
+    var body = document.getElementById('ftab-body-' + t);
+    if(btn)  btn.classList.toggle('ativo', t === tab);
+    if(body) body.style.display = t === tab ? 'block' : 'none';
+  });
+  if(tab === 'motos')     renderListaMotos();
+  if(tab === 'comissoes') initComissoesMes();
+}
+
+// ── MODAL: Adicionar moto ────────────────────────────────────
+function abrirModalMoto(motoId){
+  var modal = document.getElementById('modal-moto');
+  if(!modal) return;
+  // Limpa campos
+  document.getElementById('moto-edit-id').value  = motoId || '';
+  document.getElementById('moto-placa').value    = '';
+  document.getElementById('moto-modelo').value   = '';
+  document.getElementById('moto-ano').value      = '';
+  document.getElementById('moto-km-ini').value   = '';
+
+  // Preenche se editando
+  if(motoId){
+    var moto = _motosList.filter(function(m){ return m.id === motoId; })[0];
+    if(moto){
+      document.getElementById('moto-placa').value   = moto.placa  || '';
+      document.getElementById('moto-modelo').value  = moto.modelo || '';
+      document.getElementById('moto-ano').value     = moto.ano    || '';
+      document.getElementById('moto-km-ini').value  = moto.kmIni  || '';
+    }
+  }
+
+  // Popula select de motoristas
+  var sel = document.getElementById('moto-motorista-sel');
+  sel.innerHTML = '<option value="">— Livre (sem motorista) —</option>';
+  var lista = window._motoristasFrota || [];
+  lista.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m.uid;
+    opt.textContent = m.email || m.uid;
+    // Marca se essa moto já está vinculada a esse motorista
+    if(motoId && m.motoId === motoId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  modal.style.display = 'flex';
+}
+
+function fecharModalMoto(){
+  var modal = document.getElementById('modal-moto');
+  if(modal) modal.style.display = 'none';
+}
+
+function salvarMoto(){
+  var placa  = (document.getElementById('moto-placa').value  || '').trim().toUpperCase();
+  var modelo = (document.getElementById('moto-modelo').value || '').trim();
+  var ano    = parseInt(document.getElementById('moto-ano').value)    || 0;
+  var kmIni  = parseFloat(document.getElementById('moto-km-ini').value) || 0;
+  var motUid = document.getElementById('moto-motorista-sel').value;
+  var editId = document.getElementById('moto-edit-id').value;
+
+  if(!placa){ showToast('Informe a placa da moto.', 'error'); return; }
+
+  var motoData = {
+    id:        editId || (Date.now() + ''),
+    placa:     placa,
+    modelo:    modelo,
+    ano:       ano,
+    kmIni:     kmIni,
+    kmAcum:    0,
+    ativo:     true,
+    criadoEm:  new Date().toISOString()
+  };
+
+  showToast('Salvando...', 'info');
+  window._fbSalvarMoto(motoData).then(function(res){
+    if(!res.ok){ showToast('Erro ao salvar moto.', 'error'); return; }
+
+    // Vincula motorista à moto se selecionado
+    if(motUid){
+      var config = { motoId: motoData.id, motoPlaca: placa, motoModelo: modelo };
+      window._fbSalvarConfigMotorista(motUid, config);
+    }
+
+    fecharModalMoto();
+    showToast('Moto ' + placa + ' cadastrada!', 'success');
+    renderListaMotos();
+  });
+}
+
+// ── Renderiza lista de motos ─────────────────────────────────
+function renderListaMotos(){
+  var cont = document.getElementById('gestor-lista-motos');
+  if(!cont) return;
+  cont.innerHTML = '<div style="text-align:center;padding:16px;color:var(--muted);">Carregando...</div>';
+
+  window._fbListarMotos().then(function(motos){
+    _motosList = motos;
+    if(motos.length === 0){
+      cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">'
+        + '<div style="font-size:2rem;margin-bottom:8px;">🏍️</div>'
+        + '<div>Nenhuma moto cadastrada.</div>'
+        + '<div style="font-size:0.78rem;margin-top:6px;">Clique em "+ Adicionar moto" para cadastrar.</div>'
+        + '</div>';
+      return;
+    }
+
+    var lista = window._motoristasFrota || [];
+    var html = '';
+    motos.forEach(function(m){
+      // Verifica se tem motorista alocado
+      var motAloc = null;
+      lista.forEach(function(mot){ if(mot.motoId === m.id) motAloc = mot; });
+      var livre = !motAloc;
+
+      html += '<div class="moto-card">'
+        + '<div class="moto-card-header">'
+        + '<div>'
+        + '<div class="moto-placa">' + (m.placa||'—') + '</div>'
+        + '<div style="font-size:0.78rem;color:var(--muted);margin-top:2px;">' + (m.modelo||'—') + (m.ano?' · '+m.ano:'') + '</div>'
+        + '</div>'
+        + '<span class="moto-badge ' + (livre?'livre':'alocada') + '">' + (livre?'🟢 Livre':'🟡 Alocada') + '</span>'
+        + '</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;">'
+        + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+        + '<div style="font-size:0.9rem;font-weight:700;">' + (m.kmIni||0).toFixed(0) + '</div>'
+        + '<div style="font-size:0.65rem;color:var(--muted);">KM inicial</div>'
+        + '</div>'
+        + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+        + '<div style="font-size:0.9rem;font-weight:700;color:var(--blue);">' + (m.kmAcum||0).toFixed(0) + '</div>'
+        + '<div style="font-size:0.65rem;color:var(--muted);">KM rodados</div>'
+        + '</div>'
+        + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+        + '<div style="font-size:0.9rem;font-weight:700;color:var(--green);">' + ((m.kmIni||0)+(m.kmAcum||0)).toFixed(0) + '</div>'
+        + '<div style="font-size:0.65rem;color:var(--muted);">KM total</div>'
+        + '</div>'
+        + '</div>'
+        + (motAloc ? '<div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;">👤 ' + (motAloc.email||motAloc.uid) + '</div>' : '')
+        + '<div style="display:flex;gap:8px;">'
+        + '<button class="btn btn-secondary" style="flex:1;font-size:0.78rem;padding:7px;" onclick="abrirModalMoto(\'' + m.id + '\')">✏️ Editar</button>'
+        + '<button class="btn btn-secondary" style="flex:1;font-size:0.78rem;padding:7px;" onclick="abrirModalManutMoto(\'' + m.id + '\',\'' + (m.placa||'') + '\')">🔧 Manutenção</button>'
+        + '<button class="btn btn-secondary" style="font-size:0.78rem;padding:7px;color:var(--red);" onclick="removerMoto(\'' + m.id + '\',\'' + (m.placa||'') + '\')">🗑️</button>'
+        + '</div>'
+        + '</div>';
+    });
+    cont.innerHTML = html;
+  });
+}
+
+function removerMoto(id, placa){
+  confirmar('Remover moto ' + placa + '?').then(function(ok){
+    if(!ok) return;
+    window._fbRemoverMoto(id).then(function(){
+      showToast('Moto removida.', 'success');
+      renderListaMotos();
+    });
+  });
+}
+
+// ── MODAL: Config do motorista ───────────────────────────────
+function abrirModalConfigMotorista(uid, email){
+  var modal = document.getElementById('modal-config-motorista');
+  if(!modal) return;
+
+  document.getElementById('cfg-mot-uid').value = uid;
+  document.getElementById('cfg-mot-email').textContent = email || uid;
+  document.getElementById('cfg-comissao-valor').value = '';
+
+  // Busca config atual do motorista
+  var lista = window._motoristasFrota || [];
+  var mot = null;
+  lista.forEach(function(m){ if(m.uid === uid) mot = m; });
+
+  var tipo = (mot && mot.tipo) || 'proprio';
+  var comTipo = (mot && mot.comissaoTipo) || 'percentual';
+  var comVal  = (mot && mot.comissaoValor) || 0;
+  var motoId  = (mot && mot.motoId) || '';
+
+  setCfgTipo(tipo);
+  setCfgComissao(comTipo);
+  document.getElementById('cfg-comissao-valor').value = comVal || '';
+
+  // Popula select de motos
+  var sel = document.getElementById('cfg-moto-sel');
+  sel.innerHTML = '<option value="">— Moto própria do motorista —</option>';
+  _motosList.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = (m.placa||'—') + (m.modelo?' — '+m.modelo:'');
+    if(m.id === motoId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  modal.style.display = 'flex';
+}
+
+function fecharModalConfigMotorista(){
+  var modal = document.getElementById('modal-config-motorista');
+  if(modal) modal.style.display = 'none';
+}
+
+function setCfgTipo(tipo){
+  _cfgTipoAtual = tipo;
+  var bp = document.getElementById('cfg-tipo-proprio');
+  var bt = document.getElementById('cfg-tipo-terceirizado');
+  var desc = document.getElementById('cfg-tipo-desc');
+  if(bp) bp.className = 'btn ' + (tipo==='proprio' ? 'btn-gold' : 'btn-secondary');
+  if(bt) bt.className = 'btn ' + (tipo==='terceirizado' ? 'btn-gold' : 'btn-secondary');
+  if(desc) desc.textContent = tipo==='proprio'
+    ? 'Usa moto da empresa. Manutenção paga pela frota. Recebe comissão.'
+    : 'Usa moto própria. Responsável pela própria manutenção. Recebe por corrida.';
+}
+
+function setCfgComissao(tipo){
+  _cfgComAtual = tipo;
+  var bp = document.getElementById('cfg-com-pct');
+  var bf = document.getElementById('cfg-com-fixo');
+  var sf = document.getElementById('cfg-comissao-sufixo');
+  var inp = document.getElementById('cfg-comissao-valor');
+  if(bp) bp.className = 'btn ' + (tipo==='percentual' ? 'btn-gold' : 'btn-secondary');
+  if(bf) bf.className = 'btn ' + (tipo==='fixo' ? 'btn-gold' : 'btn-secondary');
+  if(sf) sf.textContent = tipo==='percentual' ? '%' : 'R$';
+  if(inp) inp.placeholder = tipo==='percentual' ? 'Ex: 70' : 'Ex: 8.00';
+}
+
+function salvarConfigMotorista(){
+  var uid    = document.getElementById('cfg-mot-uid').value;
+  var comVal = parseFloat(document.getElementById('cfg-comissao-valor').value) || 0;
+  var motoId = document.getElementById('cfg-moto-sel').value;
+
+  // Busca placa/modelo da moto selecionada
+  var motoPlaca = ''; var motoModelo = '';
+  _motosList.forEach(function(m){
+    if(m.id === motoId){ motoPlaca = m.placa||''; motoModelo = m.modelo||''; }
+  });
+
+  var config = {
+    uid:           uid,
+    tipo:          _cfgTipoAtual,
+    comissaoTipo:  _cfgComAtual,
+    comissaoValor: comVal,
+    motoId:        motoId,
+    motoPlaca:     motoPlaca,
+    motoModelo:    motoModelo,
+    atualizadoEm:  new Date().toISOString()
+  };
+
+  window._fbSalvarConfigMotorista(uid, config).then(function(){
+    // Atualiza KM acumulado na moto se tiver moto alocada
+    if(motoId){
+      var lista = window._motoristasFrota || [];
+      lista.forEach(function(m){
+        if(m.uid === uid){
+          var mes = hoje().slice(0,7);
+          var kmAcum = (m.rotas||[])
+            .filter(function(r){ return r.data.slice(0,7)===mes; })
+            .reduce(function(s,r){ return s+(r.km||0); },0);
+          window._fbSalvarMoto({ id:motoId, kmAcum:kmAcum });
+        }
+      });
+    }
+    fecharModalConfigMotorista();
+    showToast('Configuração salva!', 'success');
+    // Atualiza lista de motoristas com a nova config
+    atualizarPainelGestor();
+  });
+}
+
+// ── COMISSÕES: Painel do gestor ──────────────────────────────
+function initComissoesMes(){
+  var sel = document.getElementById('comissao-mes-sel');
+  if(!sel) return;
+  sel.innerHTML = '';
+  var mesesSet = {};
+  // Pega meses de todos os motoristas
+  (window._motoristasFrota||[]).forEach(function(m){
+    (m.rotas||[]).forEach(function(r){ mesesSet[r.data.slice(0,7)] = true; });
+  });
+  var meses = Object.keys(mesesSet).sort().reverse();
+  if(meses.length === 0) meses = [hoje().slice(0,7)];
+  meses.forEach(function(m){
+    var opt = document.createElement('option');
+    opt.value = m;
+    var d = new Date(m + '-01');
+    opt.textContent = d.toLocaleString('pt-BR',{month:'long',year:'numeric'});
+    sel.appendChild(opt);
+  });
+  renderComissoes();
+}
+
+function renderComissoes(){
+  var cont = document.getElementById('gestor-lista-comissoes');
+  if(!cont) return;
+  var sel = document.getElementById('comissao-mes-sel');
+  var mes = sel ? sel.value : hoje().slice(0,7);
+
+  var lista = window._motoristasFrota || [];
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">Nenhum motorista na frota.</div>';
+    return;
+  }
+
+  var html = '';
+  var totalComissoes = 0;
+
+  lista.forEach(function(m){
+    var rotasMes = (m.rotas||[]).filter(function(r){ return r.data.slice(0,7)===mes; });
+    var receita  = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+    var kmMes    = rotasMes.reduce(function(s,r){ return s+(r.km||0); },0);
+
+    var tipo       = m.tipo         || 'terceirizado';
+    var comTipo    = m.comissaoTipo  || 'percentual';
+    var comVal     = m.comissaoValor || 0;
+    var motoPlaca  = m.motoPlaca     || '';
+
+    var comissao = 0;
+    if(comTipo === 'percentual') comissao = receita * (comVal/100);
+    else comissao = rotasMes.length * comVal;
+
+    // Carrega pagamentos já feitos para esse motorista/mês
+    var chaveComPaga = 'dc_compag_' + m.uid + '_' + mes;
+    var pagosData = localStorage.getItem(chaveComPaga);
+    var pagosLista = pagosData ? JSON.parse(pagosData) : [];
+    var comissaoPaga = pagosLista.reduce(function(s, p){ return s + (p.valor||0); }, 0);
+
+    totalComissoes += comissao;
+
+    var tipoBadge = tipo === 'proprio'
+      ? '<span class="mot-tipo-badge proprio">🔵 Próprio</span>'
+      : '<span class="mot-tipo-badge terceirizado">🟠 Terceirizado</span>';
+
+    var comissaoDesc = comTipo==='percentual'
+      ? comVal + '% sobre receita'
+      : 'R$ ' + comVal.toFixed(2) + '/corrida';
+
+    html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">'
+      + '<div>'
+      + '<div style="font-weight:600;font-size:0.88rem;">' + (m.email||'Motorista') + '</div>'
+      + '<div style="margin-top:4px;">' + tipoBadge + '</div>'
+      + '</div>'
+      + '<button onclick="abrirModalConfigMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" '
+      + 'style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:0.72rem;cursor:pointer;padding:4px 8px;">⚙️ Editar</button>'
+      + '</div>'
+      + '<div class="comissao-row"><span>Receita no mês</span><span style="color:var(--green);font-weight:700;">' + fmt(receita) + '</span></div>'
+      + '<div class="comissao-row"><span>Corridas</span><span>' + rotasMes.length + '</span></div>'
+      + '<div class="comissao-row"><span>KM rodados</span><span>' + kmMes.toFixed(0) + ' km</span></div>'
+      + (motoPlaca ? '<div class="comissao-row"><span>Moto</span><span style="font-family:monospace;">' + motoPlaca + '</span></div>' : '')
+      + '<div class="comissao-row"><span>Modelo comissão</span><span style="color:var(--muted);">' + comissaoDesc + '</span></div>'
+      + '<div class="comissao-row"><span style="font-weight:700;">A pagar</span><span style="font-weight:700;font-size:1rem;color:var(--gold);">' + fmt(comissao) + '</span></div>'
+      + '<div class="comissao-row"><span>Total pago no mês</span><span style="color:var(--green);">' + fmt(comissaoPaga) + '</span></div>'
+      + '<div class="comissao-row"><span style="font-weight:700;color:var(--red);">Saldo devedor</span><span style="font-weight:700;font-size:1.05rem;color:var(--red);">' + fmt(Math.max(0, comissao - comissaoPaga)) + '</span></div>'
+      + (comissao > comissaoPaga ? '<button class="btn btn-gold" style="width:100%;margin-top:8px;font-size:0.82rem;padding:9px;" onclick="abrirModalBaixaComissao(\'' + m.uid + '\',\'' + (m.email||'') + '\',' + comissao + ',' + comissaoPaga + ')">💰 Registrar pagamento</button>' : '<div style="text-align:center;padding:8px;font-size:0.78rem;color:var(--green);">✅ Comissões em dia</div>')
+      + '</div>';
+  });
+
+  // Totalizador
+  html += '<div style="background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.3);border-radius:12px;padding:14px;margin-top:4px;">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+    + '<div style="font-weight:700;">Total a pagar no mês</div>'
+    + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:1.4rem;font-weight:700;color:var(--gold);">' + fmt(totalComissoes) + '</div>'
+    + '</div></div>';
+
+  cont.innerHTML = html;
+}
+
+// ── Atualiza renderListaMotoristas para mostrar botão config ──
+// Sobrescreve a função original adicionando botão ⚙️
+var _origRenderListaMotoristas = window.renderListaMotoristas || function(){};
+function renderListaMotoristas(lista){
+  var cont = document.getElementById('gestor-lista-motoristas');
+  if(!cont) return;
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">'
+      + '<div style="font-size:2rem;margin-bottom:8px;">🏍️</div>'
+      + '<div>Nenhum motorista ainda.</div>'
+      + '<div style="font-size:0.78rem;margin-top:8px;">Compartilhe o codigo de convite para adicionar motoristas.</div>'
+      + '</div>';
+    return;
+  }
+  var hoje2    = hoje();
+  var mesAtual = hoje2.slice(0,7);
+  var html = '';
+  lista.forEach(function(m){
+    var r = m.rotas || [];
+    var entregasHoje = r.filter(function(rt){ return rt.data === hoje2; }).length;
+    var ganhoMes     = r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).reduce(function(s,rt){ return s+rt.total; },0);
+    var kmMes        = r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).reduce(function(s,rt){ return s+(rt.km||0); },0);
+    var status     = entregasHoje > 0 ? '🟢' : '🔴';
+    var statusTxt  = entregasHoje > 0 ? (entregasHoje + ' entrega' + (entregasHoje>1?'s':'') + ' hoje') : 'Sem entrega hoje';
+    var tipo       = m.tipo || '';
+    var tipoBadge  = tipo === 'proprio'
+      ? '<span class="mot-tipo-badge proprio" style="margin-left:6px;">🔵 Próprio</span>'
+      : (tipo === 'terceirizado' ? '<span class="mot-tipo-badge terceirizado" style="margin-left:6px;">🟠 Terceirizado</span>' : '');
+    var motoInfo   = m.motoPlaca ? ' · 🏍️ ' + m.motoPlaca : '';
+
+    html += '<div class="moto-card">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
+      + '<div>'
+      + '<div style="font-weight:600;font-size:0.9rem;">' + (m.email||'Motorista') + tipoBadge + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + status + ' ' + statusTxt + motoInfo + '</div>'
+      + '</div>'
+      + '<div style="display:flex;gap:6px;">'
+      + '<button onclick="abrirModalConfigMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" '
+      + 'style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:0.72rem;cursor:pointer;padding:4px 8px;">⚙️</button>'
+      + '<button onclick="confirmarRemoverMotorista(\'' + m.uid + '\',\'' + (m.email||'') + '\')" '
+      + 'style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:4px;">🗑️</button>'
+      + '</div>'
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--green);font-family:\'Rajdhani\',sans-serif;">' + fmt(ganhoMes) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Mês</div></div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;color:var(--blue);font-family:\'Rajdhani\',sans-serif;">'
+      + r.filter(function(rt){ return rt.data.slice(0,7)===mesAtual; }).length + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">Entregas</div></div>'
+      + '<div style="background:var(--card);border-radius:8px;padding:8px;text-align:center;">'
+      + '<div style="font-size:1rem;font-weight:700;font-family:\'Rajdhani\',sans-serif;">' + kmMes.toFixed(0) + '</div>'
+      + '<div style="font-size:0.65rem;color:var(--muted);">KM</div></div>'
+      + '</div></div>';
+  });
+  cont.innerHTML = html;
+}
+
+// ── Card comissão na tela do motoboy ─────────────────────────
+function initFrotaMotoristaComissao(){
+  var card = document.getElementById('frota-config-card');
+  if(!card || !window._vinculoFrota) return;
+
+  window._fbCarregarConfigMotorista().then(function(cfg){
+    if(!cfg){ card.style.display='none'; return; }
+
+    card.style.display = 'block';
+    var elTipo = document.getElementById('frota-cfg-tipo');
+    var elCom  = document.getElementById('frota-cfg-comissao');
+    var elMoto = document.getElementById('frota-cfg-moto');
+    var elRec  = document.getElementById('frota-cfg-a-receber');
+    var elRecRow = document.getElementById('frota-cfg-a-receber-row');
+
+    if(elTipo) elTipo.innerHTML = cfg.tipo==='proprio'
+      ? '<span class="mot-tipo-badge proprio">🔵 Próprio</span>'
+      : '<span class="mot-tipo-badge terceirizado">🟠 Terceirizado</span>';
+
+    var comDesc = '—';
+    if(cfg.comissaoValor > 0){
+      comDesc = cfg.comissaoTipo==='percentual'
+        ? cfg.comissaoValor + '%'
+        : 'R$ ' + (cfg.comissaoValor||0).toFixed(2) + '/corrida';
+    }
+    if(elCom) elCom.textContent = comDesc;
+    if(elMoto) elMoto.textContent = cfg.motoPlaca
+      ? (cfg.motoPlaca + (cfg.motoModelo?' — '+cfg.motoModelo:''))
+      : 'Moto própria';
+
+    // Calcula a receber este mês
+    if(cfg.comissaoValor > 0){
+      var mes = hoje().slice(0,7);
+      var rotasMes = rotas.filter(function(r){ return r.data.slice(0,7)===mes; });
+      var receita  = rotasMes.reduce(function(s,r){ return s+r.total; },0);
+      var comissao = cfg.comissaoTipo==='percentual'
+        ? receita * (cfg.comissaoValor/100)
+        : rotasMes.length * cfg.comissaoValor;
+      if(elRec)    elRec.textContent = fmt(comissao);
+      if(elRecRow) elRecRow.style.display = 'flex';
+    }
+  });
+}
+
+// ── Hook initFrotaMotorista para chamar comissão ─────────────
+var _origInitFrotaMotorista = window.initFrotaMotorista || function(){};
+function initFrotaMotorista(){
+  _origInitFrotaMotorista();
+  setTimeout(function(){
+    if(typeof initFrotaMotoristaComissao==='function') initFrotaMotoristaComissao();
+  }, 400);
+}
+
+// ── Hook initPainelGestor para carregar motos + listener ─────
+var _origInitPainelGestor = window.initPainelGestor || function(){};
+function initPainelGestor(){
+  _origInitPainelGestor();
+  window._fbListarMotos().then(function(motos){ _motosList = motos; });
+  if(typeof window._fbIniciarListenerFrota === 'function') window._fbIniciarListenerFrota();
+}
+</script>
+
+<script>
+// ============================================================
+// PONTOS 2-5: MANUTENÇÃO, BAIXA COMISSÃO, NOTIF GESTOR (ES5)
+// ============================================================
+
+// ── MANUTENÇÃO: abrir modal ──────────────────────────────────
+function abrirModalManutMoto(motoId, placa){
+  var modal = document.getElementById('modal-manut-moto');
+  if(!modal) return;
+  document.getElementById('manut-moto-id').value = motoId;
+  document.getElementById('manut-moto-placa-label').textContent = '🏍️ ' + (placa||motoId);
+  document.getElementById('manut-data').value  = hoje();
+  document.getElementById('manut-custo').value = '';
+  document.getElementById('manut-km').value    = '';
+  document.getElementById('manut-obs').value   = '';
+  modal.style.display = 'flex';
+  renderHistoricoManut(motoId);
+}
+
+function fecharModalManutMoto(){
+  var modal = document.getElementById('modal-manut-moto');
+  if(modal) modal.style.display = 'none';
+}
+
+function renderHistoricoManut(motoId){
+  var cont = document.getElementById('manut-moto-historico');
+  if(!cont) return;
+  cont.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:0.8rem;">Carregando...</div>';
+  window._fbListarManutMoto(motoId).then(function(lista){
+    if(lista.length === 0){
+      cont.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:0.8rem;">Nenhuma manutenção registrada.</div>';
+      return;
+    }
+    var tipoLabel = { oleo:'🛢️ Troca de óleo', pneu:'🔘 Pneu', freio:'🔴 Freio',
+      corrente:'⛓️ Corrente', revisao:'🔩 Revisão geral', eletrica:'⚡ Elétrica', outro:'🔧 Outro' };
+    var html = '';
+    lista.forEach(function(m){
+      html += '<div class="manut-item">'
+        + '<div class="manut-icon-box" style="background:rgba(255,152,0,0.1);">🔧</div>'
+        + '<div style="flex:1;">'
+        + '<div style="font-size:0.85rem;font-weight:600;">' + (tipoLabel[m.tipo]||m.tipo||'—') + '</div>'
+        + '<div style="font-size:0.75rem;color:var(--muted);">' + (m.data||'—') + (m.km?' · '+m.km+' km':'') + '</div>'
+        + (m.obs ? '<div style="font-size:0.72rem;color:var(--muted);margin-top:2px;">' + m.obs + '</div>' : '')
+        + '</div>'
+        + '<div style="font-weight:700;color:var(--orange);font-size:0.9rem;">' + fmt(m.custo||0) + '</div>'
+        + '</div>';
+    });
+    cont.innerHTML = html;
+  });
+}
+
+function salvarManutMoto(){
+  var motoId = document.getElementById('manut-moto-id').value;
+  var tipo   = document.getElementById('manut-tipo').value;
+  var custo  = parseFloat(document.getElementById('manut-custo').value) || 0;
+  var data   = document.getElementById('manut-data').value || hoje();
+  var km     = parseInt(document.getElementById('manut-km').value)    || 0;
+  var obs    = (document.getElementById('manut-obs').value||'').trim();
+
+  if(custo <= 0){ showToast('Informe o custo da manutenção.', 'error'); return; }
+
+  var manut = { id: Date.now()+'', tipo:tipo, custo:custo, data:data, km:km, obs:obs, criadoEm:new Date().toISOString() };
+
+  showToast('Salvando...', 'info');
+  window._fbSalvarManutMoto(motoId, manut).then(function(res){
+    if(!res.ok){ showToast('Erro ao salvar.', 'error'); return; }
+    showToast('Manutenção registrada!', 'success');
+    document.getElementById('manut-custo').value = '';
+    document.getElementById('manut-km').value    = '';
+    document.getElementById('manut-obs').value   = '';
+    renderHistoricoManut(motoId);
+    renderListaMotos();
+  });
+}
+
+// ── BAIXA DE COMISSÃO: abrir modal ───────────────────────────
+function abrirModalBaixaComissao(uid, email, total, pago){
+  var modal = document.getElementById('modal-baixa-comissao');
+  if(!modal) return;
+  var mes = document.getElementById('comissao-mes-sel') ? document.getElementById('comissao-mes-sel').value : hoje().slice(0,7);
+  document.getElementById('baixa-com-uid').value = uid;
+  document.getElementById('baixa-com-mes').value = mes;
+  document.getElementById('baixa-com-email').textContent = email || uid;
+  var elTotal = document.getElementById('baixa-com-total');
+  var elSaldo = document.getElementById('baixa-com-saldo');
+  if(elTotal) elTotal.textContent = fmt(total||0);
+  if(elSaldo) elSaldo.textContent = fmt(Math.max(0,(total||0)-(pago||0)));
+  document.getElementById('baixa-com-valor').value = '';
+  document.getElementById('baixa-com-obs').value   = '';
+  renderHistoricoComPagos(uid, mes);
+  modal.style.display = 'flex';
+}
+
+function fecharModalBaixaComissao(){
+  var modal = document.getElementById('modal-baixa-comissao');
+  if(modal) modal.style.display = 'none';
+}
+
+function renderHistoricoComPagos(uid, mes){
+  var cont = document.getElementById('baixa-com-historico');
+  if(!cont) return;
+  var chave = 'dc_compag_' + uid + '_' + mes;
+  var pagosData = localStorage.getItem(chave);
+  var lista = pagosData ? JSON.parse(pagosData) : [];
+  if(lista.length === 0){ cont.innerHTML = ''; return; }
+  var html = '<div style="font-size:0.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Pagamentos registrados</div>';
+  lista.forEach(function(p){
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+      + '<div><div>' + (p.data||'—') + '</div>' + (p.obs ? '<div style="font-size:0.72rem;color:var(--muted);">' + p.obs + '</div>' : '') + '</div>'
+      + '<div style="font-weight:700;color:var(--green);">' + fmt(p.valor||0) + '</div>'
+      + '</div>';
+  });
+  cont.innerHTML = html;
+}
+
+function salvarBaixaComissao(){
+  var uid   = document.getElementById('baixa-com-uid').value;
+  var mes   = document.getElementById('baixa-com-mes').value;
+  var valor = parseFloat(document.getElementById('baixa-com-valor').value) || 0;
+  var obs   = (document.getElementById('baixa-com-obs').value||'').trim();
+
+  if(valor <= 0){ showToast('Informe o valor pago.', 'error'); return; }
+
+  var chave = 'dc_compag_' + uid + '_' + mes;
+  var pagosData = localStorage.getItem(chave);
+  var lista = pagosData ? JSON.parse(pagosData) : [];
+  lista.push({ id:Date.now()+'', valor:valor, data:hoje(), obs:obs });
+  localStorage.setItem(chave, JSON.stringify(lista));
+
+  // Sincroniza via save() para Firebase (dados do usuário)
+  if(typeof save === 'function') save(chave, lista);
+
+  // Também salva na subcoleção de frota para acesso do gestor
+  if(window._fbUser && typeof setDoc !== 'undefined'){
+    var docRef = doc(db, 'frotas', window._fbUser.uid, 'comissoes', uid + '_' + mes);
+    setDoc(docRef, { uid:uid, mes:mes, pagamentos:lista }, { merge:true }).catch(function(e){ console.warn('Erro salvar comissão', e); });
+  }
+
+  showToast('Pagamento registrado!', 'success');
+  fecharModalBaixaComissao();
+  renderComissoes();
+}
+
+// ── NOTIFICAÇÕES DO GESTOR ───────────────────────────────────
+function verificarNotificacoesGestor(lista){
+  if(!isGestor()) return;
+
+  var ultTs = localStorage.getItem('dc_notif_gestor_ts');
+  var now   = Date.now();
+  if(ultTs && (now - parseInt(ultTs)) < 4*60*60*1000) return;
+
+  var alertas = [];
+  var hoje2   = hoje();
+  var mesAtual = hoje2.slice(0,7);
+
+  // 1. Motoboy sem entrega por mais de 1 dia útil
+  lista.forEach(function(m){
+    var rotsM = (m.rotas||[]).filter(function(r){ return r.data.slice(0,7)===mesAtual; });
+    if(rotsM.length === 0) return;
+    var ultRota = rotsM.sort(function(a,b){ return b.data.localeCompare(a.data); })[0];
+    var diasSem = Math.floor((new Date() - new Date(ultRota.data)) / (1000*60*60*24));
+    if(diasSem >= 2){
+      alertas.push('🔴 ' + (m.email||'Motorista') + ' sem entrega ha ' + diasSem + ' dias.');
+    }
+  });
+
+  // 2. Comissões em atraso (mês anterior)
+  var mesAnt = new Date();
+  mesAnt.setMonth(mesAnt.getMonth() - 1);
+  var mesAntStr = mesAnt.getFullYear() + '-' + String(mesAnt.getMonth()+1).padStart(2,'0');
+  var temAtraso = false;
+  lista.forEach(function(m){
+    var comVal  = m.comissaoValor || 0;
+    if(comVal <= 0) return;
+    var rotasAnt = (m.rotas||[]).filter(function(r){ return r.data.slice(0,7)===mesAntStr; });
+    if(rotasAnt.length === 0) return;
+    var receita  = rotasAnt.reduce(function(s,r){ return s+r.total; },0);
+    var comissao = m.comissaoTipo==='percentual' ? receita*(comVal/100) : rotasAnt.length*comVal;
+    var chave    = 'dc_compag_' + m.uid + '_' + mesAntStr;
+    var pd = localStorage.getItem(chave);
+    var pago = pd ? JSON.parse(pd).reduce(function(s,p){ return s+(p.valor||0); },0) : 0;
+    if(comissao > pago + 1) temAtraso = true;
+  });
+  if(temAtraso) alertas.push('⚠️ Ha comissoes do mes anterior sem pagamento registrado.');
+
+  // 3. Moto com KM alto sem manutenção recente (>3000 km acumulados)
+  _motosList.forEach(function(m){
+    if((m.kmAcum||0) > 3000 && (m.custoManutTotal||0) === 0){
+      alertas.push('🔧 Moto ' + (m.placa||'—') + ' com ' + (m.kmAcum||0).toFixed(0) + ' km sem manutencao registrada.');
+    }
+  });
+
+  if(alertas.length === 0) return;
+  localStorage.setItem('dc_notif_gestor_ts', now + '');
+
+  var banner = document.getElementById('notif-banner');
+  if(!banner) return;
+  var itens = alertas.map(function(a){
+    return '<div style="padding:8px 0;border-bottom:1px solid rgba(255,152,0,0.2);font-size:0.8rem;">' + a + '</div>';
+  }).join('');
+  banner.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">'
+    + '<div style="font-weight:700;font-size:0.85rem;">⚡ Alertas da Frota</div>'
+    + '<button onclick="this.parentElement.parentElement.style.display=\'none\'" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;">✕</button>'
+    + '</div>' + itens;
+  banner.style.display = 'block';
+}
+
+// ── Hook verificarNotificacoes para também chamar gestor ─────
+var _origVerifNotif = window.verificarNotificacoes || function(){};
+function verificarNotificacoes(){
+  _origVerifNotif();
+  if(isGestor() && window._motoristasFrota){
+    verificarNotificacoesGestor(window._motoristasFrota);
+  }
+}
+</script>
+
+<script>
+// ============================================================
+// INDEXEDDB — camada de persistência (ES5, substitui localStorage)
+// ============================================================
+var _dcDB = null;
+var DC_SCHEMA_VERSION = 1;
+
+function _initDB(cb){
+  if(_dcDB){ cb(_dcDB); return; }
+  if(typeof Dexie === 'undefined'){
+    console.warn('Dexie nao disponivel, usando localStorage fallback');
+    cb(null); return;
+  }
+  var db = new Dexie('DriveCashDB');
+  db.version(DC_SCHEMA_VERSION).stores({
+    dados: 'chave'  // chave primária, valor livre
+  });
+  db.open().then(function(){
+    _dcDB = db;
+    cb(db);
+  }).catch(function(e){
+    console.warn('IndexedDB erro ao abrir:', e);
+    cb(null);
+  });
+}
+
+// save() com IndexedDB como primário, localStorage como fallback
+var _origSave = window.save || function(k,v){ localStorage.setItem(k, JSON.stringify(v)); };
+window.save = function(k, v){
+  // Sempre mantém localStorage sincronizado (fallback + Firebase sync)
+  _origSave(k, v);
+  // Também salva no IndexedDB de forma assíncrona
+  _initDB(function(db){
+    if(!db) return;
+    db.dados.put({ chave: k, valor: v, ts: Date.now() }).catch(function(e){
+      console.warn('IndexedDB write error', k, e);
+    });
+  });
+};
+
+// loadObj() tenta IndexedDB, cai para localStorage
+window.loadIDB = function(k, cb){
+  _initDB(function(db){
+    if(!db){ cb(null); return; }
+    db.dados.get(k).then(function(rec){
+      cb(rec ? rec.valor : null);
+    }).catch(function(){ cb(null); });
+  });
+};
+
+// ── Schema migration: detecta mudanças de estrutura ──────────
+window._dcRunMigrations = function(){
+  var currentSchema = parseInt(localStorage.getItem('dc_schema_v')||'0');
+  if(currentSchema >= DC_SCHEMA_VERSION) return;
+
+  console.log('DriveCash: rodando migration de schema', currentSchema, '->', DC_SCHEMA_VERSION);
+
+  // Migration 1: garante que todas as rotas têm campo 'id'
+  if(currentSchema < 1){
+    try{
+      var rotasRaw = localStorage.getItem('dc_rotas');
+      if(rotasRaw){
+        var rs = JSON.parse(rotasRaw);
+        var changed = false;
+        rs.forEach(function(r, i){
+          if(!r.id){ r.id = Date.now() + i; changed = true; }
+        });
+        if(changed) localStorage.setItem('dc_rotas', JSON.stringify(rs));
+      }
+    }catch(e){ console.warn('Migration 1 erro:', e); }
+  }
+
+  localStorage.setItem('dc_schema_v', DC_SCHEMA_VERSION + '');
+  console.log('DriveCash: migrations concluídas');
+};
+
+// ── Verificação de uso do localStorage ───────────────────────
+window._dcCheckStorageUsage = function(){
+  try{
+    var total = 0;
+    for(var k in localStorage){
+      if(localStorage.hasOwnProperty(k)) total += (localStorage[k]||'').length * 2;
+    }
+    var totalKB = Math.round(total / 1024);
+    var limitKB = 5000; // 5MB estimado
+    var pct = Math.round((totalKB / limitKB) * 100);
+    console.log('localStorage uso:', totalKB + 'KB (' + pct + '% de ~5MB)');
+    // Alerta se > 80%
+    if(pct > 80){
+      showToast('Atenção: armazenamento em ' + pct + '% da capacidade. Faça backup!', 'error');
+    }
+    return { totalKB: totalKB, pct: pct };
+  }catch(e){ return { totalKB: 0, pct: 0 }; }
+};
+
+// Roda migrations e verifica uso ao iniciar
+(function(){
+  if(typeof window._dcRunMigrations === 'function') window._dcRunMigrations();
+  setTimeout(function(){
+    if(typeof window._dcCheckStorageUsage === 'function') window._dcCheckStorageUsage();
+    _initDB(function(db){
+      if(db) console.log('DriveCash: IndexedDB ativo');
+    });
+  }, 3000);
+})();
+
+// ============================================================
+// VALIDAÇÃO INLINE — formulário de rota  (ES5)
+// ============================================================
+
+function validarCampoRota(id){
+  var el    = document.getElementById(id);
+  var hint  = document.getElementById('hint-' + id);
+  if(!el) return true;
+
+  var field = el.closest ? el.closest('.field') : el.parentElement;
+  var val   = el.value ? el.value.trim() : '';
+  var ok    = true;
+  var msg   = '';
+
+  if(id === 'r-empresa'){
+    if(!val){ ok = false; msg = 'Selecione uma empresa.'; }
+    else msg = '✓ Empresa selecionada';
+  }
+
+  if(field){
+    field.classList.toggle('field-error', !ok);
+    field.classList.toggle('field-ok',    ok && !!val);
+  }
+  if(hint){
+    hint.textContent = msg;
+    hint.className   = 'field-hint ' + (ok && val ? 'ok' : (!ok ? 'erro' : ''));
+  }
+  return ok;
+}
+
+function validarFormularioRota(){
+  var ok = true;
+  // Empresa obrigatória
+  if(!validarCampoRota('r-empresa')) ok = false;
+
+  // Verifica se tem pelo menos 1 slot com valor > 0
+  var slots = document.querySelectorAll('.entrega-slot');
+  var temValor = false;
+  for(var i = 0; i < slots.length; i++){
+    var n = slots[i].id.replace('slot-','');
+    var taxaEl = document.getElementById('slot-taxa-'+n) || document.getElementById('slot-taxa-v-'+n);
+    if(taxaEl && parseFloat(taxaEl.value||'0') > 0){ temValor = true; break; }
+  }
+  if(!temValor){
+    showToast('Informe o valor de pelo menos uma entrega.', 'error');
+    ok = false;
+  }
+  return ok;
+}
+
+function validarESalvarRota(){
+  if(!validarFormularioRota()) return;
+  if(typeof salvarRota === 'function') salvarRota();
+}
+
+// Limpa erros visuais ao limpar formulário
+var _origLimparTudo = window.limparTudo || function(){};
+window.limparTudo = function(){
+  _origLimparTudo();
+  document.querySelectorAll('.field-error,.field-ok').forEach(function(el){
+    el.classList.remove('field-error','field-ok');
+  });
+  document.querySelectorAll('.field-hint').forEach(function(el){
+    el.textContent = '';
+    el.className = 'field-hint';
+  });
+};
+</script>
+
+<script>
+// ============================================================
+// PROTEÇÃO TOTAL DE DADOS  (ES5 - sem backticks)
+// ============================================================
+
+var DC_CHAVES_CRITICAS = [
+  'dc_rotas','dc_empresas','dc_custos','dc_despesas',
+  'dc_pagamentos','dc_cfg','dc_km_dias',
+  'dc_notas_emitidas','dc_cfg_nota','dc_backup_info'
+];
+var DC_MAX_SNAPSHOTS = 5;
+var DC_SNAPSHOT_KEY  = 'dc_snapshots';
+var _snapshotInterval = null;
+
+// ── 1. SNAPSHOTS AUTOMÁTICOS ──────────────────────────────────
+function tirarSnapshot(silencioso){
+  try{
+    var dados = {};
+    DC_CHAVES_CRITICAS.forEach(function(k){
+      var v = localStorage.getItem(k);
+      if(v) dados[k] = v; // já serializado
+    });
+
+    // Inclui dc_compag_* (pagamentos de comissão)
+    for(var k in localStorage){
+      if(k.indexOf('dc_compag_') === 0) dados[k] = localStorage.getItem(k);
+    }
+
+    var snap = {
+      id:    Date.now(),
+      ts:    new Date().toISOString(),
+      dados: dados,
+      nRotas: rotas ? rotas.length : 0
+    };
+
+    var lista = _carregarSnapshots();
+    lista.unshift(snap);
+    if(lista.length > DC_MAX_SNAPSHOTS) lista = lista.slice(0, DC_MAX_SNAPSHOTS);
+    localStorage.setItem(DC_SNAPSHOT_KEY, JSON.stringify(lista));
+
+    if(!silencioso) showToast('Snapshot salvo (' + snap.nRotas + ' rotas).', 'success');
+
+    // Atualiza lista na tela se backup estiver aberta
+    if(typeof renderSnapshots === 'function') renderSnapshots();
+    return snap;
+  }catch(e){
+    console.warn('Erro ao tirar snapshot:', e);
+    return null;
+  }
+}
+
+function _carregarSnapshots(){
+  try{
+    return JSON.parse(localStorage.getItem(DC_SNAPSHOT_KEY)||'[]');
+  }catch(e){ return []; }
+}
+
+function tirarSnapshotManual(){
+  tirarSnapshot(false);
+}
+
+function iniciarSnapshotsAutomaticos(){
+  if(_snapshotInterval) return;
+  // Tira um snapshot imediatamente ao iniciar
+  setTimeout(function(){ tirarSnapshot(true); }, 5000);
+  // Depois a cada 30 minutos
+  _snapshotInterval = setInterval(function(){ tirarSnapshot(true); }, 30*60*1000);
+}
+
+function restaurarSnapshot(snapshotId){
+  var lista = _carregarSnapshots();
+  var snap  = null;
+  for(var i=0;i<lista.length;i++){ if(lista[i].id === snapshotId){ snap = lista[i]; break; } }
+  if(!snap){ showToast('Snapshot não encontrado.', 'error'); return; }
+
+  var nRotas = snap.nRotas || '?';
+  confirmar('Restaurar snapshot de ' + _formatarTs(snap.ts) + ' (' + nRotas + ' rotas)? Os dados atuais serão substituídos.').then(function(ok){
+    if(!ok) return;
+
+    // Tira snapshot dos dados atuais antes de restaurar (safety net)
+    tirarSnapshot(true);
+
+    // Restaura todos os dados
+    for(var chave in snap.dados){
+      localStorage.setItem(chave, snap.dados[chave]);
+    }
+
+    // Recarrega variáveis em memória
+    try{
+      window.rotas      = JSON.parse(localStorage.getItem('dc_rotas')||'[]');
+      rotas             = window.rotas;
+      window.empresas   = JSON.parse(localStorage.getItem('dc_empresas')||'[]');
+      empresas          = window.empresas;
+      window.despesas   = JSON.parse(localStorage.getItem('dc_despesas')||'[]');
+      despesas          = window.despesas;
+      window.pagamentos = JSON.parse(localStorage.getItem('dc_pagamentos')||'[]');
+      pagamentos        = window.pagamentos;
+    }catch(e){ console.warn('Erro recarregar após restauração', e); }
+
+    showToast('Snapshot restaurado com sucesso!', 'success');
+    if(typeof renderDashboard==='function') renderDashboard();
+    if(typeof renderFeed==='function') renderFeed();
+    if(typeof populateEmpresaSelects==='function') populateEmpresaSelects();
+    if(typeof renderSnapshots==='function') renderSnapshots();
+  });
+}
+
+function _formatarTs(iso){
+  try{
+    var d = new Date(iso);
+    return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){ return iso; }
+}
+
+function renderSnapshots(){
+  var cont = document.getElementById('snapshots-lista');
+  if(!cont) return;
+  var lista = _carregarSnapshots();
+  if(lista.length === 0){
+    cont.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:0.8rem;">Nenhum snapshot ainda.</div>';
+    return;
+  }
+  var html = '';
+  lista.forEach(function(snap, idx){
+    var label = idx === 0 ? ' <span style="font-size:0.65rem;background:rgba(0,255,136,.15);color:var(--green);border-radius:8px;padding:2px 6px;">mais recente</span>' : '';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">'
+      + '<div>'
+      + '<div style="font-size:0.82rem;font-weight:600;">' + _formatarTs(snap.ts) + label + '</div>'
+      + '<div style="font-size:0.7rem;color:var(--muted);">' + (snap.nRotas||0) + ' rotas · ' + Object.keys(snap.dados||{}).length + ' coleções</div>'
+      + '</div>'
+      + '<button onclick="restaurarSnapshot(' + snap.id + ')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--text);font-size:0.72rem;cursor:pointer;">↩️ Restaurar</button>'
+      + '</div>';
+  });
+  cont.innerHTML = html;
+}
+
+// ── 2. SYNC COMPLETO FORÇADO ──────────────────────────────────
+function forcarSyncCompleto(){
+  if(!window._fbUser || !window._fbSave){
+    showToast('Conecte-se para sincronizar.', 'error'); return;
+  }
+  showToast('Sincronizando todos os dados...', 'info');
+  var chaves = DC_CHAVES_CRITICAS.slice();
+
+  // Adiciona dc_compag_* dinamicamente
+  for(var k in localStorage){
+    if(k.indexOf('dc_compag_') === 0) chaves.push(k);
+  }
+
+  var count = 0;
+  chaves.forEach(function(k){
+    var raw = localStorage.getItem(k);
+    if(!raw) return;
+    try{
+      var v = JSON.parse(raw);
+      window._fbSave(k, v);
+      count++;
+    }catch(e){ console.warn('Sync erro para '+k, e); }
+  });
+
+  setTimeout(function(){
+    showToast(count + ' coleções sincronizadas com a nuvem.', 'success');
+    renderSyncStatus();
+  }, 2000);
+}
+
+// ── 3. STATUS DE SINCRONIZAÇÃO ────────────────────────────────
+function renderSyncStatus(){
+  var cont = document.getElementById('sync-status-lista');
+  if(!cont) return;
+
+  var online = navigator.onLine;
+  var logado = !!(window._fbUser);
+  var html = '';
+
+  html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+    + '<span>Conexão com internet</span>'
+    + '<span style="color:' + (online?'var(--green)':'var(--red)') + ';">' + (online?'✅ Online':'❌ Offline') + '</span></div>';
+
+  html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+    + '<span>Firebase Auth</span>'
+    + '<span style="color:' + (logado?'var(--green)':'var(--red)') + ';">' + (logado?'✅ Conectado':'❌ Desconectado') + '</span></div>';
+
+  var ultimoSnap = _carregarSnapshots()[0];
+  html += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+    + '<span>Último snapshot local</span>'
+    + '<span style="color:var(--muted);font-size:0.75rem;">' + (ultimoSnap?_formatarTs(ultimoSnap.ts):'Nunca') + '</span></div>';
+
+  // Verifica uso do storage
+  try{
+    var total = 0;
+    for(var k in localStorage){ if(localStorage.hasOwnProperty(k)) total += (localStorage[k]||'').length * 2; }
+    var kb = Math.round(total/1024);
+    var pct = Math.round((kb/5000)*100);
+    var cor = pct > 80 ? 'var(--red)' : pct > 50 ? 'var(--orange)' : 'var(--green)';
+    html += '<div style="display:flex;justify-content:space-between;padding:8px 0;font-size:0.82rem;">'
+      + '<span>Armazenamento local</span>'
+      + '<span style="color:' + cor + ';">' + kb + 'KB (' + pct + '%)</span></div>';
+  }catch(e){}
+
+  cont.innerHTML = html;
+}
+
+// ── 4. HOOK NA PÁGINA DE BACKUP ───────────────────────────────
+window.onShowPage('backup', function(){
+  renderSnapshots();
+  renderSyncStatus();
+});
+
+// ── 5. DETECÇÃO DE VOLTA ONLINE → sync automático ─────────────
+window.addEventListener('online', function(){
+  showToast('Conexão restaurada. Sincronizando...', 'info');
+  setTimeout(function(){
+    if(window._fbSave && window._fbUser) forcarSyncCompleto();
+  }, 1500);
+});
+
+window.addEventListener('offline', function(){
+  showToast('Sem conexão. Dados salvos localmente.', 'error');
+});
+
+// ── 6. INICIA SNAPSHOTS QUANDO USUÁRIO LOGAR ─────────────────
+var _origFbCarregar = window._fbCarregarDados;
+window._fbCarregarDados = async function(uid){
+  if(typeof _origFbCarregar === 'function') await _origFbCarregar(uid);
+  iniciarSnapshotsAutomaticos();
+};
+</script>
