@@ -2750,7 +2750,7 @@ window._fbCarregarDados = async function(uid){
     window.populateEmpresaSelects();
     window.renderDashboard();
     window.renderFeed();
-    window._appPronto = true; // libera o sistema de refresh em tempo real
+    window._appPronto = true;
     window._paginaAtual = 'dashboard';
     setTimeout(function(){
       if(typeof verificarNotificacoes==='function') verificarNotificacoes();
@@ -3101,22 +3101,9 @@ console.log('🔥 Firebase inicializado');
 // ============================================================
 const load    = k => JSON.parse(localStorage.getItem(k) || '[]');
 const loadObj = k => JSON.parse(localStorage.getItem(k) || 'null');
-const save    = function(k,v) {
-  if(v === null || v === undefined) return;
-  var serializado;
-  try{ serializado = JSON.stringify(v); }catch(e){ console.warn('save(): valor invalido para '+k, e); return; }
-  var anterior = localStorage.getItem(k);
-  if(anterior && anterior.length > 10 && serializado.length < 3){
-    console.warn('save(): bloqueado para evitar apagar dados de '+k+' (novo='+serializado+')');
-    return;
-  }
-  localStorage.setItem(k, serializado);
-  if(window._fbSave) window._fbSave(k, v);
-  // Só dispara refresh após app estar pronto (evita crash na inicialização)
-  if(window._appPronto && typeof _dcRefreshAuto === 'function') _dcRefreshAuto(k);
-};
 
-// ── ATUALIZAÇÃO EM TEMPO REAL ──────────────────────────────────
+// ── ATUALIZAÇÃO EM TEMPO REAL ─────────────────────────────────
+// Definidas ANTES de save() para evitar ReferenceError
 var _DC_REFRESH_MAP = {
   'dc_rotas':          ['dashboard','feed','historico','conquistas','desafios','lucro','comparador','calendario'],
   'dc_despesas':       ['dashboard','lucro'],
@@ -3127,6 +3114,7 @@ var _DC_REFRESH_MAP = {
 };
 var _dcRefreshTimer = null;
 function _dcRefreshAuto(chave){
+  if(!window._appPronto) return;
   var alvos = _DC_REFRESH_MAP[chave];
   if(!alvos) return;
   clearTimeout(_dcRefreshTimer);
@@ -3137,22 +3125,34 @@ function _dcRefresh(alvos){
   var p = window._paginaAtual || 'dashboard';
   alvos.forEach(function(alvo){
     try{
-      if(alvo==='dashboard'  && typeof renderDashboard==='function')      renderDashboard();
-      if(alvo==='feed'       && typeof renderFeed==='function')           renderFeed();
-      if(alvo==='conquistas' && typeof renderConquistasDash==='function') renderConquistasDash();
-      if(alvo==='historico'  && p==='historico'  && typeof renderHistorico==='function')      renderHistorico();
-      if(alvo==='financeiro' && p==='financeiro' && typeof renderFinanceiro==='function')     renderFinanceiro();
-      if(alvo==='conquistas' && p==='conquistas' && typeof renderConquistas==='function')     renderConquistas();
-      if(alvo==='desafios'   && p==='desafios'   && typeof renderDesafios==='function')       renderDesafios();
-      if(alvo==='lucro'      && p==='lucro-liquido'            && typeof renderLucroLiquido==='function')  renderLucroLiquido();
-      if(alvo==='comparador' && p==='comparador-plataformas'   && typeof renderComparador==='function')   renderComparador();
-      if(alvo==='calendario' && p==='calendario-ganhos'        && typeof renderCalendario==='function')   renderCalendario();
-      if(alvo==='nota-hist'  && p==='nota-servico'             && typeof renderNotaHistorico==='function') renderNotaHistorico();
+      if(alvo==='dashboard'  && typeof renderDashboard==='function')       renderDashboard();
+      if(alvo==='feed'       && typeof renderFeed==='function')            renderFeed();
+      if(alvo==='conquistas' && typeof renderConquistasDash==='function')  renderConquistasDash();
+      if(alvo==='historico'  && p==='historico'  && typeof renderHistorico==='function')    renderHistorico();
+      if(alvo==='financeiro' && p==='financeiro' && typeof renderFinanceiro==='function')   renderFinanceiro();
+      if(alvo==='conquistas' && p==='conquistas' && typeof renderConquistas==='function')   renderConquistas();
+      if(alvo==='desafios'   && p==='desafios'   && typeof renderDesafios==='function')     renderDesafios();
+      if(alvo==='lucro'      && p==='lucro-liquido'          && typeof renderLucroLiquido==='function')  renderLucroLiquido();
+      if(alvo==='comparador' && p==='comparador-plataformas' && typeof renderComparador==='function')    renderComparador();
+      if(alvo==='calendario' && p==='calendario-ganhos'      && typeof renderCalendario==='function')    renderCalendario();
+      if(alvo==='nota-hist'  && p==='nota-servico'           && typeof renderNotaHistorico==='function') renderNotaHistorico();
     }catch(e){ console.warn('_dcRefresh erro:', alvo, e); }
   });
 }
 
-
+const save = function(k,v) {
+  if(v === null || v === undefined) return;
+  var serializado;
+  try{ serializado = JSON.stringify(v); }catch(e){ console.warn('save(): valor invalido para '+k, e); return; }
+  var anterior = localStorage.getItem(k);
+  if(anterior && anterior.length > 10 && serializado.length < 3){
+    console.warn('save(): bloqueado para evitar apagar dados de '+k+' (novo='+serializado+')');
+    return;
+  }
+  localStorage.setItem(k, serializado);
+  if(window._fbSave) window._fbSave(k, v);
+  _dcRefreshAuto(k);
+};
 
 let rotas    = load('dc_rotas');
 let empresas = load('dc_empresas');
@@ -7523,4 +7523,6 @@ function renderGraficos(){
     const ctx2=document.getElementById('grafico-canvas').getContext('2d');
     const colors=['#ff4444','#ff9800','#ffd700','#58a6ff','#b06ee0','#00ff88','#00cfff','#ff6b9d'];
     chartInstance=new Chart(ctx2,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors.slice(0,labels.length),borderColor:'#161b22',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw)}`}}}}});
-    document.getElementById('grafico-legenda').innerHTML=labels.map((l,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;margin:3px 6px 3px 0;font-size:0.75rem;"><span style="width:10px;height:10px;border-radius:50%;backgro
+    document.getElementById('grafico-legenda').innerHTML=labels.map((l,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;margin:3px 6px 3px 0;font-size:0.75rem;"><span style="width:10px;height:10px;border-radius:50%;background:${colors[i]||'#aaa'};display:inline-block;"></span>${l}: ${fmt(data[i])}</span>`).join('');
+
+    const cats
