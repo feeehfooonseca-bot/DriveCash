@@ -666,6 +666,16 @@ select option{background:var(--card);}
 .field-hint.ok{ color:var(--green);display:block; }
 .field-ok input, .field-ok select{ border-color:var(--green) !important; }
 
+
+/* SELECAO EM LOTE - HISTORICO */
+.hist-check{width:18px;height:18px;flex-shrink:0;cursor:pointer;accent-color:var(--green);margin-right:8px;}
+.hist-bulkbar{position:sticky;top:0;z-index:50;display:none;background:var(--card2);border:1px solid var(--green);border-radius:10px;padding:10px 12px;margin-bottom:10px;align-items:center;justify-content:space-between;gap:8px;}
+.hist-bulkbar.show{display:flex;}
+.hist-bulkbar-count{font-size:0.82rem;font-weight:700;color:var(--green);}
+.btn-excluir-tudo{background:rgba(255,68,68,0.1);border:1px solid var(--red);color:var(--red);border-radius:6px;padding:4px 9px;font-size:0.68rem;cursor:pointer;flex-shrink:0;white-space:nowrap;}
+.btn-excluir-tudo:hover{background:rgba(255,68,68,0.2);}
+.hist3-rota-header,.hist3-emp-header,.hist3-dia-header{display:flex;align-items:center;}
+
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/3.2.4/dexie.min.js"></script>
 </head>
@@ -1032,6 +1042,14 @@ select option{background:var(--card);}
       <button class="inner-tab active" id="ftab-todos" onclick="setFiltroTipo('')">📋 Todos</button>
       <button class="inner-tab" id="ftab-rota" onclick="setFiltroTipo('rota')">🚗 Rotas</button>
       <button class="inner-tab" id="ftab-despesa" onclick="setFiltroTipo('despesa')">💸 Despesas</button>
+    </div>
+    <div class="hist-bulkbar" id="hist-bulkbar">
+      <span class="hist-bulkbar-count" id="hist-bulkbar-count">0 selecionado(s)</span>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-secondary" style="font-size:0.72rem;padding:5px 10px;" onclick="hSelTudo()">Selecionar tudo</button>
+        <button class="btn btn-danger" style="font-size:0.72rem;padding:5px 10px;" onclick="hExcluirSelecionados()">🗑️ Excluir selecionados</button>
+        <button class="btn btn-secondary" style="font-size:0.72rem;padding:5px 10px;" onclick="hLimparSelecao()">✕</button>
+      </div>
     </div>
     <div id="historico-lista"></div>
   </div>
@@ -4420,6 +4438,106 @@ async function deletarDespesa(id){
 // ============================================================
 // HISTÓRICO — renderHistorico() 3 níveis
 // ============================================================
+// ── SELECAO EM LOTE NO HISTORICO ─────────────────────────────
+var hSelecionados = { rota: [], despesa: [] };
+
+function hToggleSel(checkbox){
+  var tipo = checkbox.getAttribute('data-tipo');
+  var id   = Number(checkbox.getAttribute('data-id'));
+  var arr  = hSelecionados[tipo];
+  var idx  = arr.indexOf(id);
+  if(checkbox.checked){
+    if(idx<0) arr.push(id);
+  } else {
+    if(idx>=0) arr.splice(idx,1);
+  }
+  hAtualizarBarra();
+}
+
+function hAtualizarBarra(){
+  var total = hSelecionados.rota.length + hSelecionados.despesa.length;
+  var bar = document.getElementById('hist-bulkbar');
+  var cnt = document.getElementById('hist-bulkbar-count');
+  if(!bar || !cnt) return;
+  if(total > 0){
+    bar.classList.add('show');
+    cnt.textContent = total + ' selecionado(s)';
+  } else {
+    bar.classList.remove('show');
+  }
+}
+
+function hSelTudo(){
+  var checks = document.querySelectorAll('#historico-lista .hist-check');
+  checks.forEach(function(cb){
+    cb.checked = true;
+    var tipo = cb.getAttribute('data-tipo');
+    var id   = Number(cb.getAttribute('data-id'));
+    if(hSelecionados[tipo].indexOf(id)<0) hSelecionados[tipo].push(id);
+  });
+  hAtualizarBarra();
+}
+
+function hLimparSelecao(){
+  hSelecionados = { rota: [], despesa: [] };
+  document.querySelectorAll('#historico-lista .hist-check').forEach(function(cb){ cb.checked=false; });
+  hAtualizarBarra();
+}
+
+async function hExcluirSelecionados(){
+  var totalRotas = hSelecionados.rota.length;
+  var totalDesp  = hSelecionados.despesa.length;
+  var total = totalRotas + totalDesp;
+  if(total===0) return;
+  var msg = 'Excluir ' + total + ' item(ns) selecionado(s)?';
+  if(totalRotas>0 && totalDesp>0) msg = 'Excluir ' + totalRotas + ' rota(s) e ' + totalDesp + ' despesa(s)?';
+  else if(totalRotas>0) msg = 'Excluir ' + totalRotas + ' rota(s)?';
+  else msg = 'Excluir ' + totalDesp + ' despesa(s)?';
+
+  if(!await confirmar(msg)) return;
+
+  if(totalRotas>0){
+    var idsR = hSelecionados.rota;
+    rotas = rotas.filter(function(r){ return idsR.indexOf(r.id)<0; });
+    save('dc_rotas', rotas);
+  }
+  if(totalDesp>0){
+    var idsD = hSelecionados.despesa;
+    despesas = despesas.filter(function(d){ return idsD.indexOf(d.id)<0; });
+    save('dc_despesas', despesas);
+  }
+  hSelecionados = { rota: [], despesa: [] };
+  renderHistorico();
+  renderDashboard();
+}
+
+// Excluir todas as rotas de uma empresa (dentro do dia exibido)
+async function hExcluirGrupo(idsRotas, nomeEmp){
+  if(!idsRotas || idsRotas.length===0) return;
+  if(!await confirmar('Excluir TODAS as ' + idsRotas.length + ' rota(s) de "' + nomeEmp + '"?')) return;
+  rotas = rotas.filter(function(r){ return idsRotas.indexOf(r.id)<0; });
+  save('dc_rotas', rotas);
+  renderHistorico();
+  renderDashboard();
+}
+
+// Excluir todas as rotas e despesas de um dia
+async function hExcluirDia(idsRotas, idsDesp, dataLabel){
+  var total = (idsRotas?idsRotas.length:0) + (idsDesp?idsDesp.length:0);
+  if(total===0) return;
+  if(!await confirmar('Excluir TODOS os ' + total + ' registro(s) do dia ' + formatData(dataLabel) + '?')) return;
+  if(idsRotas && idsRotas.length>0){
+    rotas = rotas.filter(function(r){ return idsRotas.indexOf(r.id)<0; });
+    save('dc_rotas', rotas);
+  }
+  if(idsDesp && idsDesp.length>0){
+    despesas = despesas.filter(function(d){ return idsDesp.indexOf(d.id)<0; });
+    save('dc_despesas', despesas);
+  }
+  renderHistorico();
+  renderDashboard();
+}
+
 function renderHistorico(){
   const filtMes  = document.getElementById('filtro-mes-hist')?.value || '';
   const filtEmp  = document.getElementById('filtro-empresa')?.value || '';
@@ -4534,14 +4652,17 @@ function renderHistorico(){
         `).join('') : `<div style="font-size:0.75rem;color:var(--muted);padding:6px 0;text-align:center;">🔒 Detalhes disponíveis no plano Pro</div>`;
 
         return `<div class="hist3-rota">
-          <div class="hist3-rota-header" onclick="toggleH3('${rotaId}')">
-            <div class="hist3-rota-info">
-              <div class="hist3-rota-bairros">${bairros}</div>
-              <div class="hist3-rota-meta">${r.tipo==='urbano'?'🏙️':'🛣️'} ${r.tipo}${totalEntregas>1?' · '+totalEntregas+' entregas':''}${r.gorjeta>0?' · 🎁 gorjeta':''}</div>
-            </div>
-            <div style="display:flex;align-items:center;">
-              <span class="hist3-rota-valor">${fmt(r.total)}</span>
-              <span class="hist3-rota-chev" id="chev-${rotaId}">▼</span>
+          <div class="hist3-rota-header">
+            <input type="checkbox" class="hist-check" data-tipo="rota" data-id="${r.id}" onclick="event.stopPropagation();hToggleSel(this)">
+            <div onclick="toggleH3('${rotaId}')" style="flex:1;min-width:0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;">
+              <div class="hist3-rota-info">
+                <div class="hist3-rota-bairros">${bairros}</div>
+                <div class="hist3-rota-meta">${r.tipo==='urbano'?'🏙️':'🛣️'} ${r.tipo}${totalEntregas>1?' · '+totalEntregas+' entregas':''}${r.gorjeta>0?' · 🎁 gorjeta':''}</div>
+              </div>
+              <div style="display:flex;align-items:center;">
+                <span class="hist3-rota-valor">${fmt(r.total)}</span>
+                <span class="hist3-rota-chev" id="chev-${rotaId}">▼</span>
+              </div>
             </div>
           </div>
           <div class="hist3-rota-body" id="body-${rotaId}">
@@ -4558,14 +4679,16 @@ function renderHistorico(){
           </div></div>`;
       }).join('');
 
+      const rotaIdsEmp = JSON.stringify(empData.rotas.map(r=>r.id));
       return `<div class="hist3-emp">
         <div class="hist3-emp-header" onclick="toggleH3('${empId2}')">
           <div style="flex:1;min-width:0;">
             <div class="hist3-emp-nome">${empNome}</div>
             <div class="hist3-emp-meta">${empData.rotas.length} rota${empData.rotas.length!==1?'s':''} · ${qtdEntEmp} entrega${qtdEntEmp!==1?'s':''}</div>
           </div>
-          <div style="display:flex;align-items:center;">
+          <div style="display:flex;align-items:center;gap:6px;">
             <span class="hist3-emp-total">${fmt(empData.total)}</span>
+            <button class="btn-excluir-tudo" onclick='event.stopPropagation();hExcluirGrupo(${rotaIdsEmp},"${empNome.replace(/"/g,"")}")'>🗑️ Tudo</button>
             <span class="hist3-emp-chev" id="chev-${empId2}">▼</span>
           </div>
         </div>
@@ -4577,7 +4700,8 @@ function renderHistorico(){
     // Despesas do dia
     const despBlock = dia.despesas.map(d=>`
       <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:rgba(255,68,68,0.05);border:1px solid rgba(255,68,68,0.15);border-radius:7px;margin-bottom:5px;font-size:0.82rem;">
-        <div>
+        <div style="display:flex;align-items:center;flex:1;min-width:0;">
+          <input type="checkbox" class="hist-check" data-tipo="despesa" data-id="${d.id}" onclick="event.stopPropagation();hToggleSel(this)">
           <span style="font-weight:600;">💸 ${d.nome||'Despesa'}</span>
           <span style="color:var(--muted);font-size:0.7rem;margin-left:6px;">${d.cat||'Outros'}</span>
         </div>
@@ -4607,6 +4731,8 @@ function renderHistorico(){
         <div style="font-size:0.72rem;color:var(--green);margin-top:5px;display:none;" id="km-saved-${data}">✅ KM salvo!</div>
       </div>`;
 
+    const rotaIdsDia = JSON.stringify(dia.rotas.map(r=>r.id));
+    const despIdsDia = JSON.stringify(dia.despesas.map(d=>d.id));
     return `<div class="hist3-dia">
       <div class="hist3-dia-header" onclick="toggleH3('${diaId}')">
         <div class="hist3-dia-info">
@@ -4615,6 +4741,7 @@ function renderHistorico(){
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
           <div style="text-align:right;">${totalLabel}</div>
+          <button class="btn-excluir-tudo" onclick='event.stopPropagation();hExcluirDia(${rotaIdsDia},${despIdsDia},"${data}")'>🗑️ Dia</button>
           <button onclick="event.stopPropagation();adicionarAoDia('${data}')" style="background:rgba(66,133,244,0.15);border:1px solid #4285f4;color:#4285f4;border-radius:6px;padding:3px 8px;font-size:0.65rem;cursor:pointer;" title="Adicionar ao Google Agenda">📅</button>
           <span class="hist3-dia-chev" id="chev-${diaId}">▼</span>
         </div>
